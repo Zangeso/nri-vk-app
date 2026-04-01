@@ -34,6 +34,23 @@ function $(id) {
   return document.getElementById(id);
 }
 
+function initCabinetSubtabs() {
+  const buttons = document.querySelectorAll("[data-cabinet-panel]");
+  const panels = document.querySelectorAll(".cabinet-subpanel");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const panelId = button.getAttribute("data-cabinet-panel");
+
+      buttons.forEach((btn) => btn.classList.remove("active"));
+      panels.forEach((panel) => panel.classList.remove("active"));
+
+      button.classList.add("active");
+      document.getElementById(panelId)?.classList.add("active");
+    });
+  });
+}
+
 function renderVkDebugInfo(userInfo, isVisible = false) {
   const card = $("vkDebugCard");
   const status = $("vkDebugStatus");
