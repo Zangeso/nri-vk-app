@@ -1,4 +1,4 @@
-import { escapeHtml, truncateText, cleanDisplayText } from './utils.js';
+import { escapeHtml, truncateText, cleanDisplayText } from '../utils.js';
 
 const DEFAULT_CHARACTER_AVATAR = "https://placehold.co/400x400?text=Hero";
 
@@ -21,6 +21,7 @@ export function renderCharacterCard(character, worldName = "") {
       <div class="character-tile-body compact-character-body">
         <div class="compact-character-head">
           <h4 class="character-name compact-character-name">${escapeHtml(character.name)}</h4>
+
           <p class="character-subline compact-character-meta">
             ${cleanDisplayText(race)}
             <span class="meta-dot">•</span>
