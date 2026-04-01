@@ -34,12 +34,15 @@ function $(id) {
   return document.getElementById(id);
 }
 
-function renderVkDebugInfo(userInfo) {
+function renderVkDebugInfo(userInfo, isVisible = false) {
+  const card = $("vkDebugCard");
   const status = $("vkDebugStatus");
   const info = $("vkDebugInfo");
   const avatar = $("vkDebugAvatar");
 
-  if (!status || !info || !avatar) return;
+  if (!card || !status || !info || !avatar) return;
+
+  card.classList.toggle("hidden", !isVisible);
 
   if (!userInfo) {
     status.textContent = "Не удалось получить данные пользователя VK";
@@ -71,6 +74,21 @@ function renderVkDebugInfo(userInfo) {
   } else {
     avatar.style.display = "none";
     avatar.src = "";
+  }
+}
+
+function applyRoleUi(player) {
+  const adminLinkBtn = $("adminLinkBtn");
+  const resetTestPlayerBtn = $("resetTestPlayerBtn");
+
+  if (adminLinkBtn) {
+    const isAdmin = player?.role === "admin";
+    adminLinkBtn.classList.toggle("hidden", !isAdmin);
+  }
+
+  if (resetTestPlayerBtn) {
+    const isLocalTestUser = player?.auth_provider === "local_test";
+    resetTestPlayerBtn.classList.toggle("hidden", !isLocalTestUser);
   }
 }
 
@@ -123,20 +141,25 @@ async function loadCabinet(vkUserInfo = null) {
 
   if (!playerId) {
     const player = await resolveAppUser(vkUserInfo);
-    if (!player) return;
+    if (!player) return null;
     playerId = player.id;
   }
 
-  const player = await renderPlayerProfileScreen(playerId);
+  let player = await renderPlayerProfileScreen(playerId);
+
   if (!player) {
     clearLocalPlayer();
 
     const fallbackPlayer = await resolveAppUser(vkUserInfo);
-    if (!fallbackPlayer) return;
+    if (!fallbackPlayer) return null;
 
     playerId = fallbackPlayer.id;
-    await renderPlayerProfileScreen(playerId);
+    player = await renderPlayerProfileScreen(playerId);
   }
+
+  if (!player) return null;
+
+  applyRoleUi(player);
 
   await renderCharactersScreen({
     playerId,
@@ -153,6 +176,8 @@ async function loadCabinet(vkUserInfo = null) {
     playerId,
     onOpenAchievement: openAchievementDetailModal
   });
+
+  return player;
 }
 
 function bindUiActions(vkUserInfo = null) {
@@ -184,7 +209,7 @@ async function init() {
   const vkState = await initVkBridge();
   console.log("VK state:", vkState);
 
-  renderVkDebugInfo(vkState.userInfo);
+  renderVkDebugInfo(vkState.userInfo, false);
 
   appScreen.classList.remove("hidden");
 
@@ -199,7 +224,8 @@ async function init() {
     onCreated: () => loadCabinet(vkState.userInfo)
   });
 
-  await loadCabinet(vkState.userInfo);
+  const player = await loadCabinet(vkState.userInfo);
+  applyRoleUi(player);
 
   if (!vkState.ok) {
     showToast("VK Bridge не инициализировался. Проверь запуск внутри VK.", "error", 5000);
