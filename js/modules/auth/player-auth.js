@@ -66,7 +66,101 @@ async function resolveOwnerUser() {
   return null;
 }
 
-export async function resolveAppUser() {
+async function resolveVkUser(vkUserInfo) {
+  if (!vkUserInfo?.id) {
+    return null;
+  }
+
+  const externalAuthId = String(vkUserInfo.id);
+  const fullName = [vkUserInfo.first_name, vkUserInfo.last_name]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+
+  const avatarUrl =
+    vkUserInfo.photo_200 ||
+    vkUserInfo.photo_100 ||
+    "";
+
+  const fallbackNickname =
+    vkUserInfo.first_name?.trim() ||
+    `Игрок VK ${externalAuthId}`;
+
+  const { data: existing, error: findError } = await supabase
+    .from("players")
+    .select("*")
+    .eq("auth_provider", "vk")
+    .eq("external_auth_id", externalAuthId)
+    .maybeSingle();
+
+  if (findError) {
+    showToast("Ошибка поиска VK-игрока: " + findError.message, "error");
+    return null;
+  }
+
+  if (existing) {
+    const updates = {};
+    const existingFullName = String(existing.full_name || "").trim();
+    const existingAvatar = String(existing.avatar_url || "").trim();
+    const existingNickname = String(existing.nickname || "").trim();
+
+    if (fullName && existingFullName !== fullName) {
+      updates.full_name = fullName;
+    }
+
+    if (avatarUrl && existingAvatar !== avatarUrl) {
+      updates.avatar_url = avatarUrl;
+    }
+
+    if (!existingNickname && fallbackNickname) {
+      updates.nickname = fallbackNickname;
+    }
+
+    if (Object.keys(updates).length) {
+      const { data: updated, error: updateError } = await supabase
+        .from("players")
+        .update(updates)
+        .eq("id", existing.id)
+        .select()
+        .single();
+
+      if (updateError) {
+        showToast("Ошибка обновления VK-профиля: " + updateError.message, "error");
+        setLocalPlayer(existing.id);
+        return existing;
+      }
+
+      setLocalPlayer(updated.id);
+      return updated;
+    }
+
+    setLocalPlayer(existing.id);
+    return existing;
+  }
+
+  const { data: created, error: createError } = await supabase
+    .from("players")
+    .insert([{
+      nickname: fallbackNickname,
+      full_name: fullName,
+      avatar_url: avatarUrl,
+      role: "player",
+      auth_provider: "vk",
+      external_auth_id: externalAuthId
+    }])
+    .select()
+    .single();
+
+  if (createError) {
+    showToast("Ошибка создания VK-игрока: " + createError.message, "error");
+    return null;
+  }
+
+  setLocalPlayer(created.id);
+  return created;
+}
+
+async function resolveLocalTestUser() {
   const ownerMode = localStorage.getItem(OWNER_MODE_KEY) === "1";
 
   if (ownerMode) {
@@ -115,4 +209,13 @@ export async function resolveAppUser() {
 
   setLocalPlayer(created.id);
   return created;
+}
+
+export async function resolveAppUser(vkUserInfo = null) {
+  if (vkUserInfo?.id) {
+    const vkPlayer = await resolveVkUser(vkUserInfo);
+    if (vkPlayer) return vkPlayer;
+  }
+
+  return resolveLocalTestUser();
 }
