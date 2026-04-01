@@ -1353,3 +1353,385 @@ flex-direction: column;
   display: block;
   flex: 0 0 auto;
 }
+
+/* ===== compact cabinet for VK mini app ===== */
+
+.cabinet-shell {
+  display: grid;
+  gap: 14px;
+}
+
+.app-hero-card,
+.app-module-card {
+  margin-bottom: 0;
+  padding: 16px;
+  border-radius: 20px;
+}
+
+.app-hero-row {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.app-hero-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  object-fit: cover;
+  background: #1e293b;
+}
+
+.app-hero-main {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.app-hero-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 10px;
+}
+
+.app-hero-title {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 28px);
+  line-height: 1.05;
+}
+
+.app-hero-subtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.app-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.app-stat-card {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 4px;
+}
+
+.app-stat-number {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.app-stat-label {
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+
+.subtabs-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.subtab-button {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.subtab-button.active {
+  background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+  border-color: transparent;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+}
+
+.cabinet-subpanel {
+  display: none;
+}
+
+.cabinet-subpanel.active {
+  display: block;
+}
+
+.compact-slider-head {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.compact-characters-region {
+  overflow: hidden;
+}
+
+.characters-scroll-track {
+  gap: 10px;
+}
+
+.characters-scroll-track > * {
+  flex: 0 0 280px;
+  min-width: 280px;
+  max-width: 280px;
+}
+
+.compact-entity-tile.character-tile,
+.compact-entity-tile.premium-character-tile {
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+  padding: 10px;
+  border-radius: 18px;
+  background: var(--bg-deep);
+  border: 1px solid #243044;
+  overflow: hidden;
+}
+
+.compact-character-avatar.character-tile-avatar {
+  width: 84px;
+  height: 92px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #1e293b;
+}
+
+.compact-character-body.character-tile-body {
+  position: static;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  background: none;
+  backdrop-filter: none;
+}
+
+.compact-character-head {
+  display: grid;
+  gap: 4px;
+}
+
+.compact-character-name {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.compact-character-meta,
+.compact-character-world,
+.compact-character-description {
+  margin: 0;
+}
+
+.compact-character-meta {
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--text-soft);
+}
+
+.compact-character-world {
+  font-size: 12px;
+  line-height: 1.25;
+  color: #93c5fd;
+}
+
+.compact-character-description {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.compact-achievement-board {
+  padding: 0;
+}
+
+.compact-achievements-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+
+.compact-achievements-track::-webkit-scrollbar {
+  display: none;
+}
+
+.compact-achievement-tile {
+  width: 146px;
+  min-width: 146px;
+  max-width: 146px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  align-items: start;
+}
+
+.compact-achievement-image {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  margin: 0 auto;
+}
+
+.compact-achievement-body {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.compact-achievement-title {
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.compact-achievement-character {
+  font-size: 11.5px;
+  line-height: 1.2;
+  color: #c4b5fd;
+}
+
+.compact-achievement-meta {
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--text-muted);
+}
+
+.compact-empty-tile {
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 14px;
+  }
+
+  .topbar {
+    margin-bottom: 16px;
+  }
+
+  .topbar h1 {
+    font-size: 26px;
+  }
+
+  .main-tabs {
+    gap: 8px;
+  }
+
+  .main-tab-button {
+    min-width: 0;
+    flex: 1 1 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+
+  .hero-tabs {
+    margin-bottom: 14px;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 12px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .topbar-actions {
+    width: 100%;
+  }
+
+  .topbar-actions > * {
+    flex: 1 1 0;
+  }
+
+  .app-hero-row {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .app-hero-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+  }
+
+  .app-stats-grid {
+    gap: 6px;
+  }
+
+  .app-stat-card {
+    padding: 9px 10px;
+  }
+
+  .app-stat-number {
+    font-size: 18px;
+  }
+
+  .characters-scroll-track > * {
+    flex: 0 0 250px;
+    min-width: 250px;
+    max-width: 250px;
+  }
+
+  .compact-entity-tile.character-tile,
+  .compact-entity-tile.premium-character-tile {
+    width: 250px;
+    min-width: 250px;
+    max-width: 250px;
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+
+  .compact-character-avatar.character-tile-avatar {
+    width: 74px;
+    height: 84px;
+  }
+
+  .compact-achievement-tile {
+    width: 132px;
+    min-width: 132px;
+    max-width: 132px;
+  }
+
+  .compact-achievement-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+  }
+}
