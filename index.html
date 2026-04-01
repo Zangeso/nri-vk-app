@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Личный кабинет НРИ игрока</title>
+  <title>D&D Админка</title>
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
@@ -11,240 +11,272 @@
 </head>
 <body>
   <div class="container">
-    <header class="topbar premium-topbar app-shell-topbar">
-      <div class="topbar-title-block">
-        <h1>Личный кабинет НРИ игрока</h1>
+    <header class="topbar premium-topbar">
+      <div>
+        <h1>Админка D&amp;D</h1>
+        <p class="muted small-text" style="margin:8px 0 0;">Управление мирами, кампаниями и публикациями сессий</p>
       </div>
 
       <div class="topbar-actions">
-        <a id="adminLinkBtn" class="ghost-button hidden" href="admin.html">Админка</a>
-        <button id="resetTestPlayerBtn" class="ghost-button hidden" type="button">Сбросить тестовый вход</button>
+        <a class="ghost-button" href="index.html">К кабинету</a>
       </div>
     </header>
 
-    <section id="appScreen" class="hidden">
-      <div class="main-tabs hero-tabs premium-main-tabs">
-        <button class="main-tab-button active" data-main-tab="cabinetTab" type="button">Профиль игрока</button>
-        <button class="main-tab-button" data-main-tab="feedTab" type="button">Лента приключений</button>
+    <section id="adminLoadingCard" class="card premium-profile-card">
+      <div class="section-head compact-section-head">
+        <div>
+          <h2 style="margin:0; font-size:24px;">Проверка доступа</h2>
+          <p id="adminLoadingText" class="muted small-text" style="margin:8px 0 0;">Проверяем права доступа…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="adminDeniedCard" class="card premium-profile-card hidden">
+      <div class="section-head compact-section-head">
+        <div>
+          <h2 style="margin:0; font-size:24px;">Доступ запрещён</h2>
+          <p class="muted small-text" style="margin:8px 0 0;">
+            Эта страница доступна только игрокам с ролью <b>admin</b> в базе приложения.
+          </p>
+        </div>
       </div>
 
-      <section id="cabinetTab" class="main-tab-panel active">
-        <div class="page-stack">
-          <div id="vkDebugCard" class="card premium-profile-card hidden">
-            <div class="section-head compact-section-head">
-              <div>
-                <h3 style="margin:0;">Данные из VK</h3>
-                <p id="vkDebugStatus" class="muted small-text" style="margin:8px 0 0;">Пока не загружено</p>
-              </div>
-            </div>
+      <div id="adminDeniedInfo" class="small-text muted"></div>
+    </section>
 
-            <div class="row gap" style="align-items:flex-start;">
-              <img
-                id="vkDebugAvatar"
-                src=""
-                alt="VK avatar"
-                style="width:72px; height:72px; border-radius:16px; object-fit:cover; display:none;"
-              />
-              <div id="vkDebugInfo" class="small-text muted"></div>
+    <section id="adminPanel" class="hidden">
+      <div class="main-tabs hero-tabs premium-main-tabs">
+        <button class="main-tab-button active" data-main-tab="adminWorldsTab" type="button">Миры и кампании</button>
+        <button class="main-tab-button" data-main-tab="adminSessionTab" type="button">Публикация сессии</button>
+      </div>
+
+      <section id="adminWorldsTab" class="main-tab-panel active">
+        <div class="card premium-feed-card">
+          <div class="section-head compact-section-head">
+            <div>
+              <h3>Миры и кампании</h3>
+              <p class="muted small-text" style="margin:6px 0 0;">Сначала создайте мир, затем при необходимости добавьте к нему кампании.</p>
             </div>
+            <button id="openCreateWorldBtn" class="small-button" type="button">Новый мир</button>
           </div>
 
-          <div class="player-premium-layout player-dashboard-layout">
-            <div class="player-header card premium-profile-card player-hero-card">
-              <div class="player-hero-main">
-                <div>
-                  <img id="playerAvatar" class="avatar-lg player-avatar-premium" src="" alt="Аватар игрока" />
-                </div>
-
-                <div class="player-main-info">
-                  <div class="player-name-row">
-                    <h2 id="playerNickname">Игрок</h2>
-                    <button id="openNicknameModalBtn" class="icon-only-button" type="button" title="Редактировать ник">✏</button>
-                  </div>
-
-                  <p id="playerFullName" class="muted">Имя из VK появится позже</p>
-
-                  <div class="player-stats-row compact-premium-stats">
-                    <div class="inline-stat premium-inline-stat">
-                      <span class="inline-stat-number" id="statCharacters">0</span>
-                      <span class="inline-stat-label">персонажей</span>
-                    </div>
-
-                    <div class="inline-stat premium-inline-stat">
-                      <span class="inline-stat-number" id="statAchievements">0</span>
-                      <span class="inline-stat-label">достижений</span>
-                    </div>
-
-                    <div class="inline-stat premium-inline-stat">
-                      <span class="inline-stat-number" id="statSessions">0</span>
-                      <span class="inline-stat-label">сессий</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="card premium-achievement-board-card dashboard-side-card">
-              <div class="section-head compact-section-head">
-                <h3>Достижения</h3>
-
-                <div class="slider-arrows">
-                  <button id="achievementsPrevBtn" class="slider-arrow-btn" type="button">‹</button>
-                  <button id="achievementsNextBtn" class="slider-arrow-btn" type="button">›</button>
-                </div>
-              </div>
-
-              <div id="achievementBoard" class="achievement-board premium-circle-board"></div>
-            </div>
-          </div>
-
-          <div class="card premium-characters-card characters-section-card">
-            <div class="section-head compact-section-head">
-              <h3>Персонажи</h3>
-
-              <div class="section-head-right">
-                <div class="slider-arrows">
-                  <button id="charactersPrevBtn" class="slider-arrow-btn" type="button">‹</button>
-                  <button id="charactersNextBtn" class="slider-arrow-btn" type="button">›</button>
-                </div>
-
-                <button id="openCharacterModalBtn" class="small-button" type="button">Создать персонажа</button>
-              </div>
-            </div>
-
-            <div id="charactersList" class="characters-slider-region"></div>
-          </div>
+          <div id="worldsList" class="cards-list"></div>
         </div>
       </section>
 
-      <section id="feedTab" class="main-tab-panel">
-        <div class="page-stack feed-page-stack">
-          <div id="storiesList" class="cards-list feed-stories-list"></div>
+      <section id="adminSessionTab" class="main-tab-panel">
+        <div class="card premium-feed-card">
+          <div class="section-head compact-section-head">
+            <div>
+              <h3>Публикация сессии</h3>
+              <p class="muted small-text" style="margin:6px 0 0;">Заполни основу записи, затем добавь участников и опубликуй сессию.</p>
+            </div>
+          </div>
+
+          <div class="form-grid compact-form-grid">
+            <div>
+              <label for="sessionDate">Дата сессии</label>
+              <input id="sessionDate" type="date" />
+            </div>
+
+            <div>
+              <label for="sessionWorld">Мир</label>
+              <select id="sessionWorld">
+                <option value="">Выберите мир</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="sessionCampaign">Кампания</label>
+              <select id="sessionCampaign">
+                <option value="">Ваншот</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="sessionTitle">Название записи</label>
+              <input id="sessionTitle" type="text" placeholder="Например: Руины у чёрной реки" />
+            </div>
+          </div>
+
+          <div class="form-grid compact-form-grid">
+            <div>
+              <label for="sessionRecapLink">Ссылка на пересказ</label>
+              <input id="sessionRecapLink" type="text" placeholder="Ссылка на пересказ или пост" />
+            </div>
+
+            <div>
+              <label for="sessionTrackFile">Трек публикации</label>
+              <input id="sessionTrackFile" type="file" accept=".mp3,.wav,.ogg,audio/*" />
+            </div>
+          </div>
+
+          <div class="upload-block">
+            <label for="sessionCoverFile">Основная картинка приключения</label>
+            <input id="sessionCoverFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+            <div id="sessionCoverPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
+          </div>
+
+          <div>
+            <label for="sessionResultText">Результат приключения</label>
+            <textarea id="sessionResultText" rows="4" placeholder="Чем закончилась сессия"></textarea>
+          </div>
+
+          <div class="modal-actions top-space">
+            <button id="publishSessionBtn" type="button">Опубликовать сессию</button>
+            <button id="resetSessionEditorBtn" class="ghost-button" type="button">Сбросить форму</button>
+          </div>
+        </div>
+
+        <div class="card premium-feed-card">
+          <div class="section-head compact-section-head">
+            <div>
+              <h3>Участники и достижения</h3>
+              <p class="muted small-text" style="margin:6px 0 0;">Добавляй участников, их достижения и изображения для публикации.</p>
+            </div>
+            <button id="openParticipantEditorBtn" class="small-button" type="button">Добавить участника</button>
+          </div>
+
+          <div id="sessionParticipantChips" class="chips-wrap"></div>
+        </div>
+
+        <div class="card premium-feed-card">
+          <div class="section-head compact-section-head">
+            <div>
+              <h3>Опубликованные сессии</h3>
+            </div>
+          </div>
+
+          <div id="publishedSessionsList" class="cards-list"></div>
         </div>
       </section>
     </section>
   </div>
 
-  <div id="nicknameModal" class="modal hidden">
+  <div id="worldModal" class="modal hidden">
     <div class="modal-box small-modal-box">
       <div class="modal-header">
-        <h3>Изменить ник</h3>
-        <button id="closeNicknameModalBtn" class="icon-button" type="button">✕</button>
+        <h3 id="worldModalTitle">Новый мир</h3>
+        <button id="closeWorldModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
       <div>
-        <label for="nicknameInput">Новый ник</label>
-        <input id="nicknameInput" type="text" placeholder="Введите новый ник" />
+        <label for="worldTitle">Название мира</label>
+        <input id="worldTitle" type="text" placeholder="Название мира" />
+      </div>
+
+      <div class="top-space">
+        <label for="worldDescription">Описание</label>
+        <textarea id="worldDescription" rows="4" placeholder="Краткое описание мира"></textarea>
       </div>
 
       <div class="modal-actions top-space">
-        <button id="saveNicknameBtn" type="button">Сохранить</button>
+        <button id="saveWorldBtn" type="button">Сохранить</button>
       </div>
     </div>
   </div>
 
-  <div id="achievementDetailModal" class="modal hidden">
-    <div class="modal-box small-modal-box premium-achievement-modal">
+  <div id="campaignModal" class="modal hidden">
+    <div class="modal-box small-modal-box">
       <div class="modal-header">
-        <h3>Достижение</h3>
-        <button id="closeAchievementDetailModalBtn" class="icon-button" type="button">✕</button>
+        <h3 id="campaignModalTitle">Новая кампания</h3>
+        <button id="closeCampaignModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
-      <div id="achievementDetailContent"></div>
+      <div>
+        <label for="campaignTitle">Название кампании</label>
+        <input id="campaignTitle" type="text" placeholder="Название кампании" />
+      </div>
+
+      <div class="top-space">
+        <label for="campaignDescription">Описание</label>
+        <textarea id="campaignDescription" rows="4" placeholder="Краткое описание кампании"></textarea>
+      </div>
+
+      <div class="modal-actions top-space">
+        <button id="saveCampaignBtn" type="button">Сохранить</button>
+      </div>
     </div>
   </div>
 
-  <div id="characterModal" class="modal hidden">
+  <div id="participantModal" class="modal hidden">
     <div class="modal-box large-modal-box">
       <div class="modal-header">
-        <h3>Создать персонажа</h3>
-        <button id="closeCharacterModalBtn" class="icon-button" type="button">✕</button>
+        <h3 id="participantModalTitle">Участник</h3>
+        <button id="closeParticipantModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
-      <div class="form-grid">
+      <div class="form-grid compact-form-grid">
         <div>
-          <label for="characterName">Имя персонажа</label>
-          <input id="characterName" type="text" placeholder="Например: Каэль" />
+          <label for="participantPlayerSearch">Игрок</label>
+          <input id="participantPlayerSearch" type="text" placeholder="Начни вводить имя игрока" />
         </div>
 
         <div>
-          <label for="characterRace">Раса</label>
-          <input id="characterRace" type="text" placeholder="Например: Эльф" />
+          <label for="participantCharacterSearch">Персонаж</label>
+          <input id="participantCharacterSearch" type="text" placeholder="Начни вводить имя персонажа" />
         </div>
+      </div>
 
-        <div>
-          <label for="characterClass">Класс</label>
-          <input id="characterClass" type="text" placeholder="Например: Следопыт" />
-        </div>
+      <div id="participantCharacterResults" class="top-space"></div>
 
-        <div>
-          <label for="characterTrackFile">Личный трек</label>
-          <input id="characterTrackFile" type="file" accept=".mp3,.wav,.ogg,audio/*" />
-        </div>
+      <div class="top-space">
+        <label for="participantAchievementTitle">Название достижения</label>
+        <input id="participantAchievementTitle" type="text" placeholder="Например: Сердце руин" />
+      </div>
+
+      <div class="top-space">
+        <label for="participantAchievementDescription">Описание достижения</label>
+        <textarea id="participantAchievementDescription" rows="4" placeholder="Что произошло"></textarea>
       </div>
 
       <div class="upload-block">
-        <label for="characterAvatarFile">Аватар персонажа</label>
-        <input id="characterAvatarFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
-        <div id="characterAvatarPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
-      </div>
-
-      <div>
-        <label for="characterDescription">Описание</label>
-        <textarea id="characterDescription" rows="5" placeholder="Краткое описание персонажа"></textarea>
+        <label for="participantAchievementImageFile">Изображение достижения</label>
+        <input id="participantAchievementImageFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+        <div id="participantAchievementImagePreview" class="upload-preview empty">Изображение достижения ещё не выбрано</div>
       </div>
 
       <div class="modal-actions top-space">
-        <button id="saveCharacterBtn" type="button">Сохранить персонажа</button>
+        <button id="saveParticipantBtn" type="button">Сохранить участника</button>
       </div>
     </div>
   </div>
 
-  <div id="cropModal" class="modal hidden">
+  <div id="sessionCoverCropModal" class="modal hidden">
     <div class="modal-box crop-modal-box">
       <div class="modal-header">
-        <h3>Обрезка аватара</h3>
-        <button id="closeCropModalBtn" class="icon-button" type="button">✕</button>
+        <h3>Обрезка основной картинки</h3>
+        <button id="closeSessionCoverCropModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
       <div class="crop-area">
-        <img id="cropImage" src="" alt="crop image" />
+        <img id="sessionCoverCropImage" src="" alt="crop cover" />
       </div>
 
       <div class="row gap">
-        <button id="applyCropBtn" type="button">Обрезать и сохранить</button>
+        <button id="applySessionCoverCropBtn" type="button">Обрезать и сохранить</button>
       </div>
     </div>
   </div>
 
-  <div id="characterViewModal" class="modal hidden">
-    <div class="modal-box large-modal-box">
+  <div id="participantAchievementCropModal" class="modal hidden">
+    <div class="modal-box crop-modal-box">
       <div class="modal-header">
-        <h3>Карточка персонажа</h3>
-        <button id="closeCharacterViewModalBtn" class="icon-button" type="button">✕</button>
+        <h3>Обрезка достижения</h3>
+        <button id="closeParticipantAchievementCropModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
-      <div id="characterViewContent"></div>
-    </div>
-  </div>
-
-  <div id="deleteConfirmModal" class="modal hidden">
-    <div class="modal-box small-modal-box">
-      <div class="modal-header">
-        <h3>Удалить персонажа?</h3>
-        <button id="closeDeleteConfirmModalBtn" class="icon-button" type="button">✕</button>
+      <div class="crop-area">
+        <img id="participantAchievementCropImage" src="" alt="crop achievement" />
       </div>
 
-      <p class="modal-text">Персонаж будет удалён без возможности восстановления.</p>
-
-      <div class="modal-actions">
-        <button id="cancelDeleteBtn" class="ghost-button" type="button">Отмена</button>
-        <button id="confirmDeleteBtn" class="danger-button" type="button">Удалить</button>
+      <div class="row gap">
+        <button id="applyParticipantAchievementCropBtn" type="button">Обрезать и сохранить</button>
       </div>
     </div>
   </div>
 
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/admin.js"></script>
 </body>
 </html>
