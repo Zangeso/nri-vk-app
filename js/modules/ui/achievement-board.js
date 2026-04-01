@@ -1,7 +1,6 @@
-import { escapeHtml, cleanDisplayText, formatDate } from '../utils.js';
+import { escapeHtml, formatDate } from '../utils.js';
 
 const DEFAULT_ACHIEVEMENT_IMAGE = "https://placehold.co/500x500?text=Achievement";
-const DEFAULT_CHARACTER_AVATAR = "https://placehold.co/400x400?text=Hero";
 
 function renderAchievementCard(item) {
   const imageUrl = item.image_url || DEFAULT_ACHIEVEMENT_IMAGE;
@@ -15,7 +14,7 @@ function renderAchievementCard(item) {
 
   return `
     <button
-      class="achievement-orb-btn"
+      class="achievement-orb-btn compact-achievement-tile"
       type="button"
       data-image="${encodeURIComponent(imageUrl)}"
       data-title="${encodeURIComponent(title)}"
@@ -24,14 +23,14 @@ function renderAchievementCard(item) {
       data-description="${encodeURIComponent(description)}"
     >
       <div
-        class="achievement-orb-image"
+        class="achievement-orb-image compact-achievement-image"
         style="background-image:url('${escapeHtml(imageUrl)}')"
       ></div>
 
-      <div class="achievement-orb-body">
-        <div class="achievement-orb-title">${escapeHtml(title)}</div>
-        <div class="achievement-orb-character">${escapeHtml(characterName)}</div>
-        <div class="achievement-orb-meta">
+      <div class="compact-achievement-body">
+        <div class="achievement-orb-title compact-achievement-title">${escapeHtml(title)}</div>
+        <div class="achievement-orb-character compact-achievement-character">${escapeHtml(characterName)}</div>
+        <div class="achievement-orb-meta compact-achievement-meta">
           ${escapeHtml(sessionTitle)}
           ${sessionDate ? ` • ${escapeHtml(sessionDate)}` : ""}
         </div>
@@ -42,11 +41,11 @@ function renderAchievementCard(item) {
 
 export function renderAchievementsBoardHtml(achievements) {
   if (!achievements.length) {
-    return `<div class="card-item">У тебя пока нет достижений.</div>`;
+    return `<div class="card-item compact-empty-tile">У тебя пока нет достижений.</div>`;
   }
 
   return `
-    <div id="achievementsTrack" class="achievements-orb-track">
+    <div id="achievementsTrack" class="achievements-orb-track compact-achievements-track">
       ${achievements.map((item) => renderAchievementCard(item)).join("")}
     </div>
   `;
