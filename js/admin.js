@@ -164,6 +164,8 @@ async function showAdmin() {
 }
 
 async function initAdmin() {
+    $("backToCabinetBtn")?.addEventListener("click", goToCabinet);
+  
   const vkState = await initVkBridge();
   const player = await resolveCurrentPlayer(vkState.userInfo);
 
