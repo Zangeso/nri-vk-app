@@ -118,11 +118,11 @@ async function initVkBridge() {
   }
 }
 
-async function loadCabinet() {
+async function loadCabinet(vkUserInfo = null) {
   let playerId = getLocalPlayerId();
 
   if (!playerId) {
-    const player = await resolveAppUser();
+    const player = await resolveAppUser(vkUserInfo);
     if (!player) return;
     playerId = player.id;
   }
@@ -130,13 +130,18 @@ async function loadCabinet() {
   const player = await renderPlayerProfileScreen(playerId);
   if (!player) {
     clearLocalPlayer();
-    return;
+
+    const fallbackPlayer = await resolveAppUser(vkUserInfo);
+    if (!fallbackPlayer) return;
+
+    playerId = fallbackPlayer.id;
+    await renderPlayerProfileScreen(playerId);
   }
 
   await renderCharactersScreen({
     playerId,
     onOpenAchievement: openAchievementDetailModal,
-    onReloadCabinet: loadCabinet
+    onReloadCabinet: () => loadCabinet(vkUserInfo)
   });
 
   await renderAchievementsScreen({
@@ -150,14 +155,14 @@ async function loadCabinet() {
   });
 }
 
-function bindUiActions() {
+function bindUiActions(vkUserInfo = null) {
   $("resetTestPlayerBtn")?.addEventListener("click", async () => {
     clearLocalPlayer();
     localStorage.removeItem("nri_test_external_id");
     localStorage.removeItem("nri_owner_mode");
     localStorage.removeItem("nri_admin_id");
     showToast("Локальный вход сброшен", "success");
-    await loadCabinet();
+    await loadCabinet(vkUserInfo);
   });
 
   $("openNicknameModalBtn")?.addEventListener("click", openNicknameModal);
@@ -184,17 +189,17 @@ async function init() {
   appScreen.classList.remove("hidden");
 
   initMainTabs();
-  bindUiActions();
+  bindUiActions(vkState.userInfo);
 
   initCharacterDeleteConfirm({
-    onReloadCabinet: loadCabinet
+    onReloadCabinet: () => loadCabinet(vkState.userInfo)
   });
 
   initCharacterCreateFeature({
-    onCreated: loadCabinet
+    onCreated: () => loadCabinet(vkState.userInfo)
   });
 
-  await loadCabinet();
+  await loadCabinet(vkState.userInfo);
 
   if (!vkState.ok) {
     showToast("VK Bridge не инициализировался. Проверь запуск внутри VK.", "error", 5000);
