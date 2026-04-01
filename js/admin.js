@@ -23,10 +23,12 @@ import { supabase } from './modules/supabase.js';
 function $(id) {
   return document.getElementById(id);
 }
+
 function goToCabinet() {
   const targetUrl = `index.html${window.location.search || ""}${window.location.hash || ""}`;
   window.location.href = targetUrl;
 }
+
 async function initVkBridge() {
   if (!window.vkBridge) {
     return {
