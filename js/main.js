@@ -34,6 +34,50 @@ function $(id) {
   return document.getElementById(id);
 }
 
+async function initVkBridge() {
+  if (!window.vkBridge) {
+    console.warn('VK Bridge не найден');
+    return {
+      ok: false,
+      launchParams: null,
+      userInfo: null
+    };
+  }
+
+  try {
+    await window.vkBridge.send('VKWebAppInit');
+
+    let launchParams = null;
+    let userInfo = null;
+
+    try {
+      launchParams = window.vkBridge.parseURLSearchParams(window.location.href);
+    } catch (e) {
+      console.warn('Не удалось прочитать launch params', e);
+    }
+
+    try {
+      userInfo = await window.vkBridge.send('VKWebAppGetUserInfo');
+      console.log('VK user info:', userInfo);
+    } catch (e) {
+      console.warn('Не удалось получить данные пользователя VK', e);
+    }
+
+    return {
+      ok: true,
+      launchParams,
+      userInfo
+    };
+  } catch (error) {
+    console.error('Ошибка инициализации VK Bridge:', error);
+    return {
+      ok: false,
+      launchParams: null,
+      userInfo: null
+    };
+  }
+}
+
 async function loadCabinet() {
   let playerId = getLocalPlayerId();
 
@@ -66,27 +110,7 @@ async function loadCabinet() {
   });
 }
 
-async function init() {
-  const appScreen = $("appScreen");
-
-  if (!appScreen) {
-    console.error("Элемент #appScreen не найден. Проверь index.html.");
-    return;
-  }
-
-  appScreen.classList.remove("hidden");
-
-  initMainTabs();
-  await loadCabinet();
-
-  initCharacterDeleteConfirm({
-    onReloadCabinet: loadCabinet
-  });
-
-  initCharacterCreateFeature({
-    onCreated: loadCabinet
-  });
-
+function bindUiActions() {
   $("resetTestPlayerBtn")?.addEventListener("click", async () => {
     clearLocalPlayer();
     localStorage.removeItem("nri_test_external_id");
@@ -102,6 +126,37 @@ async function init() {
 
   $("closeAchievementDetailModalBtn")?.addEventListener("click", () => closeModal("achievementDetailModal"));
   $("closeCharacterViewModalBtn")?.addEventListener("click", () => closeModal("characterViewModal"));
+}
+
+async function init() {
+  const appScreen = $("appScreen");
+
+  if (!appScreen) {
+    console.error("Элемент #appScreen не найден. Проверь index.html.");
+    return;
+  }
+
+  const vkState = await initVkBridge();
+  console.log("VK state:", vkState);
+
+  appScreen.classList.remove("hidden");
+
+  initMainTabs();
+  bindUiActions();
+
+  initCharacterDeleteConfirm({
+    onReloadCabinet: loadCabinet
+  });
+
+  initCharacterCreateFeature({
+    onCreated: loadCabinet
+  });
+
+  await loadCabinet();
+
+  if (!vkState.ok) {
+    showToast("VK Bridge не инициализировался. Проверь запуск внутри VK.", "error", 5000);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
