@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Личный кабинет НРИ игрока</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+</head>
+<body>
+  <div class="container">
+    <header class="topbar premium-topbar app-shell-topbar">
+      <div class="topbar-title-block">
+        <h1>Личный кабинет НРИ игрока</h1>
+      </div>
+
+
+  <div class="topbar-actions">
+    <a class="ghost-button" href="admin.html">Админка</a>
+    <button id="resetTestPlayerBtn" class="ghost-button" type="button">Сбросить тестовый вход</button>
+  </div>
+</header>
+
+<section id="appScreen" class="hidden">
+  <div class="main-tabs hero-tabs premium-main-tabs">
+    <button class="main-tab-button active" data-main-tab="cabinetTab" type="button">Профиль игрока</button>
+    <button class="main-tab-button" data-main-tab="feedTab" type="button">Лента приключений</button>
+  </div>
+
+  <section id="cabinetTab" class="main-tab-panel active">
+    <div class="page-stack">
+      <div class="player-premium-layout player-dashboard-layout">
+        <div class="player-header card premium-profile-card player-hero-card">
+          <div class="player-hero-main">
+            <div>
+              <img id="playerAvatar" class="avatar-lg player-avatar-premium" src="" alt="Аватар игрока" />
+            </div>
+
+            <div class="player-main-info">
+              <div class="player-name-row">
+                <h2 id="playerNickname">Игрок</h2>
+                <button id="openNicknameModalBtn" class="icon-only-button" type="button" title="Редактировать ник">✏</button>
+              </div>
+
+              <p id="playerFullName" class="muted">Имя из VK появится позже</p>
+
+              <div class="player-stats-row compact-premium-stats">
+                <div class="inline-stat premium-inline-stat">
+                  <span class="inline-stat-number" id="statCharacters">0</span>
+                  <span class="inline-stat-label">персонажей</span>
+                </div>
+
+                <div class="inline-stat premium-inline-stat">
+                  <span class="inline-stat-number" id="statAchievements">0</span>
+                  <span class="inline-stat-label">достижений</span>
+                </div>
+
+                <div class="inline-stat premium-inline-stat">
+                  <span class="inline-stat-number" id="statSessions">0</span>
+                  <span class="inline-stat-label">сессий</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card premium-achievement-board-card dashboard-side-card">
+          <div class="section-head compact-section-head">
+            <h3>Достижения</h3>
+
+            <div class="slider-arrows">
+              <button id="achievementsPrevBtn" class="slider-arrow-btn" type="button">‹</button>
+              <button id="achievementsNextBtn" class="slider-arrow-btn" type="button">›</button>
+            </div>
+          </div>
+
+          <div id="achievementBoard" class="achievement-board premium-circle-board"></div>
+        </div>
+      </div>
+
+      <div class="card premium-characters-card characters-section-card">
+        <div class="section-head compact-section-head">
+          <h3>Персонажи</h3>
+
+          <div class="section-head-right">
+            <div class="slider-arrows">
+              <button id="charactersPrevBtn" class="slider-arrow-btn" type="button">‹</button>
+              <button id="charactersNextBtn" class="slider-arrow-btn" type="button">›</button>
+            </div>
+
+            <button id="openCharacterModalBtn" class="small-button" type="button">Создать персонажа</button>
+          </div>
+        </div>
+
+        <div id="charactersList" class="characters-slider-region"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="feedTab" class="main-tab-panel">
+    <div class="page-stack feed-page-stack">
+      <div id="storiesList" class="cards-list feed-stories-list"></div>
+    </div>
+  </section>
+</section>
+
+
+  </div>
+
+  <!-- Модалка смены ника -->
+
+  <div id="nicknameModal" class="modal hidden">
+    <div class="modal-box small-modal-box">
+      <div class="modal-header">
+        <h3>Изменить ник</h3>
+        <button id="closeNicknameModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div>
+    <label for="nicknameInput">Новый ник</label>
+    <input id="nicknameInput" type="text" placeholder="Введите новый ник" />
+  </div>
+
+  <div class="modal-actions top-space">
+    <button id="saveNicknameBtn" type="button">Сохранить</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка просмотра достижения -->
+
+  <div id="achievementDetailModal" class="modal hidden">
+    <div class="modal-box small-modal-box premium-achievement-modal">
+      <div class="modal-header">
+        <h3>Достижение</h3>
+        <button id="closeAchievementDetailModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div id="achievementDetailContent"></div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка создания персонажа -->
+
+  <div id="characterModal" class="modal hidden">
+    <div class="modal-box large-modal-box">
+      <div class="modal-header">
+        <h3>Создать персонажа</h3>
+        <button id="closeCharacterModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div class="form-grid">
+    <div>
+      <label for="characterName">Имя персонажа</label>
+      <input id="characterName" type="text" placeholder="Например: Каэль" />
+    </div>
+
+    <div>
+      <label for="characterRace">Раса</label>
+      <input id="characterRace" type="text" placeholder="Например: Эльф" />
+    </div>
+
+    <div>
+      <label for="characterClass">Класс</label>
+      <input id="characterClass" type="text" placeholder="Например: Следопыт" />
+    </div>
+
+    <div>
+      <label for="characterTrackFile">Личный трек</label>
+      <input id="characterTrackFile" type="file" accept=".mp3,.wav,.ogg,audio/*" />
+    </div>
+  </div>
+
+  <div class="upload-block">
+    <label for="characterAvatarFile">Аватар персонажа</label>
+    <input id="characterAvatarFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+    <div id="characterAvatarPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
+  </div>
+
+  <div>
+    <label for="characterDescription">Описание</label>
+    <textarea id="characterDescription" rows="5" placeholder="Краткое описание персонажа"></textarea>
+  </div>
+
+  <div class="modal-actions top-space">
+    <button id="saveCharacterBtn" type="button">Сохранить персонажа</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка кропа -->
+
+  <div id="cropModal" class="modal hidden">
+    <div class="modal-box crop-modal-box">
+      <div class="modal-header">
+        <h3>Обрезка аватара</h3>
+        <button id="closeCropModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div class="crop-area">
+    <img id="cropImage" src="" alt="crop image" />
+  </div>
+
+  <div class="row gap">
+    <button id="applyCropBtn" type="button">Обрезать и сохранить</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка просмотра персонажа -->
+
+  <div id="characterViewModal" class="modal hidden">
+    <div class="modal-box large-modal-box">
+      <div class="modal-header">
+        <h3>Карточка персонажа</h3>
+        <button id="closeCharacterViewModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div id="characterViewContent"></div>
+</div>
+
+
+  </div>
+
+  <!-- Подтверждение удаления -->
+
+  <div id="deleteConfirmModal" class="modal hidden">
+    <div class="modal-box small-modal-box">
+      <div class="modal-header">
+        <h3>Удалить персонажа?</h3>
+        <button id="closeDeleteConfirmModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <p class="modal-text">Персонаж будет удалён без возможности восстановления.</p>
+
+  <div class="modal-actions">
+    <button id="cancelDeleteBtn" class="ghost-button" type="button">Отмена</button>
+    <button id="confirmDeleteBtn" class="danger-button" type="button">Удалить</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>

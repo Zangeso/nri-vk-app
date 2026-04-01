@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D&D Админка</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+</head>
+<body>
+  <div class="container">
+    <header class="topbar premium-topbar">
+      <div>
+        <h1>Админка D&amp;D</h1>
+        <p class="muted small-text" style="margin:8px 0 0;">Управление мирами, кампаниями и публикациями сессий</p>
+      </div>
+
+
+  <div class="topbar-actions">
+    <a class="ghost-button" href="index.html">К кабинету</a>
+  </div>
+</header>
+
+<section class="card premium-profile-card">
+  <div class="section-head compact-section-head">
+    <div>
+      <h2 style="margin:0; font-size:24px;">Вход в админку</h2>
+      <p class="muted small-text" style="margin:8px 0 0;">Тестовый код администратора: <b>admin-demo</b></p>
+    </div>
+  </div>
+
+  <div class="form-grid compact-form-grid">
+    <div>
+      <label for="adminLoginCode">Код администратора</label>
+      <input id="adminLoginCode" type="text" placeholder="Введите код" />
+    </div>
+  </div>
+
+  <div class="row gap">
+    <button id="adminEnterBtn" type="button">Войти</button>
+  </div>
+
+  <div id="adminAuthMessage" class="message hidden"></div>
+</section>
+
+<section id="adminPanel" class="hidden">
+  <div class="main-tabs hero-tabs premium-main-tabs">
+    <button class="main-tab-button active" data-main-tab="adminWorldsTab" type="button">Миры и кампании</button>
+    <button class="main-tab-button" data-main-tab="adminSessionTab" type="button">Публикация сессии</button>
+  </div>
+
+  <section id="adminWorldsTab" class="main-tab-panel active">
+    <div class="card premium-feed-card">
+      <div class="section-head compact-section-head">
+        <div>
+          <h3>Миры и кампании</h3>
+          <p class="muted small-text" style="margin:6px 0 0;">Сначала создайте мир, затем при необходимости добавьте к нему кампании.</p>
+        </div>
+        <button id="openCreateWorldBtn" class="small-button" type="button">Новый мир</button>
+      </div>
+
+      <div id="worldsList" class="cards-list"></div>
+    </div>
+  </section>
+
+  <section id="adminSessionTab" class="main-tab-panel">
+    <div class="card premium-feed-card">
+      <div class="section-head compact-section-head">
+        <div>
+          <h3>Публикация сессии</h3>
+          <p class="muted small-text" style="margin:6px 0 0;">Заполни основу записи, затем добавь участников и опубликуй сессию.</p>
+        </div>
+      </div>
+
+      <div class="form-grid compact-form-grid">
+        <div>
+          <label for="sessionDate">Дата сессии</label>
+          <input id="sessionDate" type="date" />
+        </div>
+
+        <div>
+          <label for="sessionWorld">Мир</label>
+          <select id="sessionWorld">
+            <option value="">Выберите мир</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="sessionCampaign">Кампания</label>
+          <select id="sessionCampaign">
+            <option value="">Ваншот</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="sessionTitle">Название записи</label>
+          <input id="sessionTitle" type="text" placeholder="Например: Руины у чёрной реки" />
+        </div>
+      </div>
+
+      <div class="form-grid compact-form-grid">
+        <div>
+          <label for="sessionRecapLink">Ссылка на пересказ</label>
+          <input id="sessionRecapLink" type="text" placeholder="Ссылка на пересказ или пост" />
+        </div>
+
+        <div>
+          <label for="sessionTrackFile">Трек публикации</label>
+          <input id="sessionTrackFile" type="file" accept=".mp3,.wav,.ogg,audio/*" />
+        </div>
+      </div>
+
+      <div class="upload-block">
+        <label for="sessionCoverFile">Основная картинка приключения</label>
+        <input id="sessionCoverFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+        <div id="sessionCoverPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
+      </div>
+
+      <div>
+        <label for="sessionResultText">Результат приключения</label>
+        <textarea id="sessionResultText" rows="4" placeholder="Чем закончилась сессия"></textarea>
+      </div>
+    </div>
+
+    <div class="card premium-feed-card">
+      <div class="section-head compact-section-head">
+        <div>
+          <h3>Участники и достижения</h3>
+          <p class="muted small-text" style="margin:6px 0 0;">Добавляй участников, их достижения и изображения для публикации.</p>
+        </div>
+        <button id="openParticipantEditorBtn" class="small-button" type="button">Добавить участника</button>
+      </div>
+
+      <div id="sessionParticipantChips" class="chips-wrap"></div>
+    </div>
+
+    <div class="card premium-feed-card">
+      <div class="row gap">
+        <button id="publishSessionBtn" type="button">Опубликовать сессию</button>
+        <button id="resetSessionEditorBtn" class="ghost-button" type="button">Сбросить форму</button>
+      </div>
+    </div>
+
+    <div class="card premium-feed-card">
+      <div class="section-head compact-section-head">
+        <div>
+          <h3>Опубликованные сессии</h3>
+          <p class="muted small-text" style="margin:6px 0 0;">Редактируй или удаляй уже опубликованные записи.</p>
+        </div>
+      </div>
+
+      <div id="publishedSessionsList" class="cards-list"></div>
+    </div>
+  </section>
+</section>
+
+
+  </div>
+
+  <!-- Модалка мира -->
+
+  <div id="worldModal" class="modal hidden">
+    <div class="modal-box small-modal-box">
+      <div class="modal-header">
+        <h3 id="worldModalTitle">Новый мир</h3>
+        <button id="closeWorldModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div>
+    <label for="worldTitle">Название мира</label>
+    <input id="worldTitle" type="text" placeholder="Например: Этерна" />
+  </div>
+
+  <div class="top-space">
+    <label for="worldDescription">Описание мира</label>
+    <textarea id="worldDescription" rows="4" placeholder="Краткое описание мира"></textarea>
+  </div>
+
+  <div class="modal-actions top-space">
+    <button id="saveWorldBtn" type="button">Сохранить мир</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка кампании -->
+
+  <div id="campaignModal" class="modal hidden">
+    <div class="modal-box small-modal-box">
+      <div class="modal-header">
+        <h3 id="campaignModalTitle">Новая кампания</h3>
+        <button id="closeCampaignModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <input id="campaignWorldId" type="hidden" />
+
+  <div>
+    <label for="campaignTitle">Название кампании</label>
+    <input id="campaignTitle" type="text" placeholder="Например: Тени над болотом" />
+  </div>
+
+  <div class="top-space">
+    <label for="campaignDescription">Описание кампании</label>
+    <textarea id="campaignDescription" rows="4" placeholder="Краткое описание кампании"></textarea>
+  </div>
+
+  <div class="modal-actions top-space">
+    <button id="saveCampaignBtn" type="button">Сохранить кампанию</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка участника -->
+
+  <div id="participantModal" class="modal hidden">
+    <div class="modal-box large-modal-box">
+      <div class="modal-header">
+        <h3 id="participantModalTitle">Добавить участника</h3>
+        <button id="closeParticipantModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div class="form-grid compact-form-grid">
+    <div>
+      <label for="participantPlayerSearch">Игрок</label>
+      <input id="participantPlayerSearch" type="text" placeholder="Начни вводить имя игрока" />
+      <div id="participantPlayerResults" class="search-results-list"></div>
+    </div>
+
+    <div>
+      <label for="participantCharacterSearch">Персонаж</label>
+      <input id="participantCharacterSearch" type="text" placeholder="Начни вводить имя персонажа" />
+      <div id="participantCharacterResults" class="search-results-list"></div>
+    </div>
+  </div>
+
+  <div class="form-grid compact-form-grid">
+    <div>
+      <label for="participantAchievementTitle">Название достижения</label>
+      <input id="participantAchievementTitle" type="text" placeholder="Например: Победитель чудовища" />
+    </div>
+
+    <div>
+      <label for="participantAchievementImageFile">Изображение достижения</label>
+      <input id="participantAchievementImageFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+    </div>
+  </div>
+
+  <div class="upload-block">
+    <div id="participantAchievementImagePreview" class="upload-preview empty">Изображение достижения ещё не выбрано</div>
+  </div>
+
+  <div>
+    <label for="participantAchievementDescription">Описание достижения</label>
+    <textarea id="participantAchievementDescription" rows="4" placeholder="Что именно сделал участник"></textarea>
+  </div>
+
+  <div class="modal-actions top-space">
+    <button id="saveParticipantBtn" type="button">Сохранить участника</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка кропа основной обложки -->
+
+  <div id="sessionCoverCropModal" class="modal hidden">
+    <div class="modal-box crop-modal-box">
+      <div class="modal-header">
+        <h3>Обрезка основной картинки</h3>
+        <button id="closeSessionCoverCropModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div class="crop-area">
+    <img id="sessionCoverCropImage" src="" alt="crop cover" />
+  </div>
+
+  <div class="row gap">
+    <button id="applySessionCoverCropBtn" type="button">Обрезать и сохранить</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <!-- Модалка кропа достижения участника -->
+
+  <div id="participantAchievementCropModal" class="modal hidden">
+    <div class="modal-box crop-modal-box">
+      <div class="modal-header">
+        <h3>Обрезка достижения</h3>
+        <button id="closeParticipantAchievementCropModalBtn" class="icon-button" type="button">✕</button>
+      </div>
+
+
+  <div class="crop-area">
+    <img id="participantAchievementCropImage" src="" alt="crop achievement" />
+  </div>
+
+  <div class="row gap">
+    <button id="applyParticipantAchievementCropBtn" type="button">Обрезать и сохранить</button>
+  </div>
+</div>
+
+
+  </div>
+
+  <script type="module" src="js/admin.js"></script>
+
+</body>
+</html>
