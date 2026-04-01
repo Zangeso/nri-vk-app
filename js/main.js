@@ -231,6 +231,7 @@ async function init() {
   appScreen.classList.remove("hidden");
 
   initMainTabs();
+  initCabinetSubtabs();
   bindUiActions(vkState.userInfo);
 
   initCharacterDeleteConfirm({
