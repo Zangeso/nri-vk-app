@@ -28,94 +28,81 @@
         <button class="main-tab-button" data-main-tab="feedTab" type="button">Лента приключений</button>
       </div>
 
-      <section id="cabinetTab" class="main-tab-panel active">
-        <div class="page-stack">
-          <div id="vkDebugCard" class="card premium-profile-card hidden">
-            <div class="section-head compact-section-head">
-              <div>
-                <h3 style="margin:0;">Данные из VK</h3>
-                <p id="vkDebugStatus" class="muted small-text" style="margin:8px 0 0;">Пока не загружено</p>
-              </div>
+     <section id="cabinetTab" class="main-tab-panel active">
+  <div class="cabinet-shell">
+    <section class="card app-hero-card">
+      <div class="app-hero-row">
+        <img id="playerAvatar" class="app-hero-avatar" src="" alt="Аватар игрока" />
+
+        <div class="app-hero-main">
+          <div class="app-hero-head">
+            <div>
+              <h2 id="playerNickname" class="app-hero-title">Игрок</h2>
+              <p id="playerFullName" class="app-hero-subtitle">Имя из VK появится позже</p>
             </div>
 
-            <div class="row gap" style="align-items:flex-start;">
-              <img
-                id="vkDebugAvatar"
-                src=""
-                alt="VK avatar"
-                style="width:72px; height:72px; border-radius:16px; object-fit:cover; display:none;"
-              />
-              <div id="vkDebugInfo" class="small-text muted"></div>
-            </div>
+            <button id="openNicknameModalBtn" class="icon-only-button" type="button" title="Редактировать ник">✏</button>
           </div>
 
-          <div class="player-premium-layout player-dashboard-layout">
-            <div class="player-header card premium-profile-card player-hero-card">
-              <div class="player-hero-main">
-                <div>
-                  <img id="playerAvatar" class="avatar-lg player-avatar-premium" src="" alt="Аватар игрока" />
-                </div>
-
-                <div class="player-main-info">
-                  <div class="player-name-row">
-                    <h2 id="playerNickname">Игрок</h2>
-                    <button id="openNicknameModalBtn" class="icon-only-button" type="button" title="Редактировать ник">✏</button>
-                  </div>
-
-                  <p id="playerFullName" class="muted">Имя из VK появится позже</p>
-
-                  <div class="player-stats-row compact-premium-stats">
-                    <div class="inline-stat premium-inline-stat">
-                      <span class="inline-stat-number" id="statCharacters">0</span>
-                      <span class="inline-stat-label">персонажей</span>
-                    </div>
-
-                    <div class="inline-stat premium-inline-stat">
-                      <span class="inline-stat-number" id="statAchievements">0</span>
-                      <span class="inline-stat-label">достижений</span>
-                    </div>
-
-                    <div class="inline-stat premium-inline-stat">
-                      <span class="inline-stat-number" id="statSessions">0</span>
-                      <span class="inline-stat-label">сессий</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div class="app-stats-grid">
+            <div class="app-stat-card">
+              <span class="app-stat-number" id="statCharacters">0</span>
+              <span class="app-stat-label">персонажей</span>
             </div>
 
-            <div class="card premium-achievement-board-card dashboard-side-card">
-              <div class="section-head compact-section-head">
-                <h3>Достижения</h3>
-
-                <div class="slider-arrows">
-                  <button id="achievementsPrevBtn" class="slider-arrow-btn" type="button">‹</button>
-                  <button id="achievementsNextBtn" class="slider-arrow-btn" type="button">›</button>
-                </div>
-              </div>
-
-              <div id="achievementBoard" class="achievement-board premium-circle-board"></div>
-            </div>
-          </div>
-
-          <div class="card premium-characters-card characters-section-card">
-            <div class="section-head compact-section-head">
-              <h3>Персонажи</h3>
-
-              <div class="section-head-right">
-                <div class="slider-arrows">
-                  <button id="charactersPrevBtn" class="slider-arrow-btn" type="button">‹</button>
-                  <button id="charactersNextBtn" class="slider-arrow-btn" type="button">›</button>
-                </div>
-
-                <button id="openCharacterModalBtn" class="small-button" type="button">Создать персонажа</button>
-              </div>
+            <div class="app-stat-card">
+              <span class="app-stat-number" id="statAchievements">0</span>
+              <span class="app-stat-label">достижений</span>
             </div>
 
-            <div id="charactersList" class="characters-slider-region"></div>
+            <div class="app-stat-card">
+              <span class="app-stat-number" id="statSessions">0</span>
+              <span class="app-stat-label">сессий</span>
+            </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="card app-module-card">
+      <div class="section-head compact-section-head">
+        <div>
+          <h3>Коллекция игрока</h3>
+          <p class="muted small-text" style="margin:6px 0 0;">Переключайся между персонажами и достижениями без длинного экрана.</p>
+        </div>
+
+        <button id="openCharacterModalBtn" class="small-button" type="button">Создать персонажа</button>
+      </div>
+
+      <div class="subtabs-row" id="cabinetSubtabs">
+        <button class="subtab-button active" data-cabinet-panel="cabinetCharactersPanel" type="button">Персонажи</button>
+        <button class="subtab-button" data-cabinet-panel="cabinetAchievementsPanel" type="button">Достижения</button>
+      </div>
+
+      <section id="cabinetCharactersPanel" class="cabinet-subpanel active">
+        <div class="compact-slider-head">
+          <div class="slider-arrows">
+            <button id="charactersPrevBtn" class="slider-arrow-btn" type="button">‹</button>
+            <button id="charactersNextBtn" class="slider-arrow-btn" type="button">›</button>
+          </div>
+        </div>
+
+        <div id="charactersList" class="characters-slider-region compact-characters-region"></div>
       </section>
+
+      <section id="cabinetAchievementsPanel" class="cabinet-subpanel">
+        <div class="compact-slider-head">
+          <div class="slider-arrows">
+            <button id="achievementsPrevBtn" class="slider-arrow-btn" type="button">‹</button>
+            <button id="achievementsNextBtn" class="slider-arrow-btn" type="button">›</button>
+          </div>
+        </div>
+
+        <div id="achievementBoard" class="achievement-board compact-achievement-board"></div>
+      </section>
+    </section>
+  </div>
+</section>
 
       <section id="feedTab" class="main-tab-panel">
         <div class="page-stack feed-page-stack">
