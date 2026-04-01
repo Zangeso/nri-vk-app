@@ -34,9 +34,49 @@ function $(id) {
   return document.getElementById(id);
 }
 
+function renderVkDebugInfo(userInfo) {
+  const status = $("vkDebugStatus");
+  const info = $("vkDebugInfo");
+  const avatar = $("vkDebugAvatar");
+
+  if (!status || !info || !avatar) return;
+
+  if (!userInfo) {
+    status.textContent = "Не удалось получить данные пользователя VK";
+    info.innerHTML = `
+      <div><b>VK ID:</b> —</div>
+      <div><b>Имя:</b> —</div>
+      <div><b>Город:</b> —</div>
+    `;
+    avatar.style.display = "none";
+    avatar.src = "";
+    return;
+  }
+
+  const fullName = [userInfo.first_name, userInfo.last_name]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+
+  status.textContent = "Данные из VK получены";
+  info.innerHTML = `
+    <div><b>VK ID:</b> ${userInfo.id ?? "—"}</div>
+    <div><b>Имя:</b> ${fullName || "—"}</div>
+    <div><b>Город:</b> ${userInfo.city?.title || "—"}</div>
+  `;
+
+  if (userInfo.photo_200 || userInfo.photo_100) {
+    avatar.src = userInfo.photo_200 || userInfo.photo_100;
+    avatar.style.display = "block";
+  } else {
+    avatar.style.display = "none";
+    avatar.src = "";
+  }
+}
+
 async function initVkBridge() {
   if (!window.vkBridge) {
-    console.warn('VK Bridge не найден');
+    console.warn("VK Bridge не найден");
     return {
       ok: false,
       launchParams: null,
@@ -45,7 +85,7 @@ async function initVkBridge() {
   }
 
   try {
-    await window.vkBridge.send('VKWebAppInit');
+    await window.vkBridge.send("VKWebAppInit");
 
     let launchParams = null;
     let userInfo = null;
@@ -53,14 +93,14 @@ async function initVkBridge() {
     try {
       launchParams = window.vkBridge.parseURLSearchParams(window.location.href);
     } catch (e) {
-      console.warn('Не удалось прочитать launch params', e);
+      console.warn("Не удалось прочитать launch params", e);
     }
 
     try {
-      userInfo = await window.vkBridge.send('VKWebAppGetUserInfo');
-      console.log('VK user info:', userInfo);
+      userInfo = await window.vkBridge.send("VKWebAppGetUserInfo");
+      console.log("VK user info:", userInfo);
     } catch (e) {
-      console.warn('Не удалось получить данные пользователя VK', e);
+      console.warn("Не удалось получить данные пользователя VK", e);
     }
 
     return {
@@ -69,7 +109,7 @@ async function initVkBridge() {
       userInfo
     };
   } catch (error) {
-    console.error('Ошибка инициализации VK Bridge:', error);
+    console.error("Ошибка инициализации VK Bridge:", error);
     return {
       ok: false,
       launchParams: null,
@@ -138,6 +178,8 @@ async function init() {
 
   const vkState = await initVkBridge();
   console.log("VK state:", vkState);
+
+  renderVkDebugInfo(vkState.userInfo);
 
   appScreen.classList.remove("hidden");
 
