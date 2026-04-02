@@ -2116,3 +2116,3711 @@ flex-direction: column;
     border-radius: 16px;
   }
 }
+
+
+
+/* ===== new ===== */
+
+
+
+/* ===== cabinet dashboard v2 ===== */
+
+body {
+  background: #eef2f8;
+}
+
+.cabinet-app-shell.container {
+  max-width: 1480px;
+  padding: 16px;
+}
+
+.cabinet-window {
+  width: 100%;
+  min-height: calc(100vh - 32px);
+  background: #ffffff;
+  border-radius: 36px;
+  box-shadow:
+    0 25px 45px -12px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cabinet-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px 0;
+  border-bottom: 1px solid #edf1f5;
+  background: #ffffff;
+  flex-wrap: wrap;
+}
+
+.cabinet-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.cabinet-main-tab.main-tab-button {
+  width: auto;
+  min-width: 0;
+  padding: 14px 18px;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  box-shadow: none;
+  color: #8592a8;
+  font-size: 16px;
+}
+
+.cabinet-main-tab.main-tab-button.active {
+  color: #1e6f3f;
+  background: transparent;
+  border-bottom-color: #1e6f3f;
+  box-shadow: none;
+}
+
+.cabinet-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cabinet-icon-btn {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid #e4e9f0;
+  background: #f7f9fc;
+  color: #516074;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.cabinet-icon-btn:hover {
+  transform: translateY(-1px);
+  background: #eef5f0;
+  border-color: #cfe3d5;
+  color: #1e6f3f;
+}
+
+.cabinet-icon-btn.small {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+
+.cabinet-dashboard-panel,
+.cabinet-feed-panel {
+  padding: 20px 22px 22px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.cabinet-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: minmax(260px, 1fr) minmax(290px, 1fr);
+  gap: 20px;
+  height: 100%;
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border: 1px solid #edf1f6;
+  border-radius: 30px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(10, 20, 40, 0.04);
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dashboard-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dashboard-card-kicker {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #91a0b5;
+  margin-bottom: 6px;
+}
+
+.dashboard-card-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.15;
+  color: #182235;
+}
+
+.dashboard-player-card {
+  justify-content: space-between;
+}
+
+.player-card-main {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.player-card-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 24px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #2e7d5e, #1f5e46);
+  box-shadow: 0 8px 20px rgba(40, 90, 70, 0.16);
+}
+
+.player-card-info {
+  min-width: 0;
+}
+
+.player-card-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.player-card-title {
+  margin: 0;
+  font-size: clamp(24px, 2.1vw, 30px);
+  line-height: 1.05;
+  color: #121826;
+}
+
+.player-card-subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #6c7a91;
+}
+
+.player-stats-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 26px;
+  background: #fafafc;
+  border: 1px solid #eff0f3;
+}
+
+.player-stat-tile {
+  min-width: 0;
+  text-align: center;
+  padding: 8px 6px;
+}
+
+.player-stat-number {
+  display: block;
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1;
+  color: #1a2c3e;
+}
+
+.player-stat-label {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #7c879c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dashboard-achievements-board {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dashboard-achievements-board .compact-achievements-track,
+.dashboard-achievements-board .achievements-orb-track {
+  height: 100%;
+  align-items: center;
+}
+
+.dashboard-achievements-board .compact-achievement-tile {
+  width: 160px;
+  min-width: 160px;
+}
+
+.dashboard-characters-card,
+.dashboard-related-card {
+  min-height: 0;
+}
+
+.dashboard-filter-row {
+  margin-bottom: 12px;
+}
+
+.dashboard-search-input {
+  width: 100%;
+  border: 1px solid #e2e6ed;
+  border-radius: 999px;
+  background: #fafafc;
+  color: #152033;
+  padding: 12px 16px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.18s ease;
+}
+
+.dashboard-search-input:focus {
+  background: #ffffff;
+  border-color: #1e6f3f;
+  box-shadow: 0 0 0 3px rgba(30, 111, 63, 0.08);
+}
+
+.dashboard-characters-list,
+.dashboard-related-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.dashboard-characters-list::-webkit-scrollbar,
+.dashboard-related-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dashboard-character-row,
+.dashboard-related-row {
+  width: 100%;
+  border: 1px solid #edf1f6;
+  background: #fbfcfe;
+  border-radius: 18px;
+  padding: 12px 14px;
+  color: #182235;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.dashboard-character-row:hover,
+.dashboard-related-row:hover {
+  border-color: #dce7de;
+  background: #f6fbf7;
+  transform: translateY(-1px);
+}
+
+.dashboard-character-row:last-child,
+.dashboard-related-row:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard-character-text,
+.dashboard-related-text {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.dashboard-character-text strong,
+.dashboard-related-text strong {
+  color: #121826;
+}
+
+.dashboard-related-meta {
+  font-size: 12px;
+  color: #7a879a;
+  margin-top: 3px;
+}
+
+.dashboard-empty-state {
+  height: 100%;
+  min-height: 120px;
+  border: 1px dashed #dce4ec;
+  background: #fafbfd;
+  color: #7f8aa0;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.cabinet-add-btn.small-button {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 14px;
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compact-character-modal-box.large-modal-box {
+  max-width: 720px;
+}
+
+@media (max-width: 1100px) {
+  .cabinet-dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, minmax(220px, auto));
+    height: auto;
+  }
+
+  .cabinet-dashboard-panel {
+    overflow: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .cabinet-app-shell.container {
+    padding: 10px;
+  }
+
+  .cabinet-window {
+    min-height: calc(100vh - 20px);
+    border-radius: 26px;
+  }
+
+  .cabinet-topbar {
+    padding: 8px 12px 0;
+  }
+
+  .cabinet-dashboard-panel,
+  .cabinet-feed-panel {
+    padding: 14px;
+  }
+
+  .dashboard-card {
+    border-radius: 22px;
+    padding: 16px;
+  }
+
+  .player-card-main {
+    grid-template-columns: 70px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .player-card-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+  }
+
+  .player-stats-panel {
+    gap: 8px;
+    border-radius: 18px;
+  }
+
+  .player-stat-number {
+    font-size: 22px;
+  }
+
+  .dashboard-card-title {
+    font-size: 18px;
+  }
+
+  .cabinet-main-tab.main-tab-button {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}
+
+/* ===== related players block ===== */
+
+.related-player-card {
+  display: block;
+  cursor: default;
+}
+
+.related-player-body {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.related-player-section {
+  display: grid;
+  gap: 8px;
+}
+
+.related-player-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7b8798;
+}
+
+.related-character-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.related-character-chip {
+  border: 1px solid #dfe7e2;
+  background: #f5fbf7;
+  color: #1c3a2a;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.related-character-chip:hover {
+  background: #ebf8ef;
+  border-color: #c8dfcf;
+  transform: translateY(-1px);
+}
+
+.related-achievements-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.related-achievement-pill {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #f4f6fb;
+  border: 1px solid #e4e8f1;
+  font-size: 12px;
+  color: #58657b;
+}
+
+.compact-character-view-layout .character-view-actions {
+  gap: 8px;
+}
+
+/* ===== compact related players ===== */
+
+.related-session-head {
+  margin-bottom: 10px;
+}
+
+.compact-related-list {
+  display: grid;
+  gap: 8px;
+}
+
+.compact-related-row {
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #fbfcfe;
+}
+
+.compact-related-line {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1.25;
+  color: #182235;
+}
+
+.compact-related-line strong,
+.compact-related-line span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compact-related-dot {
+  flex: 0 0 auto;
+  color: #9aa6b8;
+}
+
+.compact-related-achievement {
+  color: #5b6b81;
+}
+
+.compact-related-modal-layout {
+  display: grid;
+  gap: 14px;
+}
+
+/* ===== compact character modal v2 ===== */
+
+.compact-character-modal-box.large-modal-box {
+  width: min(760px, calc(100vw - 24px));
+  max-width: 760px;
+  padding: 18px;
+  border-radius: 28px;
+}
+
+.compact-character-sheet {
+  display: grid;
+  gap: 16px;
+}
+
+.compact-character-top {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.compact-character-sheet-avatar {
+  width: 140px;
+  height: 160px;
+  border-radius: 24px;
+  object-fit: cover;
+  background: #edf2f7;
+  box-shadow: 0 8px 18px rgba(18, 24, 38, 0.08);
+}
+
+.compact-character-sheet-main {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.compact-character-sheet-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compact-character-sheet-title-wrap {
+  min-width: 0;
+}
+
+.compact-character-sheet-title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.02;
+  color: #121826;
+}
+
+.compact-character-sheet-meta {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #64748b;
+}
+
+.compact-character-sheet-owner {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #8b97aa;
+}
+
+.compact-character-sheet-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.compact-character-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.compact-character-section {
+  background: #fafbfd;
+  border: 1px solid #edf1f6;
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.compact-character-section h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7b8798;
+}
+
+.compact-character-section p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #182235;
+}
+
+.compact-muted-text {
+  color: #7b8798;
+}
+
+.compact-character-audio {
+  width: 100%;
+  height: 40px;
+}
+
+.compact-modal-achievements-list {
+  display: grid;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.compact-modal-achievement-row {
+  width: 100%;
+  padding: 8px;
+  border-radius: 16px;
+  background: #fbfcfe !important;
+  border: 1px solid #edf1f6 !important;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 10px;
+  text-align: left;
+  align-items: center;
+  box-shadow: none !important;
+}
+
+.compact-modal-achievement-row:hover {
+  transform: translateY(-1px);
+}
+
+.compact-modal-achievement-image {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: none;
+}
+
+.compact-modal-achievement-body {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+}
+
+.compact-modal-achievement-title {
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #162133;
+}
+
+.compact-modal-achievement-meta {
+  font-size: 11.5px;
+  line-height: 1.25;
+  color: #7b8798;
+}
+
+.compact-empty-strip {
+  min-height: 72px;
+  border-radius: 16px;
+  border: 1px dashed #dbe3ec;
+  background: #fafbfd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7b8798;
+  text-align: center;
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.compact-inline-edit-block {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #edf1f6;
+}
+
+.compact-inline-edit-actions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 760px) {
+  .compact-character-modal-box.large-modal-box {
+    width: min(100vw - 16px, 680px);
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+  .compact-character-top {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .compact-character-sheet-avatar {
+    width: 92px;
+    height: 112px;
+    border-radius: 18px;
+  }
+
+  .compact-character-sheet-title {
+    font-size: 22px;
+  }
+
+  .compact-character-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-modal-achievements-list {
+    max-height: 180px;
+  }
+}
+
+/* =========================================================
+   STEP 1 — NEW LAYOUT FOUNDATION
+   Вставить В САМЫЙ КОНЕЦ style.css
+   ========================================================= */
+
+:root {
+  --app-bg: #eef2f8;
+  --app-surface: #ffffff;
+  --app-surface-soft: #f8fafc;
+  --app-border: #e8edf4;
+  --app-border-strong: #d8e0ea;
+  --app-text: #172033;
+  --app-text-soft: #667085;
+  --app-text-muted: #8a94a6;
+  --app-accent: #2563eb;
+  --app-accent-soft: #eff6ff;
+  --app-radius-xl: 32px;
+  --app-radius-lg: 28px;
+  --app-radius-md: 22px;
+  --app-radius-sm: 16px;
+  --app-shadow:
+    0 25px 45px -12px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(15, 23, 42, 0.04);
+  --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+
+/* ===== app shell ===== */
+
+.cabinet-app-shell.container {
+  width: 100%;
+  max-width: 1400px;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cabinet-window {
+  flex: 1;
+  min-height: 0;
+  background: var(--app-surface);
+  border-radius: 36px;
+  box-shadow: var(--app-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== topbar ===== */
+
+.cabinet-topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px 0;
+  background: var(--app-surface);
+}
+
+.cabinet-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cabinet-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== main app panels ===== */
+
+.cabinet-dashboard-panel,
+.cabinet-feed-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.main-tab-panel {
+  display: none;
+}
+
+.main-tab-panel.active {
+  display: block;
+}
+
+/* ===== dashboard grid ===== */
+
+.cabinet-dashboard-grid {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.92fr) minmax(320px, 1.08fr);
+  grid-template-rows: minmax(220px, 0.9fr) minmax(260px, 1.1fr);
+  gap: 18px;
+}
+
+.dashboard-card {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 28px;
+  padding: 18px;
+  box-shadow: var(--card-shadow);
+}
+
+.dashboard-player-card,
+.dashboard-achievements-card {
+  min-height: 220px;
+}
+
+.dashboard-characters-card,
+.dashboard-related-card {
+  min-height: 0;
+}
+
+/* ===== card head ===== */
+
+.dashboard-card-head {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.dashboard-card-kicker {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+  margin-bottom: 6px;
+}
+
+.dashboard-card-title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--app-text);
+}
+
+/* ===== player card ===== */
+
+.player-card-main {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.player-card-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 24px;
+  object-fit: cover;
+  background: #dbe4f0;
+}
+
+.player-card-info {
+  min-width: 0;
+}
+
+.player-card-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.player-card-title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.05;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.player-card-subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--app-text-soft);
+}
+
+.player-stats-panel {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.player-stat-tile {
+  min-width: 0;
+  padding: 14px 12px;
+  border-radius: 20px;
+  background: var(--app-surface-soft);
+  border: 1px solid var(--app-border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-stat-number {
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.player-stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+/* ===== dashboard internals ===== */
+
+.dashboard-filter-row {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+.dashboard-search-input {
+  width: 100%;
+  border: 1px solid var(--app-border-strong);
+  background: #f9fbfd;
+  color: var(--app-text);
+  border-radius: 999px;
+  padding: 12px 15px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.dashboard-search-input:focus {
+  outline: none;
+  border-color: rgba(37, 99, 235, 0.45);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.dashboard-achievements-board,
+.dashboard-characters-list,
+.dashboard-related-list {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+}
+
+/* ===== compact list rows ===== */
+
+.dashboard-character-row,
+.dashboard-related-row {
+  width: 100%;
+  border: 1px solid var(--app-border);
+  background: #fbfcfe;
+  color: var(--app-text);
+  border-radius: 18px;
+  padding: 12px 14px;
+  text-align: left;
+  box-shadow: none;
+}
+
+.dashboard-character-row:hover,
+.dashboard-related-row:hover {
+  transform: translateY(-1px);
+}
+
+.dashboard-character-text,
+.compact-related-line {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.dashboard-related-meta {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--app-text-muted);
+}
+
+.dashboard-empty-state {
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px dashed var(--app-border-strong);
+  background: #fafcff;
+  color: var(--app-text-muted);
+}
+
+/* ===== buttons ===== */
+
+.cabinet-icon-btn,
+.small-button,
+.main-tab-button,
+.slider-arrow-btn,
+.icon-button,
+.icon-only-button,
+.ghost-button,
+button {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.main-tab-button {
+  width: auto;
+  min-width: 0;
+  padding: 14px 18px;
+  border-radius: 18px 18px 0 0;
+  border: none;
+  background: transparent;
+  color: #8a94a6;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.main-tab-button.active {
+  color: #1c6b47;
+  background: transparent;
+  box-shadow: inset 0 -2px 0 #1c6b47;
+}
+
+.cabinet-main-tab {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.cabinet-icon-btn,
+.icon-button,
+.icon-only-button,
+.slider-arrow-btn {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 14px;
+  border: 1px solid var(--app-border-strong);
+  background: #ffffff;
+  color: var(--app-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.small-button {
+  width: auto;
+  min-width: 40px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ghost-button {
+  width: auto;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--app-border-strong);
+  background: #ffffff;
+  color: var(--app-text);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== feed ===== */
+
+.feed-page-stack {
+  height: 100%;
+  min-height: 0;
+}
+
+.feed-stories-list {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  margin-top: 0;
+}
+
+/* ===== admin keeps working ===== */
+
+.container:not(.cabinet-app-shell) {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-shadow);
+}
+
+.card-item {
+  background: #f8fbff;
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.cards-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* ===== responsive ===== */
+
+@media (max-width: 1100px) {
+  .cabinet-dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    overflow: auto;
+  }
+
+  .cabinet-dashboard-panel {
+    overflow: auto;
+  }
+
+  .dashboard-card {
+    min-height: unset;
+  }
+}
+
+@media (max-width: 720px) {
+  .cabinet-app-shell.container {
+    padding: 10px;
+  }
+
+  .cabinet-window {
+    border-radius: 24px;
+  }
+
+  .cabinet-dashboard-panel,
+  .cabinet-feed-panel {
+    padding: 12px;
+  }
+
+  .player-card-main {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .player-card-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+  }
+
+  .player-card-title {
+    font-size: 22px;
+  }
+
+  .player-stats-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   STEP 2 — ACHIEVEMENTS CARD REWORK
+   ========================================================= */
+
+.dashboard-achievements-card {
+  padding-bottom: 14px;
+}
+
+.achievements-card-head {
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.dashboard-card-head-main {
+  min-width: 0;
+}
+
+.dashboard-card-note {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--app-text-muted);
+}
+
+.achievements-slider-arrows {
+  flex-shrink: 0;
+}
+
+.achievements-card-shell {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--app-border);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, #fbfdff 0%, #f7faff 100%);
+  padding: 12px;
+  overflow: hidden;
+}
+
+.dashboard-achievements-board {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-achievements-board .compact-achievements-track,
+.dashboard-achievements-board .achievements-orb-track {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 2px 6px;
+}
+
+.dashboard-achievements-board .compact-achievement-tile {
+  width: 148px;
+  min-width: 148px;
+  max-width: 148px;
+  padding: 0;
+  gap: 8px;
+}
+
+.dashboard-achievements-board .compact-achievement-image {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+}
+
+.dashboard-achievements-board .compact-achievement-body {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.dashboard-achievements-board .compact-achievement-title {
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.dashboard-achievements-board .compact-achievement-character,
+.dashboard-achievements-board .compact-achievement-meta {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--app-text-muted);
+}
+
+.dashboard-achievements-board .compact-empty-tile,
+.dashboard-achievements-board .card-item {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--app-text-muted);
+}
+
+/* лёгкая адаптация под узкую ширину */
+@media (max-width: 720px) {
+  .dashboard-card-note {
+    display: none;
+  }
+
+  .dashboard-achievements-board .compact-achievement-tile {
+    width: 132px;
+    min-width: 132px;
+    max-width: 132px;
+  }
+
+  .dashboard-achievements-board .compact-achievement-image {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* =========================================================
+   STEP 3 — ACHIEVEMENT CARD CONTENT POLISH
+   ========================================================= */
+
+.compact-achievement-card-v2 {
+  position: relative;
+  align-items: center;
+}
+
+.compact-achievement-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.compact-achievement-badge {
+  position: absolute;
+  top: -4px;
+  right: 8px;
+  z-index: 2;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #ecfdf3;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.compact-achievement-description {
+  min-height: 32px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--app-text-soft);
+}
+
+.compact-achievements-empty {
+  padding: 18px;
+  background: #ffffff;
+}
+
+.compact-achievements-empty-inner {
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.compact-achievements-empty-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--app-text);
+  margin-bottom: 6px;
+}
+
+.compact-achievements-empty-text {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--app-text-muted);
+}
+
+/* =========================================================
+   STEP 4 — CHARACTERS BLOCK POLISH
+   ========================================================= */
+
+.dashboard-characters-card {
+  gap: 0;
+}
+
+.dashboard-characters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-character-row-v2 {
+  width: 100%;
+  min-height: 78px;
+  padding: 14px 14px 14px 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-character-row-v2:hover {
+  border-color: #d8e3ef;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.dashboard-character-main {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.dashboard-character-name-row {
+  min-width: 0;
+}
+
+.dashboard-character-name {
+  display: block;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--app-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-character-meta {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--app-text-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-character-world {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--app-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-character-world-muted {
+  opacity: 0.82;
+}
+
+.dashboard-character-arrow {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f6fa;
+  color: #7b8798;
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.dashboard-empty-state {
+  min-height: 110px;
+}
+
+/* чуть плотнее на мобильной ширине */
+@media (max-width: 720px) {
+  .dashboard-character-row-v2 {
+    min-height: 72px;
+    padding: 12px 12px 12px 14px;
+  }
+
+  .dashboard-character-name {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   STEP 5 — RELATED PLAYERS BLOCK POLISH
+   ========================================================= */
+
+.dashboard-related-card {
+  gap: 0;
+}
+
+.dashboard-related-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-related-row-v2 {
+  width: 100%;
+  min-height: 84px;
+  padding: 14px 14px 14px 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-related-row-v2:hover {
+  border-color: #d8e3ef;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.dashboard-related-main {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.dashboard-related-topline,
+.dashboard-related-character-line,
+.dashboard-related-achievement-line {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-related-player-name {
+  display: block;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.dashboard-related-character-line {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--app-text-soft);
+}
+
+.dashboard-related-achievement-line {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--app-text-muted);
+}
+
+.dashboard-related-arrow {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f6fa;
+  color: #7b8798;
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* старые декоративные точки больше не нужны в новом виде */
+.compact-related-dot {
+  display: none;
+}
+
+.compact-related-achievement {
+  color: inherit;
+}
+
+@media (max-width: 720px) {
+  .dashboard-related-row-v2 {
+    min-height: 78px;
+    padding: 12px 12px 12px 14px;
+  }
+
+  .dashboard-related-player-name {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   STEP 6 — FEED REWORK
+   ========================================================= */
+
+.feed-page-stack {
+  height: 100%;
+  min-height: 0;
+}
+
+.feed-stories-list {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.feed-session-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.feed-session-card-v2 {
+  background: #ffffff;
+  border: 1px solid var(--app-border);
+  border-radius: 28px;
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+  display: grid;
+  gap: 14px;
+}
+
+.feed-session-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.feed-session-meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feed-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f6f9fc;
+  border: 1px solid var(--app-border);
+  color: var(--app-text-soft);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.feed-session-headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.feed-session-headline-main {
+  min-width: 0;
+}
+
+.feed-session-title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.12;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.feed-title-link-v2 {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: #f8fbff;
+  border: 1px solid var(--app-border);
+  color: var(--app-text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.feed-cover-wrap {
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid var(--app-border);
+  background: #f5f7fb;
+}
+
+.feed-session-cover-v2 {
+  width: 100%;
+  height: 220px;
+  max-height: none;
+  margin-bottom: 0;
+  border-radius: 0;
+  object-fit: cover;
+}
+
+.feed-section-block {
+  border: 1px solid var(--app-border);
+  border-radius: 20px;
+  padding: 12px;
+  background: #fbfcfe;
+}
+
+.feed-section-title {
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+.feed-achievements-grid-v2 {
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.feed-achievement-orb-tile-v2 {
+  border-radius: 16px;
+  padding: 10px 8px;
+  background: #ffffff !important;
+  border: 1px solid var(--app-border) !important;
+}
+
+.feed-achievement-orb-title {
+  color: var(--app-text);
+  max-width: none;
+}
+
+.feed-achievement-orb-character {
+  color: #6d5bd0;
+  max-width: none;
+}
+
+.feed-achievement-orb-player {
+  max-width: none;
+}
+
+.participant-list-plain-v2 {
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.participant-plain-row-v2 {
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--app-border);
+  background: #ffffff;
+}
+
+.participant-plain-name {
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: var(--app-text);
+  margin-bottom: 3px;
+}
+
+.participant-plain-meta {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--app-text-soft);
+}
+
+.feed-audio-block .character-audio-player {
+  width: 100%;
+}
+
+.feed-result-block {
+  background: #f8fafc;
+}
+
+.feed-result-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--app-text-soft);
+}
+
+.feed-empty-state-card {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 24px;
+  border: 1px dashed var(--app-border-strong);
+  background: #fbfdff;
+  padding: 24px;
+}
+
+.feed-empty-state-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--app-text);
+  margin-bottom: 6px;
+}
+
+.feed-empty-state-text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--app-text-muted);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+@media (max-width: 720px) {
+  .feed-session-card-v2 {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .feed-session-headline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .feed-title-link-v2 {
+    width: fit-content;
+  }
+
+  .feed-session-title {
+    font-size: 18px;
+  }
+
+  .feed-session-cover-v2 {
+    height: 180px;
+  }
+}
+
+/* =========================================================
+   STEP 7 — FEED COMPACT MODE
+   ========================================================= */
+
+.feed-session-card-v2 {
+  gap: 12px;
+}
+
+.feed-session-cover-v2 {
+  height: 168px;
+}
+
+.feed-section-block {
+  padding: 10px;
+}
+
+.feed-section-title {
+  margin-bottom: 8px;
+}
+
+/* достижения внутри сессии превращаем в горизонтальную ленту */
+.feed-achievements-grid-v2 {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.feed-achievements-grid-v2::-webkit-scrollbar {
+  height: 6px;
+}
+
+.feed-achievement-orb-tile-v2 {
+  flex: 0 0 108px;
+  width: 108px;
+  min-width: 108px;
+  max-width: 108px;
+  min-height: 156px;
+  scroll-snap-align: start;
+  padding: 9px 8px;
+}
+
+.feed-achievement-orb-circle {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 8px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+}
+
+.feed-achievement-orb-title {
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 800;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.feed-achievement-orb-character,
+.feed-achievement-orb-player {
+  font-size: 11px;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* блок участников тоже делаем плотнее */
+.participant-list-plain-v2 {
+  display: grid;
+  gap: 8px;
+}
+
+.participant-plain-row-v2 {
+  padding: 9px 10px;
+}
+
+/* делаем итог приключения короче визуально */
+.feed-result-text {
+  font-size: 13px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* аудио тоже компактнее */
+.feed-session-audio audio,
+.feed-audio-block audio,
+.character-audio-player {
+  height: 38px;
+}
+
+/* чипы мета-информации чуть компактнее */
+.feed-meta-chip {
+  min-height: 26px;
+  padding: 5px 9px;
+  font-size: 11px;
+}
+
+/* заголовок сессии чуть плотнее */
+.feed-session-title {
+  font-size: 20px;
+}
+
+/* мобильная версия ещё плотнее */
+@media (max-width: 720px) {
+  .feed-session-card-v2 {
+    gap: 10px;
+  }
+
+  .feed-session-cover-v2 {
+    height: 144px;
+  }
+
+  .feed-achievement-orb-tile-v2 {
+    flex: 0 0 100px;
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    min-height: 148px;
+  }
+
+  .feed-achievement-orb-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+  }
+
+  .feed-result-text {
+    -webkit-line-clamp: 3;
+  }
+
+  .feed-session-title {
+    font-size: 17px;
+  }
+}
+
+/* =========================================================
+   STEP 8 — FEED EXPAND/COLLAPSE
+   ========================================================= */
+
+.feed-result-preview-block {
+  background: #f8fafc;
+}
+
+.feed-result-preview-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--app-text-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.feed-expand-btn {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--app-border);
+  background: #ffffff;
+  color: var(--app-text);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.feed-expand-btn:hover {
+  background: #fbfcfe;
+}
+
+.feed-expand-btn-icon {
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.feed-expand-btn.is-open .feed-expand-btn-icon {
+  transform: rotate(180deg);
+}
+
+.feed-session-extra {
+  display: grid;
+  gap: 12px;
+}
+
+.feed-session-card-featured {
+  border-color: #dbe5f0;
+}
+
+@media (max-width: 720px) {
+  .feed-expand-btn {
+    padding: 10px 11px;
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   STEP 9 — SINGLE RESULT BLOCK
+   ========================================================= */
+
+/* свернутый итог */
+.feed-result-collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* при раскрытии показываем полностью */
+.feed-expand-btn.is-open + .feed-session-extra,
+.feed-session-card-v2 .feed-expand-btn.is-open ~ .feed-session-extra {
+  display: grid;
+}
+
+/* когда карточка открыта — убираем обрезание текста */
+.feed-expand-btn.is-open
+  ~ .feed-section-block
+  .feed-result-text,
+.feed-session-card-v2:has(.feed-expand-btn.is-open)
+  .feed-result-text {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* =========================================================
+   STEP 10 — CARD SYSTEM UNIFICATION
+   ========================================================= */
+
+:root {
+  --ui-card-radius: 24px;
+  --ui-block-radius: 18px;
+  --ui-card-border: 1px solid var(--app-border);
+  --ui-card-bg: #ffffff;
+  --ui-card-bg-soft: #fbfcfe;
+  --ui-title-color: var(--app-text);
+  --ui-kicker-color: #8a94a6;
+  --ui-soft-text: var(--app-text-soft);
+  --ui-muted-text: var(--app-text-muted);
+  --ui-inner-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+/* ===== одинаковая база для крупных карточек ===== */
+
+.dashboard-card,
+.feed-session-card-v2 {
+  border-radius: var(--ui-card-radius);
+  border: var(--ui-card-border);
+  background: var(--ui-card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+/* ===== единый верх карточек ===== */
+
+.dashboard-card-head {
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.dashboard-card-kicker,
+.feed-section-title {
+  font-size: 11px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ui-kicker-color);
+}
+
+.dashboard-card-title,
+.feed-session-title {
+  color: var(--ui-title-color);
+}
+
+/* заголовки dashboard */
+.dashboard-card-title {
+  font-size: 20px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+/* заголовок карточки ленты */
+.feed-session-title {
+  font-size: 20px;
+  line-height: 1.12;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* второстепенный текст */
+.dashboard-card-note,
+.player-card-subtitle,
+.dashboard-character-meta,
+.dashboard-character-world,
+.dashboard-related-character-line,
+.dashboard-related-achievement-line,
+.feed-result-text,
+.feed-result-preview-text,
+.participant-plain-meta {
+  color: var(--ui-soft-text);
+}
+
+/* ===== одинаковые внутренние блоки ===== */
+
+.achievements-card-shell,
+.feed-section-block,
+.feed-cover-wrap,
+.feed-expand-btn,
+.player-stat-tile,
+.dashboard-character-row-v2,
+.dashboard-related-row-v2,
+.participant-plain-row-v2,
+.feed-achievement-orb-tile-v2 {
+  border-radius: var(--ui-block-radius);
+}
+
+/* мягкий фон внутренних модулей */
+.feed-section-block,
+.achievements-card-shell,
+.player-stat-tile {
+  background: var(--ui-card-bg-soft);
+}
+
+/* ===== одинаковый стиль маленьких круглых контролов ===== */
+
+.dashboard-character-arrow,
+.dashboard-related-arrow,
+.slider-arrow-btn,
+.cabinet-icon-btn,
+.icon-button,
+.icon-only-button {
+  box-shadow: none;
+}
+
+/* ===== одинаковая плотность для интерактивных плиток ===== */
+
+.dashboard-character-row-v2,
+.dashboard-related-row-v2,
+.feed-achievement-orb-tile-v2,
+.feed-expand-btn,
+.participant-plain-row-v2 {
+  transition:
+    transform 0.14s ease,
+    border-color 0.14s ease,
+    background-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.dashboard-character-row-v2:hover,
+.dashboard-related-row-v2:hover,
+.feed-achievement-orb-tile-v2:hover,
+.feed-expand-btn:hover,
+.participant-plain-row-v2:hover {
+  box-shadow: var(--ui-inner-shadow);
+}
+
+/* ===== единый тон пустых состояний ===== */
+
+.dashboard-empty-state,
+.feed-empty-state-card,
+.dashboard-achievements-board .compact-empty-tile,
+.dashboard-achievements-board .card-item {
+  border-radius: 20px;
+  background: #fbfdff;
+  color: var(--ui-muted-text);
+}
+
+/* ===== выравниваем вертикальный ритм ленты ===== */
+
+.feed-session-stack {
+  gap: 14px;
+}
+
+.feed-session-card-v2 {
+  padding: 16px;
+}
+
+.feed-section-block {
+  padding: 11px 12px;
+}
+
+.feed-section-title {
+  margin-bottom: 8px;
+}
+
+/* ===== выравниваем dashboard по плотности ===== */
+
+.dashboard-card {
+  padding: 16px;
+}
+
+.player-stats-panel {
+  gap: 10px;
+}
+
+.dashboard-characters-list,
+.dashboard-related-list,
+.feed-stories-list {
+  scrollbar-width: thin;
+}
+
+.dashboard-characters-list::-webkit-scrollbar,
+.dashboard-related-list::-webkit-scrollbar,
+.feed-stories-list::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dashboard-characters-list::-webkit-scrollbar-thumb,
+.dashboard-related-list::-webkit-scrollbar-thumb,
+.feed-stories-list::-webkit-scrollbar-thumb {
+  background: #d7dee8;
+  border-radius: 999px;
+}
+
+/* ===== мобильная плотность ===== */
+
+@media (max-width: 720px) {
+  .dashboard-card,
+  .feed-session-card-v2 {
+    border-radius: 20px;
+  }
+
+  .dashboard-card {
+    padding: 14px;
+  }
+
+  .feed-session-card-v2 {
+    padding: 14px;
+  }
+
+  .dashboard-card-title,
+  .feed-session-title {
+    font-size: 18px;
+  }
+
+  .dashboard-card-kicker,
+  .feed-section-title {
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   STEP 11 — MODAL SYSTEM FOUNDATION
+   ========================================================= */
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.modal.hidden {
+  display: none !important;
+}
+
+.modal-box {
+  width: min(100%, 640px);
+  max-height: min(88vh, 920px);
+  overflow: auto;
+  background: #ffffff;
+  border: 1px solid rgba(216, 224, 234, 0.95);
+  border-radius: 28px;
+  box-shadow:
+    0 28px 80px rgba(15, 23, 42, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  padding: 18px;
+}
+
+.small-modal-box {
+  width: min(100%, 460px);
+}
+
+.large-modal-box {
+  width: min(100%, 880px);
+}
+
+.crop-modal-box {
+  width: min(100%, 760px);
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.12;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.modal-header .icon-button {
+  flex-shrink: 0;
+}
+
+.modal-box label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--app-text-soft);
+  margin-bottom: 8px;
+}
+
+.modal-box input,
+.modal-box select,
+.modal-box textarea {
+  border-radius: 16px;
+  border: 1px solid var(--app-border-strong);
+  background: #fbfcfe;
+  color: var(--app-text);
+}
+
+.modal-box input:focus,
+.modal-box select:focus,
+.modal-box textarea:focus {
+  background: #ffffff;
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-actions > button,
+.modal-actions > .ghost-button {
+  width: auto;
+  min-width: 132px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.compact-form-grid {
+  gap: 12px;
+}
+
+.upload-block {
+  margin-top: 14px;
+}
+
+.upload-preview {
+  margin-top: 10px;
+  min-height: 120px;
+  border-radius: 20px;
+  border: 1px dashed var(--app-border-strong);
+  background: #fafcff;
+  color: var(--app-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.upload-preview img,
+.preview-square,
+.preview-session-cover {
+  display: block;
+  max-width: 100%;
+  border-radius: 18px;
+}
+
+.crop-area {
+  border-radius: 22px;
+  overflow: hidden;
+  background: #f4f7fb;
+  border: 1px solid var(--app-border);
+  margin-bottom: 14px;
+}
+
+.crop-area img {
+  display: block;
+  width: 100%;
+  max-height: 62vh;
+  object-fit: contain;
+}
+
+.premium-achievement-modal .modal-box,
+.premium-achievement-modal.modal-box {
+  background: #ffffff;
+}
+
+/* единый стиль для контента модалки достижения */
+.achievement-detail-layout {
+  display: grid;
+  gap: 12px;
+}
+
+.achievement-detail-layout .story-cover {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: 22px;
+  border: 1px solid var(--app-border);
+  background: #f4f7fb;
+}
+
+.achievement-detail-layout h3 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.achievement-detail-layout .muted {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--app-text-muted);
+}
+
+.achievement-detail-layout p:last-child {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--app-text-soft);
+}
+
+/* мягкие скроллбары для модалок */
+.modal-box {
+  scrollbar-width: thin;
+}
+
+.modal-box::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.modal-box::-webkit-scrollbar-thumb {
+  background: #d7dee8;
+  border-radius: 999px;
+}
+
+@media (max-width: 720px) {
+  .modal {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal-box,
+  .small-modal-box,
+  .large-modal-box,
+  .crop-modal-box {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 24px 24px 0 0;
+    padding: 16px;
+  }
+
+  .modal-header h3 {
+    font-size: 19px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .modal-actions > button,
+  .modal-actions > .ghost-button {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+/* =========================================================
+   STEP 12 — ADMIN APP WINDOW + COMPACT SESSION EDITOR
+   ========================================================= */
+
+body.admin-page {
+  background: var(--app-bg);
+  overflow: hidden;
+}
+
+.admin-app-shell.container {
+  width: 100%;
+  max-width: 1440px;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-window {
+  flex: 1;
+  min-height: 0;
+  background: #ffffff;
+  border-radius: 36px;
+  box-shadow: var(--app-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-topbar {
+  flex-shrink: 0;
+  margin-bottom: 0;
+  padding: 12px 18px 0;
+}
+
+.admin-panel-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-main-tabs {
+  flex-shrink: 0;
+  padding: 0 18px;
+  margin-bottom: 0;
+}
+
+.admin-panels-frame {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.admin-main-panel {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.admin-module-card {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-section-head {
+  flex-shrink: 0;
+  margin-bottom: 14px;
+}
+
+.admin-scroll-area {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.admin-scroll-area::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.admin-scroll-area::-webkit-scrollbar-thumb {
+  background: #d7dee8;
+  border-radius: 999px;
+}
+
+/* ===== вкладка миров ===== */
+
+.admin-worlds-module #worldsList {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+}
+
+/* ===== вкладка публикации ===== */
+
+.admin-session-layout {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+  gap: 18px;
+  overflow: hidden;
+}
+
+.admin-editor-card,
+.admin-published-card {
+  min-height: 0;
+}
+
+.admin-editor-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+  padding-right: 4px;
+}
+
+.admin-editor-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-editor-scroll::-webkit-scrollbar-thumb {
+  background: #d7dee8;
+  border-radius: 999px;
+}
+
+.admin-form-block {
+  border: 1px solid var(--app-border);
+  border-radius: 22px;
+  background: #fbfcfe;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.admin-form-block-head h4 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.admin-form-block-head p {
+  margin: 6px 0 0;
+}
+
+.admin-form-block-head-with-action {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-form-block .form-grid {
+  gap: 12px;
+}
+
+.admin-form-block textarea {
+  min-height: 130px;
+}
+
+.admin-participants-block {
+  min-height: 96px;
+  padding: 4px 0 0;
+}
+
+.admin-editor-actions {
+  flex-shrink: 0;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--app-border);
+}
+
+/* ===== опубликованные сессии ===== */
+
+.admin-published-list {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+}
+
+.compact-session-admin-card {
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  border: 1px solid var(--app-border);
+  box-shadow: none;
+}
+
+.compact-session-admin-card p {
+  margin: 10px 0 0;
+  color: var(--app-text-soft);
+  line-height: 1.45;
+}
+
+/* ===== chips участников ===== */
+
+.admin-participants-block .participant-chip {
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid var(--app-border);
+}
+
+.admin-participants-block .participant-chip.filled-chip {
+  border-color: #d8e3ef;
+  background: #f8fbff;
+}
+
+/* ===== loading / denied cards тоже в окне ===== */
+
+#adminLoadingCard,
+#adminDeniedCard {
+  margin: 18px;
+}
+
+/* ===== responsive ===== */
+
+@media (max-width: 1100px) {
+  .admin-session-layout {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .admin-main-panel {
+    overflow: auto;
+  }
+
+  .admin-editor-card,
+  .admin-published-card {
+    height: auto;
+  }
+
+  .admin-published-list,
+  .admin-editor-scroll {
+    overflow: visible;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-app-shell.container {
+    padding: 10px;
+  }
+
+  .admin-window {
+    border-radius: 24px;
+  }
+
+  .admin-topbar {
+    padding: 10px 12px 0;
+  }
+
+  .admin-main-tabs {
+    padding: 0 12px;
+  }
+
+  .admin-panels-frame {
+    padding: 12px;
+  }
+
+  .admin-form-block {
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .admin-form-block-head-with-action {
+    align-items: stretch;
+  }
+}
+
+/* =========================================================
+   STEP 13 — ADMIN CARDS POLISH
+   ========================================================= */
+
+/* ===== миры ===== */
+
+.world-master-card {
+  border-radius: 22px;
+  border: 1px solid var(--app-border);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  box-shadow: none;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.world-master-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.world-master-top h4 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.world-master-top p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--app-text-soft);
+}
+
+.world-campaigns-block {
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  background: #f8fbff;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.world-campaigns-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.world-campaigns-head strong {
+  font-size: 12px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+}
+
+.world-campaigns-list {
+  display: grid;
+  gap: 8px;
+}
+
+.world-campaign-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.world-campaign-title {
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--app-text);
+  margin-bottom: 3px;
+}
+
+/* ===== действия ===== */
+
+.compact-session-admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.compact-session-admin-actions .icon-only-button,
+.compact-session-admin-actions .danger-icon-button {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  border-radius: 12px;
+}
+
+/* ===== опубликованные сессии ===== */
+
+.compact-session-admin-card {
+  border-radius: 22px;
+  border: 1px solid var(--app-border);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  box-shadow: none;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.compact-session-admin-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compact-session-admin-top h4 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.15;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.compact-session-admin-top .muted {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--app-text-muted);
+}
+
+.compact-session-admin-card > p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--app-text-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== пустые состояния ===== */
+
+.admin-scroll-area > .card-item:only-child,
+.admin-published-list > .card-item:only-child,
+#worldsList > .card-item:only-child {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 20px;
+  background: #fbfdff;
+  color: var(--app-text-muted);
+  border: 1px dashed var(--app-border-strong);
+}
+
+/* ===== плотность внутри списков ===== */
+
+.admin-worlds-module .cards-list,
+.admin-published-list.cards-list {
+  gap: 12px;
+  margin-top: 0;
+}
+
+/* ===== адаптация ===== */
+
+@media (max-width: 720px) {
+  .world-master-card,
+  .compact-session-admin-card {
+    padding: 12px;
+    border-radius: 18px;
+  }
+
+  .world-campaigns-block {
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .world-campaign-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .world-master-top,
+  .compact-session-admin-top {
+    flex-direction: column;
+  }
+
+  .compact-session-admin-actions {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   STEP 14 — ADMIN SESSION STEPPER
+   ========================================================= */
+
+.admin-editor-steps {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 0 2px;
+  margin-bottom: 2px;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.96) 100%);
+}
+
+.admin-step-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--app-border);
+  background: #f8fafc;
+  color: var(--app-text-soft);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-step-chip.is-active {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.admin-step-chip-number {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid currentColor;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.admin-form-step-block {
+  position: relative;
+  gap: 14px;
+}
+
+.admin-step-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-step-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef4ff;
+  border: 1px solid #dbe7ff;
+  color: #335caa;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.admin-step-badge-final {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.admin-form-step-block .admin-form-block-head h4 {
+  margin: 0;
+}
+
+.admin-publish-bar {
+  flex-shrink: 0;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--app-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.admin-publish-bar-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.admin-publish-bar-text strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 15px;
+  line-height: 1.15;
+  color: var(--app-text);
+}
+
+.admin-editor-actions {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.admin-editor-actions > button,
+.admin-editor-actions > .ghost-button {
+  min-width: 170px;
+}
+
+/* делаем блок участников чуть выразительнее */
+.admin-participants-block {
+  border: 1px dashed var(--app-border-strong);
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.admin-participants-block .muted.small-text {
+  display: block;
+  text-align: center;
+  padding: 14px 6px;
+}
+
+/* визуально сильнее отделяем шаги */
+.admin-form-step-block + .admin-form-step-block {
+  position: relative;
+}
+
+.admin-form-step-block + .admin-form-step-block::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 18px;
+  right: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e5ebf3, transparent);
+}
+
+@media (max-width: 900px) {
+  .admin-publish-bar {
+    align-items: stretch;
+  }
+
+  .admin-publish-bar-text {
+    width: 100%;
+  }
+
+  .admin-editor-actions {
+    width: 100%;
+  }
+
+  .admin-editor-actions > button,
+  .admin-editor-actions > .ghost-button {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-editor-steps {
+    gap: 6px;
+  }
+
+  .admin-step-chip {
+    font-size: 11px;
+    padding: 5px 9px;
+  }
+
+  .admin-step-chip-text {
+    display: none;
+  }
+
+  .admin-publish-bar-text {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* =========================================================
+   STEP 15 — ADMIN PARTICIPANT CARDS
+   ========================================================= */
+
+.admin-participants-block {
+  display: grid;
+  gap: 10px;
+}
+
+.participant-chip-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid var(--app-border);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  box-shadow: none;
+}
+
+.participant-chip-card.filled-chip {
+  border-color: #d7e7ff;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+}
+
+.participant-card-thumb-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  background: #f4f7fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.participant-card-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.participant-card-thumb-empty {
+  color: var(--app-text-muted);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.participant-card-main {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.participant-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.participant-card-name {
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.participant-card-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 800;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.participant-card-status.is-filled {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.participant-card-status.is-empty {
+  background: #f8fafc;
+  border-color: var(--app-border);
+  color: var(--app-text-muted);
+}
+
+.participant-card-player {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--app-text-soft);
+}
+
+.participant-card-achievement {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--app-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.participant-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.participant-card-actions .mini-icon-btn {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--app-border-strong);
+  background: #ffffff;
+  color: var(--app-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.participant-card-actions .mini-icon-btn:hover {
+  transform: translateY(-1px);
+  background: #fbfcfe;
+}
+
+@media (max-width: 720px) {
+  .participant-chip-card {
+    grid-template-columns: 56px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .participant-card-thumb-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .participant-card-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    margin-top: 2px;
+  }
+
+  .participant-card-name {
+    font-size: 14px;
+  }
+}
+
+
+/* =========================================================
+   HOTFIX — ADMIN PUBLISHED SESSIONS ALIGNMENT
+   ========================================================= */
+
+/* две колонки должны стартовать строго от одного верхнего края */
+.admin-session-layout {
+  align-items: stretch;
+}
+
+/* обе карточки в колонках */
+.admin-editor-card,
+.admin-published-card {
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+}
+
+/* правая колонка не должна "плыть" вниз */
+.admin-published-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-bottom: 14px;
+}
+
+/* верхний блок справа делаем стабильным */
+.admin-published-card .admin-section-head {
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+/* список опубликованных сессий занимает оставшуюся высоту */
+.admin-published-list,
+#publishedSessionsList.admin-scroll-area,
+#publishedSessionsList {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  align-content: start;
+  margin-top: 0;
+  padding-right: 4px;
+}
+
+/* убираем ощущение лишнего отступа сверху у списка */
+#publishedSessionsList.cards-list {
+  margin-top: 0;
+}
+
+/* карточки сессий делаем ровнее и чуть компактнее */
+.compact-session-admin-card {
+  padding: 12px;
+  gap: 10px;
+}
+
+.compact-session-admin-top {
+  align-items: flex-start;
+}
+
+.compact-session-admin-top > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.compact-session-admin-top h4 {
+  margin: 0;
+  word-break: break-word;
+}
+
+.compact-session-admin-top .muted {
+  margin-top: 4px;
+  display: block;
+}
+
+.compact-session-admin-card > p {
+  margin: 0;
+}
+
+/* если справа пусто — пустое состояние тоже ровное */
+.admin-published-list > .card-item:only-child,
+#publishedSessionsList > .card-item:only-child {
+  min-height: 110px;
+  margin: 0;
+}
+
+/* на случай, если sticky шаги слева визуально сдвигают композицию */
+.admin-editor-steps {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1100px) {
+  .admin-published-card {
+    padding-bottom: 0;
+  }
+
+  .admin-published-list,
+  #publishedSessionsList.admin-scroll-area,
+  #publishedSessionsList {
+    overflow: visible;
+    padding-right: 0;
+  }
+}
+
+/* =========================================================
+   HOTFIX 2 — ADMIN PUBLISHED CARD FULL HEIGHT
+   ========================================================= */
+
+.admin-published-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.admin-published-card-head {
+  flex-shrink: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--app-border);
+  margin-bottom: 12px;
+}
+
+.admin-published-card-body {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-published-list {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  align-content: start;
+  margin-top: 0;
+  padding-right: 4px;
+}
+
+.admin-published-list.cards-list {
+  margin-top: 0;
+}
+
+#publishedSessionsList {
+  min-height: 0;
+  flex: 1;
+}
+
+#publishedSessionsList > *:first-child {
+  margin-top: 0;
+}
+
+/* чуть более устойчивый заголовок справа */
+.admin-published-card-head h3 {
+  margin: 0;
+}
+
+.admin-published-card-head .muted.small-text {
+  line-height: 1.4;
+}
+
+@media (max-width: 1100px) {
+  .admin-published-card {
+    grid-template-rows: auto auto;
+    height: auto;
+  }
+
+  .admin-published-card-body {
+    overflow: visible;
+    height: auto;
+  }
+
+  .admin-published-list {
+    overflow: visible;
+    padding-right: 0;
+  }
+}
+
+/* =========================================================
+   STEP — ADMIN TOPBAR COMPACT + EXIT BUTTON
+   ========================================================= */
+
+.admin-compact-topbar {
+  min-height: 56px;
+  padding-top: 10px;
+  padding-bottom: 6px;
+  justify-content: space-between;
+}
+
+.admin-topbar-spacer {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+}
+
+.admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-exit-btn {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid var(--app-border-strong);
+  background: #ffffff;
+  color: var(--app-text);
+  font-size: 18px;
+  line-height: 1;
+  box-shadow: none;
+}
+
+.admin-exit-btn:hover {
+  transform: translateY(-1px);
+  background: #fbfcfe;
+}
+
+@media (max-width: 720px) {
+  .admin-compact-topbar {
+    min-height: 52px;
+    padding-top: 8px;
+    padding-bottom: 4px;
+  }
+}

@@ -176,15 +176,79 @@ export function renderParticipantChips() {
     return;
   }
 
-  $("sessionParticipantChips").innerHTML = adminParticipants.map((p, idx) => `
-    <div class="participant-chip ${p.achievementTitle ? "filled-chip" : ""}">
-      <span>${escapeHtml(p.characterName || "Персонаж")}</span>
-      <div class="participant-chip-actions">
-        <button class="mini-icon-btn edit-participant-chip-btn" data-index="${idx}" type="button" title="Редактировать">✏</button>
-        <button class="mini-icon-btn remove-participant-chip-btn" data-index="${idx}" type="button" title="Удалить">✕</button>
+  $("sessionParticipantChips").innerHTML = adminParticipants.map((p, idx) => {
+    const hasAchievement = Boolean(
+      (p.achievementTitle && String(p.achievementTitle).trim()) ||
+      (p.achievementDescription && String(p.achievementDescription).trim()) ||
+      (p.imagePreviewUrl && String(p.imagePreviewUrl).trim())
+    );
+
+    const achievementTitle = p.achievementTitle
+      ? escapeHtml(p.achievementTitle)
+      : "Достижение пока не заполнено";
+
+    const playerName = p.playerName
+      ? escapeHtml(p.playerName)
+      : "Игрок не указан";
+
+    const imageHtml = p.imagePreviewUrl
+      ? `
+        <div class="participant-card-thumb-wrap">
+          <img
+            class="participant-card-thumb"
+            src="${escapeHtml(p.imagePreviewUrl)}"
+            alt="achievement preview"
+          />
+        </div>
+      `
+      : `
+        <div class="participant-card-thumb-wrap participant-card-thumb-empty">
+          <span>—</span>
+        </div>
+      `;
+
+    return `
+      <div class="participant-chip participant-chip-card ${hasAchievement ? "filled-chip" : ""}">
+        ${imageHtml}
+
+        <div class="participant-card-main">
+          <div class="participant-card-topline">
+            <strong class="participant-card-name">
+              ${escapeHtml(p.characterName || "Персонаж")}
+            </strong>
+
+            <span class="participant-card-status ${hasAchievement ? "is-filled" : "is-empty"}">
+              ${hasAchievement ? "Есть достижение" : "Пока без достижения"}
+            </span>
+          </div>
+
+          <div class="participant-card-player">
+            Игрок: ${playerName}
+          </div>
+
+          <div class="participant-card-achievement">
+            ${achievementTitle}
+          </div>
+        </div>
+
+        <div class="participant-chip-actions participant-card-actions">
+          <button
+            class="mini-icon-btn edit-participant-chip-btn"
+            data-index="${idx}"
+            type="button"
+            title="Редактировать"
+          >✏</button>
+
+          <button
+            class="mini-icon-btn remove-participant-chip-btn"
+            data-index="${idx}"
+            type="button"
+            title="Удалить"
+          >✕</button>
+        </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 
   document.querySelectorAll(".edit-participant-chip-btn").forEach((btn) => {
     btn.addEventListener("click", () => {

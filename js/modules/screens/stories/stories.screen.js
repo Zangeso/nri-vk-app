@@ -30,6 +30,29 @@ function bindStoryAchievementButtons(onOpenAchievement) {
   });
 }
 
+function bindFeedExpandButtons() {
+  document.querySelectorAll("[data-feed-toggle]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const card = button.closest(".feed-session-card-v2");
+      if (!card) return;
+
+      const extra = card.querySelector("[data-feed-extra]");
+      if (!extra) return;
+
+      const isOpen = button.getAttribute("aria-expanded") === "true";
+
+      button.setAttribute("aria-expanded", String(!isOpen));
+      button.classList.toggle("is-open", !isOpen);
+      extra.hidden = isOpen;
+
+      const textNode = button.querySelector(".feed-expand-btn-text");
+      if (textNode) {
+        textNode.textContent = isOpen ? "Подробнее" : "Скрыть";
+      }
+    });
+  });
+}
+
 export async function renderStoriesScreen({ playerId, onOpenAchievement }) {
   if (!$("storiesList")) return;
 
@@ -66,6 +89,7 @@ export async function renderStoriesScreen({ playerId, onOpenAchievement }) {
     $("storiesList").innerHTML = renderStoriesListHtml(uniqueSessions, entriesBySession);
 
     bindStoryAchievementButtons(onOpenAchievement);
+    bindFeedExpandButtons();
   } catch (error) {
     showToast("Ошибка загрузки ленты: " + error.message, "error");
   }

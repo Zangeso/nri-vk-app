@@ -19,6 +19,43 @@ export function clearLocalPlayer() {
   localStorage.removeItem(PLAYER_STORAGE_KEY);
 }
 
+export function getDevParams(search = window.location.search) {
+  const params = new URLSearchParams(search);
+
+  const dev = params.get("dev") === "1";
+  const role = (params.get("role") || "player").trim().toLowerCase();
+  const vkMock = params.get("vk") === "mock" || params.get("mockvk") === "1";
+
+  const vkId = (params.get("vk_id") || "162536789").trim();
+  const firstName = (params.get("first_name") || "Владислав").trim();
+  const lastName = (params.get("last_name") || "Левицкий").trim();
+  const city = (params.get("city") || "Санкт-Петербург").trim();
+  const photo =
+    (params.get("photo") || "https://placehold.co/200x200?text=VK").trim();
+
+  return {
+    enabled: dev,
+    role: role === "admin" ? "admin" : "player",
+    vkMock,
+    vkId,
+    firstName,
+    lastName,
+    city,
+    photo
+  };
+}
+
+export function buildMockVkUser(devParams = getDevParams()) {
+  return {
+    id: Number(devParams.vkId) || 162536789,
+    first_name: devParams.firstName,
+    last_name: devParams.lastName,
+    photo_200: devParams.photo,
+    photo_100: devParams.photo,
+    city: { title: devParams.city }
+  };
+}
+
 function getOrCreateStableExternalId() {
   let id = localStorage.getItem(TEST_EXTERNAL_KEY);
 
@@ -160,6 +197,84 @@ async function resolveVkUser(vkUserInfo) {
   return created;
 }
 
+async function resolveDevUser(devParams) {
+  const vkUserInfo = buildMockVkUser(devParams);
+  const externalAuthId = `dev_vk_${String(vkUserInfo.id)}`;
+  const fullName = [vkUserInfo.first_name, vkUserInfo.last_name].join(" ").trim();
+  const nickname = vkUserInfo.first_name || "Dev User";
+  const avatarUrl = vkUserInfo.photo_200 || vkUserInfo.photo_100 || "";
+
+  const { data: existing, error: findError } = await supabase
+    .from("players")
+    .select("*")
+    .eq("auth_provider", "dev_local")
+    .eq("external_auth_id", externalAuthId)
+    .maybeSingle();
+
+  if (findError) {
+    showToast("Ошибка поиска dev-игрока: " + findError.message, "error");
+    return null;
+  }
+
+  if (existing) {
+    const updates = {};
+    if ((existing.role || "player") !== devParams.role) {
+      updates.role = devParams.role;
+    }
+    if ((existing.full_name || "") !== fullName) {
+      updates.full_name = fullName;
+    }
+    if ((existing.nickname || "") !== nickname) {
+      updates.nickname = nickname;
+    }
+    if ((existing.avatar_url || "") !== avatarUrl) {
+      updates.avatar_url = avatarUrl;
+    }
+
+    if (Object.keys(updates).length) {
+      const { data: updated, error: updateError } = await supabase
+        .from("players")
+        .update(updates)
+        .eq("id", existing.id)
+        .select()
+        .single();
+
+      if (updateError) {
+        showToast("Ошибка обновления dev-игрока: " + updateError.message, "error");
+        setLocalPlayer(existing.id);
+        return existing;
+      }
+
+      setLocalPlayer(updated.id);
+      return updated;
+    }
+
+    setLocalPlayer(existing.id);
+    return existing;
+  }
+
+  const { data: created, error: createError } = await supabase
+    .from("players")
+    .insert([{
+      nickname,
+      full_name: fullName,
+      avatar_url: avatarUrl,
+      role: devParams.role,
+      auth_provider: "dev_local",
+      external_auth_id: externalAuthId
+    }])
+    .select()
+    .single();
+
+  if (createError) {
+    showToast("Ошибка создания dev-игрока: " + createError.message, "error");
+    return null;
+  }
+
+  setLocalPlayer(created.id);
+  return created;
+}
+
 async function resolveLocalTestUser() {
   const ownerMode = localStorage.getItem(OWNER_MODE_KEY) === "1";
 
@@ -211,7 +326,14 @@ async function resolveLocalTestUser() {
   return created;
 }
 
-export async function resolveAppUser(vkUserInfo = null) {
+export async function resolveAppUser(vkUserInfo = null, options = {}) {
+  const devParams = options.devParams || getDevParams();
+
+  if (devParams.enabled) {
+    const devUser = await resolveDevUser(devParams);
+    if (devUser) return devUser;
+  }
+
   if (vkUserInfo?.id) {
     const vkPlayer = await resolveVkUser(vkUserInfo);
     if (vkPlayer) return vkPlayer;

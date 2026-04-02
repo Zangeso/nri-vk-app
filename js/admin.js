@@ -16,7 +16,17 @@ import {
 } from './modules/screens/admin-participants/admin-participants.screen.js';
 
 import { showToast } from './modules/toast.js';
-import { getLocalPlayerId, setLocalPlayer } from './modules/auth/player-auth.js';
+
+import {
+  getLocalPlayerId,
+  setLocalPlayer,
+  clearLocalPlayer,
+  getDevParams,
+  buildMockVkUser,
+  resolveAppUser
+} from './modules/auth/player-auth.js';
+
+import { clearAdminId } from './modules/auth/admin-auth.js';
 import { getPlayerById } from './modules/services/player.service.js';
 import { supabase } from './modules/supabase.js';
 
@@ -24,11 +34,20 @@ function $(id) {
   return document.getElementById(id);
 }
 
-async function initVkBridge() {
+async function initVkBridge(devParams) {
+  if (devParams.enabled && devParams.vkMock) {
+    return {
+      ok: true,
+      userInfo: buildMockVkUser(devParams),
+      isDevMock: true
+    };
+  }
+
   if (!window.vkBridge) {
     return {
       ok: false,
-      userInfo: null
+      userInfo: null,
+      isDevMock: false
     };
   }
 
@@ -45,13 +64,24 @@ async function initVkBridge() {
 
     return {
       ok: true,
-      userInfo
+      userInfo,
+      isDevMock: false
     };
   } catch (error) {
     console.error("Ошибка инициализации VK Bridge:", error);
+
+    if (devParams.enabled) {
+      return {
+        ok: true,
+        userInfo: buildMockVkUser(devParams),
+        isDevMock: true
+      };
+    }
+
     return {
       ok: false,
-      userInfo: null
+      userInfo: null,
+      isDevMock: false
     };
   }
 }
@@ -81,7 +111,7 @@ async function resolveVkPlayer(vkUserInfo) {
   return null;
 }
 
-async function resolveCurrentPlayer(vkUserInfo) {
+async function resolveCurrentPlayer(vkUserInfo, devParams) {
   const localPlayerId = getLocalPlayerId();
 
   if (localPlayerId) {
@@ -91,6 +121,11 @@ async function resolveCurrentPlayer(vkUserInfo) {
     } catch (e) {
       console.warn("Не удалось загрузить локального игрока", e);
     }
+  }
+
+  if (devParams.enabled) {
+    const devPlayer = await resolveAppUser(vkUserInfo, { devParams });
+    if (devPlayer) return devPlayer;
   }
 
   if (vkUserInfo?.id) {
@@ -112,18 +147,44 @@ async function loadAdminData() {
 function initTabs() {
   document.querySelectorAll(".main-tab-button").forEach((button) => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".main-tab-button").forEach((btn) => btn.classList.remove("active"));
-      document.querySelectorAll(".main-tab-panel").forEach((panel) => panel.classList.remove("active"));
+      document.querySelectorAll(".main-tab-button").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+
+      document.querySelectorAll(".main-tab-panel").forEach((panel) => {
+        panel.classList.remove("active");
+      });
 
       button.classList.add("active");
+
       const panelId = button.getAttribute("data-main-tab");
       const panel = document.getElementById(panelId);
-      if (panel) panel.classList.add("active");
+
+      if (panel) {
+        panel.classList.add("active");
+      }
     });
   });
 }
 
-function showDenied(player, vkState) {
+function bindAdminExit() {
+  const exitBtn = $("adminExitBtn");
+  if (!exitBtn || exitBtn.dataset.bound === "1") return;
+
+  exitBtn.addEventListener("click", () => {
+    clearAdminId();
+    clearLocalPlayer();
+    localStorage.removeItem("nri_owner_mode");
+
+    showToast("Выход из админки выполнен", "success", 1800);
+
+    window.location.href = `index.html${window.location.search || ""}${window.location.hash || ""}`;
+  });
+
+  exitBtn.dataset.bound = "1";
+}
+
+function showDenied(player, vkState, devParams) {
   $("adminLoadingCard")?.classList.add("hidden");
   $("adminPanel")?.classList.add("hidden");
   $("adminDeniedCard")?.classList.remove("hidden");
@@ -139,13 +200,14 @@ function showDenied(player, vkState) {
     <div><b>Текущий player id:</b> ${playerId}</div>
     <div><b>Текущая роль:</b> ${role}</div>
     <div><b>VK ID:</b> ${vkId}</div>
+    <div><b>DEV режим:</b> ${devParams.enabled ? "включён" : "выключен"}</div>
     <div style="margin-top:10px;">
       Чтобы получить доступ, у записи в таблице <b>players</b> должна быть роль <b>admin</b>.
     </div>
   `;
 }
 
-async function showAdmin() {
+async function showAdmin(devParams) {
   $("adminLoadingCard")?.classList.add("hidden");
   $("adminDeniedCard")?.classList.add("hidden");
   $("adminPanel")?.classList.remove("hidden");
@@ -154,28 +216,35 @@ async function showAdmin() {
   initAdminWorldsScreen();
   initAdminParticipantsScreen();
   initAdminSessionsScreen();
+  bindAdminExit();
 
   await loadAdminData();
+
+  if (devParams.enabled) {
+    showToast(`DEV админка: ${devParams.role}`, "success", 2500);
+  }
 }
 
 async function initAdmin() {
   try {
-    const vkState = await initVkBridge();
-    const player = await resolveCurrentPlayer(vkState.userInfo);
+    const devParams = getDevParams();
+    const vkState = await initVkBridge(devParams);
+    const player = await resolveCurrentPlayer(vkState.userInfo, devParams);
 
     if (!player) {
-      showDenied(null, vkState);
+      showDenied(null, vkState, devParams);
       return;
     }
 
     if (player.role !== "admin") {
-      showDenied(player, vkState);
+      showDenied(player, vkState, devParams);
       return;
     }
 
-    await showAdmin();
+    await showAdmin(devParams);
   } catch (error) {
     console.error("Ошибка запуска админки:", error);
+
     $("adminLoadingCard")?.classList.add("hidden");
     $("adminDeniedCard")?.classList.remove("hidden");
 

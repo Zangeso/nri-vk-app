@@ -2,11 +2,15 @@ import { initMainTabs } from './modules/ui/tabs.js';
 import { showToast } from './modules/toast.js';
 import { closeModal } from './modules/ui/modal.js';
 import { initCharacterCreateFeature } from './modules/features/character-create/character-create.feature.js';
-
+import {
+  renderRelatedPlayersScreen
+} from './modules/screens/related-players/related-players.screen.js';
 import {
   resolveAppUser,
   getLocalPlayerId,
-  clearLocalPlayer
+  clearLocalPlayer,
+  getDevParams,
+  buildMockVkUser
 } from './modules/auth/player-auth.js';
 
 import { openAchievementDetailModal } from './modules/ui/achievement-detail-modal.js';
@@ -51,28 +55,41 @@ function initCabinetSubtabs() {
   });
 }
 
-function applyRoleUi(player) {
+function applyRoleUi(player, devParams) {
   const adminLinkBtn = $("adminLinkBtn");
   const resetTestPlayerBtn = $("resetTestPlayerBtn");
 
   if (adminLinkBtn) {
     const isAdmin = player?.role === "admin";
     adminLinkBtn.classList.toggle("hidden", !isAdmin);
+    if (devParams.enabled) {
+      adminLinkBtn.href = `admin.html${window.location.search || ""}${window.location.hash || ""}`;
+    }
   }
 
   if (resetTestPlayerBtn) {
-    const isLocalTestUser = player?.auth_provider === "local_test";
-    resetTestPlayerBtn.classList.toggle("hidden", !isLocalTestUser);
+    const isVisible = devParams.enabled || player?.auth_provider === "local_test";
+    resetTestPlayerBtn.classList.toggle("hidden", !isVisible);
   }
 }
 
-async function initVkBridge() {
+async function initVkBridge(devParams) {
+  if (devParams.enabled && devParams.vkMock) {
+    return {
+      ok: true,
+      launchParams: null,
+      userInfo: buildMockVkUser(devParams),
+      isDevMock: true
+    };
+  }
+
   if (!window.vkBridge) {
     console.warn("VK Bridge не найден");
     return {
       ok: false,
       launchParams: null,
-      userInfo: null
+      userInfo: null,
+      isDevMock: false
     };
   }
 
@@ -98,23 +115,35 @@ async function initVkBridge() {
     return {
       ok: true,
       launchParams,
-      userInfo
+      userInfo,
+      isDevMock: false
     };
   } catch (error) {
     console.error("Ошибка инициализации VK Bridge:", error);
+
+    if (devParams.enabled) {
+      return {
+        ok: true,
+        launchParams: null,
+        userInfo: buildMockVkUser(devParams),
+        isDevMock: true
+      };
+    }
+
     return {
       ok: false,
       launchParams: null,
-      userInfo: null
+      userInfo: null,
+      isDevMock: false
     };
   }
 }
 
-async function loadCabinet(vkUserInfo = null) {
+async function loadCabinet(vkUserInfo = null, devParams = getDevParams()) {
   let playerId = getLocalPlayerId();
 
   if (!playerId) {
-    const player = await resolveAppUser(vkUserInfo);
+    const player = await resolveAppUser(vkUserInfo, { devParams });
     if (!player) return null;
     playerId = player.id;
   }
@@ -124,7 +153,7 @@ async function loadCabinet(vkUserInfo = null) {
   if (!player) {
     clearLocalPlayer();
 
-    const fallbackPlayer = await resolveAppUser(vkUserInfo);
+    const fallbackPlayer = await resolveAppUser(vkUserInfo, { devParams });
     if (!fallbackPlayer) return null;
 
     playerId = fallbackPlayer.id;
@@ -133,12 +162,17 @@ async function loadCabinet(vkUserInfo = null) {
 
   if (!player) return null;
 
-  applyRoleUi(player);
+  applyRoleUi(player, devParams);
 
   await renderCharactersScreen({
     playerId,
     onOpenAchievement: openAchievementDetailModal,
-    onReloadCabinet: () => loadCabinet(vkUserInfo)
+    onReloadCabinet: () => loadCabinet(vkUserInfo, devParams)
+  });
+
+  await renderRelatedPlayersScreen({
+    playerId,
+    onOpenAchievement: openAchievementDetailModal
   });
 
   await renderAchievementsScreen({
@@ -154,14 +188,14 @@ async function loadCabinet(vkUserInfo = null) {
   return player;
 }
 
-function bindUiActions(vkUserInfo = null) {
+function bindUiActions(vkUserInfo = null, devParams = getDevParams()) {
   $("resetTestPlayerBtn")?.addEventListener("click", async () => {
     clearLocalPlayer();
     localStorage.removeItem("nri_test_external_id");
     localStorage.removeItem("nri_owner_mode");
     localStorage.removeItem("nri_admin_id");
     showToast("Локальный вход сброшен", "success");
-    await loadCabinet(vkUserInfo);
+    await loadCabinet(vkUserInfo, devParams);
   });
 
   $("openNicknameModalBtn")?.addEventListener("click", openNicknameModal);
@@ -180,27 +214,32 @@ async function init() {
     return;
   }
 
-  const vkState = await initVkBridge();
+  const devParams = getDevParams();
+  const vkState = await initVkBridge(devParams);
+
   console.log("VK state:", vkState);
+  console.log("DEV params:", devParams);
 
   appScreen.classList.remove("hidden");
 
   initMainTabs();
   initCabinetSubtabs();
-  bindUiActions(vkState.userInfo);
+  bindUiActions(vkState.userInfo, devParams);
 
   initCharacterDeleteConfirm({
-    onReloadCabinet: () => loadCabinet(vkState.userInfo)
+    onReloadCabinet: () => loadCabinet(vkState.userInfo, devParams)
   });
 
   initCharacterCreateFeature({
-    onCreated: () => loadCabinet(vkState.userInfo)
+    onCreated: () => loadCabinet(vkState.userInfo, devParams)
   });
 
-  const player = await loadCabinet(vkState.userInfo);
-  applyRoleUi(player);
+  const player = await loadCabinet(vkState.userInfo, devParams);
+  applyRoleUi(player, devParams);
 
-  if (!vkState.ok) {
+  if (devParams.enabled) {
+    showToast(`DEV режим: ${devParams.role}`, "success", 2500);
+  } else if (!vkState.ok) {
     showToast("VK Bridge не инициализировался. Проверь запуск внутри VK.", "error", 5000);
   }
 }
