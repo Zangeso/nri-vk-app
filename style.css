@@ -6227,3 +6227,243 @@ html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-main-tab.mai
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }
+/* =========================================================
+   STEP 17 — VK DESKTOP FIX FOR ADMIN SESSION LAYOUT
+   Вставить В САМЫЙ КОНЕЦ style.css
+   ========================================================= */
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] body.admin-page {
+  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-app-shell.container {
+  max-width: 1280px;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: 8px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-window {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 16px);
+  max-height: calc(100dvh - 16px);
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-topbar {
+  flex-shrink: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-panel-shell {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-main-tabs {
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-main-tabs .main-tab-button {
+  min-width: 0;
+  width: auto;
+  padding: 10px 14px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-main-panel {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] #adminSessionTab.main-tab-panel.active {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-session-layout {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr);
+  gap: 12px;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-editor-card,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-published-card {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 14px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-section-head {
+  margin-bottom: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-section-head h3 {
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-section-head .small-text {
+  font-size: 12px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-editor-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  gap: 10px;
+  padding-right: 2px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-editor-steps {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  gap: 6px;
+  padding-bottom: 4px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-step-chip {
+  min-height: 30px;
+  padding: 5px 9px;
+  font-size: 11px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-step-chip-number {
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-form-block {
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-form-block-head h4 {
+  font-size: 15px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-form-block-head p {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-form-block .form-grid {
+  gap: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-form-block textarea {
+  min-height: 110px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-participants-block {
+  min-height: 76px;
+  padding: 10px;
+  border-radius: 16px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-publish-bar {
+  margin-top: 10px;
+  padding-top: 10px;
+  gap: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-publish-bar-text strong {
+  font-size: 14px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-editor-actions > button,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-editor-actions > .ghost-button {
+  min-width: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-published-card-head {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-published-list,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] #publishedSessionsList.admin-scroll-area,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] #publishedSessionsList {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-card {
+  padding: 10px;
+  border-radius: 16px;
+  gap: 8px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-top {
+  gap: 8px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-top h4 {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-top .muted {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-card > p {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-actions {
+  gap: 6px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-actions .icon-only-button,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .compact-session-admin-actions .danger-icon-button {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 12px;
+}
+
+@media (min-width: 701px) {
+  html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .admin-session-layout {
+    grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr) !important;
+  }
+}
+
+/* если VK реально сообщает мобильную адаптивность — тогда уже можно складывать в одну колонку */
+html[data-vk-mini-app="1"][data-vk-adaptivity="force_mobile"] .admin-session-layout,
+html[data-vk-mini-app="1"][data-vk-adaptivity="force_mobile_compact"] .admin-session-layout {
+  grid-template-columns: 1fr;
+  height: auto;
+  overflow: visible;
+}
+
+html[data-vk-mini-app="1"][data-vk-adaptivity="force_mobile"] .admin-window,
+html[data-vk-mini-app="1"][data-vk-adaptivity="force_mobile_compact"] .admin-window {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
