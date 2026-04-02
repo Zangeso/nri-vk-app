@@ -20,7 +20,6 @@ import { showToast } from './modules/toast.js';
 import {
   getLocalPlayerId,
   setLocalPlayer,
-  clearLocalPlayer,
   getDevParams,
   buildMockVkUser,
   resolveAppUser
@@ -34,11 +33,118 @@ function $(id) {
   return document.getElementById(id);
 }
 
+function getLaunchParamsFromBridge() {
+  if (!window.vkBridge) return null;
+
+  try {
+    if (typeof window.vkBridge.parseURLSearchParams === "function") {
+      return window.vkBridge.parseURLSearchParams(window.location.href);
+    }
+  } catch (e) {
+    console.warn("Не удалось прочитать launch params через parseURLSearchParams", e);
+  }
+
+  try {
+    return Object.fromEntries(new URLSearchParams(window.location.search).entries());
+  } catch (e) {
+    console.warn("Не удалось прочитать launch params через URLSearchParams", e);
+  }
+
+  return null;
+}
+
+function applyVkEnvironment(vkState = {}) {
+  const html = document.documentElement;
+  const body = document.body;
+  const launchParams = vkState?.launchParams || {};
+  const platform = String(launchParams?.vk_platform || "").trim();
+
+  if (platform) {
+    html.dataset.vkPlatform = platform;
+    body.dataset.vkPlatform = platform;
+  } else {
+    delete html.dataset.vkPlatform;
+    delete body.dataset.vkPlatform;
+  }
+
+  const isVkMiniApp = Boolean(window.vkBridge && !vkState?.isDevMock);
+
+  if (isVkMiniApp) {
+    html.dataset.vkMiniApp = "1";
+    body.dataset.vkMiniApp = "1";
+  } else {
+    delete html.dataset.vkMiniApp;
+    delete body.dataset.vkMiniApp;
+  }
+}
+
+function applyVkAdaptivity(adaptivity = null) {
+  const html = document.documentElement;
+  const body = document.body;
+
+  const type = String(adaptivity?.type || "").trim();
+  const viewportWidth = Number(adaptivity?.viewportWidth || window.innerWidth || 0);
+  const viewportHeight = Number(adaptivity?.viewportHeight || window.innerHeight || 0);
+
+  if (type) {
+    html.dataset.vkAdaptivity = type;
+    body.dataset.vkAdaptivity = type;
+  } else {
+    delete html.dataset.vkAdaptivity;
+    delete body.dataset.vkAdaptivity;
+  }
+
+  if (viewportWidth > 0) {
+    html.style.setProperty("--vk-viewport-width", `${viewportWidth}px`);
+    body.style.setProperty("--vk-viewport-width", `${viewportWidth}px`);
+  }
+
+  if (viewportHeight > 0) {
+    html.style.setProperty("--vk-viewport-height", `${viewportHeight}px`);
+    body.style.setProperty("--vk-viewport-height", `${viewportHeight}px`);
+  }
+}
+
+function updateViewportCssVars() {
+  const html = document.documentElement;
+  const body = document.body;
+
+  html.style.setProperty("--app-window-width", `${window.innerWidth}px`);
+  html.style.setProperty("--app-window-height", `${window.innerHeight}px`);
+
+  body.style.setProperty("--app-window-width", `${window.innerWidth}px`);
+  body.style.setProperty("--app-window-height", `${window.innerHeight}px`);
+}
+
+function subscribeVkAdaptivity() {
+  if (!window.vkBridge || typeof window.vkBridge.subscribe !== "function") {
+    return;
+  }
+
+  window.vkBridge.subscribe((event) => {
+    const detail = event?.detail;
+    if (!detail) return;
+
+    if (detail.type === "VKWebAppUpdateConfig") {
+      const adaptivity = detail.data?.adaptivity || null;
+      applyVkAdaptivity(adaptivity);
+    }
+
+    if (detail.type === "VKWebAppViewportChanged") {
+      updateViewportCssVars();
+    }
+  });
+}
+
 async function initVkBridge(devParams) {
   if (devParams.enabled && devParams.vkMock) {
     return {
       ok: true,
+      launchParams: {
+        vk_platform: "desktop_web"
+      },
       userInfo: buildMockVkUser(devParams),
+      adaptivity: null,
       isDevMock: true
     };
   }
@@ -46,7 +152,9 @@ async function initVkBridge(devParams) {
   if (!window.vkBridge) {
     return {
       ok: false,
+      launchParams: null,
       userInfo: null,
+      adaptivity: null,
       isDevMock: false
     };
   }
@@ -55,6 +163,14 @@ async function initVkBridge(devParams) {
     await window.vkBridge.send("VKWebAppInit");
 
     let userInfo = null;
+    let launchParams = null;
+    let config = null;
+
+    try {
+      launchParams = getLaunchParamsFromBridge();
+    } catch (e) {
+      console.warn("Не удалось получить launch params", e);
+    }
 
     try {
       userInfo = await window.vkBridge.send("VKWebAppGetUserInfo");
@@ -62,9 +178,17 @@ async function initVkBridge(devParams) {
       console.warn("Не удалось получить данные пользователя VK", e);
     }
 
+    try {
+      config = await window.vkBridge.send("VKWebAppGetConfig");
+    } catch (e) {
+      console.warn("Не удалось получить VK config", e);
+    }
+
     return {
       ok: true,
+      launchParams,
       userInfo,
+      adaptivity: config?.adaptivity || null,
       isDevMock: false
     };
   } catch (error) {
@@ -73,14 +197,20 @@ async function initVkBridge(devParams) {
     if (devParams.enabled) {
       return {
         ok: true,
+        launchParams: {
+          vk_platform: "desktop_web"
+        },
         userInfo: buildMockVkUser(devParams),
+        adaptivity: null,
         isDevMock: true
       };
     }
 
     return {
       ok: false,
+      launchParams: null,
       userInfo: null,
+      adaptivity: null,
       isDevMock: false
     };
   }
@@ -173,7 +303,6 @@ function bindAdminExit() {
 
   exitBtn.addEventListener("click", () => {
     clearAdminId();
-    clearLocalPlayer();
     localStorage.removeItem("nri_owner_mode");
 
     showToast("Выход из админки выполнен", "success", 1800);
@@ -229,6 +358,14 @@ async function initAdmin() {
   try {
     const devParams = getDevParams();
     const vkState = await initVkBridge(devParams);
+
+    updateViewportCssVars();
+    applyVkEnvironment(vkState);
+    applyVkAdaptivity(vkState.adaptivity);
+    subscribeVkAdaptivity();
+
+    window.addEventListener("resize", updateViewportCssVars);
+
     const player = await resolveCurrentPlayer(vkState.userInfo, devParams);
 
     if (!player) {
