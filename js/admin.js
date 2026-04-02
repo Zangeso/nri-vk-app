@@ -1,77 +1,33 @@
-import { initMainTabs } from './modules/ui/tabs.js';
+import {
+  initAdminSessionsScreen,
+  renderPublishedSessionsAdmin
+} from './modules/screens/admin-sessions/admin-sessions.screen.js';
+
+import {
+  loadWorldsWithCampaigns,
+  loadWorldOptionsForAdmin,
+  loadCampaignOptionsForAdmin,
+  initAdminWorldsScreen
+} from './modules/screens/admin-worlds/admin-worlds.screen.js';
+
+import {
+  initAdminParticipantsScreen,
+  renderParticipantChips
+} from './modules/screens/admin-participants/admin-participants.screen.js';
+
 import { showToast } from './modules/toast.js';
-import { closeModal } from './modules/ui/modal.js';
-import { initCharacterCreateFeature } from './modules/features/character-create/character-create.feature.js';
-
-import {
-  resolveAppUser,
-  getLocalPlayerId,
-  clearLocalPlayer
-} from './modules/auth/player-auth.js';
-
-import { openAchievementDetailModal } from './modules/ui/achievement-detail-modal.js';
-
-import {
-  renderStoriesScreen
-} from './modules/screens/stories/stories.screen.js';
-
-import {
-  renderAchievementsScreen
-} from './modules/screens/achievements/achievements.screen.js';
-
-import {
-  renderCharactersScreen,
-  initCharacterDeleteConfirm
-} from './modules/screens/characters/characters.screen.js';
-
-import {
-  renderPlayerProfileScreen,
-  openNicknameModal,
-  savePlayerNickname
-} from './modules/screens/player-profile/player-profile.screen.js';
+import { getLocalPlayerId, setLocalPlayer } from './modules/auth/player-auth.js';
+import { getPlayerById } from './modules/services/player.service.js';
+import { supabase } from './modules/supabase.js';
 
 function $(id) {
   return document.getElementById(id);
 }
 
-function initCabinetSubtabs() {
-  const buttons = document.querySelectorAll("[data-cabinet-panel]");
-  const panels = document.querySelectorAll(".cabinet-subpanel");
-
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const panelId = button.getAttribute("data-cabinet-panel");
-
-      buttons.forEach((btn) => btn.classList.remove("active"));
-      panels.forEach((panel) => panel.classList.remove("active"));
-
-      button.classList.add("active");
-      document.getElementById(panelId)?.classList.add("active");
-    });
-  });
-}
-
-function applyRoleUi(player) {
-  const adminLinkBtn = $("adminLinkBtn");
-  const resetTestPlayerBtn = $("resetTestPlayerBtn");
-
-  if (adminLinkBtn) {
-    const isAdmin = player?.role === "admin";
-    adminLinkBtn.classList.toggle("hidden", !isAdmin);
-  }
-
-  if (resetTestPlayerBtn) {
-    const isLocalTestUser = player?.auth_provider === "local_test";
-    resetTestPlayerBtn.classList.toggle("hidden", !isLocalTestUser);
-  }
-}
-
 async function initVkBridge() {
   if (!window.vkBridge) {
-    console.warn("VK Bridge не найден");
     return {
       ok: false,
-      launchParams: null,
       userInfo: null
     };
   }
@@ -79,130 +35,160 @@ async function initVkBridge() {
   try {
     await window.vkBridge.send("VKWebAppInit");
 
-    let launchParams = null;
     let userInfo = null;
 
     try {
-      launchParams = window.vkBridge.parseURLSearchParams(window.location.href);
-    } catch (e) {
-      console.warn("Не удалось прочитать launch params", e);
-    }
-
-    try {
       userInfo = await window.vkBridge.send("VKWebAppGetUserInfo");
-      console.log("VK user info:", userInfo);
     } catch (e) {
       console.warn("Не удалось получить данные пользователя VK", e);
     }
 
     return {
       ok: true,
-      launchParams,
       userInfo
     };
   } catch (error) {
     console.error("Ошибка инициализации VK Bridge:", error);
     return {
       ok: false,
-      launchParams: null,
       userInfo: null
     };
   }
 }
 
-async function loadCabinet(vkUserInfo = null) {
-  let playerId = getLocalPlayerId();
+async function resolveVkPlayer(vkUserInfo) {
+  if (!vkUserInfo?.id) return null;
 
-  if (!playerId) {
-    const player = await resolveAppUser(vkUserInfo);
-    if (!player) return null;
-    playerId = player.id;
+  const externalAuthId = String(vkUserInfo.id);
+
+  const { data, error } = await supabase
+    .from("players")
+    .select("*")
+    .eq("auth_provider", "vk")
+    .eq("external_auth_id", externalAuthId)
+    .maybeSingle();
+
+  if (error) {
+    showToast("Ошибка поиска игрока: " + error.message, "error");
+    return null;
   }
 
-  let player = await renderPlayerProfileScreen(playerId);
-
-  if (!player) {
-    clearLocalPlayer();
-
-    const fallbackPlayer = await resolveAppUser(vkUserInfo);
-    if (!fallbackPlayer) return null;
-
-    playerId = fallbackPlayer.id;
-    player = await renderPlayerProfileScreen(playerId);
+  if (data) {
+    setLocalPlayer(data.id);
+    return data;
   }
 
-  if (!player) return null;
-
-  applyRoleUi(player);
-
-  await renderCharactersScreen({
-    playerId,
-    onOpenAchievement: openAchievementDetailModal,
-    onReloadCabinet: () => loadCabinet(vkUserInfo)
-  });
-
-  await renderAchievementsScreen({
-    playerId,
-    onOpenAchievement: openAchievementDetailModal
-  });
-
-  await renderStoriesScreen({
-    playerId,
-    onOpenAchievement: openAchievementDetailModal
-  });
-
-  return player;
+  return null;
 }
 
-function bindUiActions(vkUserInfo = null) {
-  $("resetTestPlayerBtn")?.addEventListener("click", async () => {
-    clearLocalPlayer();
-    localStorage.removeItem("nri_test_external_id");
-    localStorage.removeItem("nri_owner_mode");
-    localStorage.removeItem("nri_admin_id");
-    showToast("Локальный вход сброшен", "success");
-    await loadCabinet(vkUserInfo);
-  });
+async function resolveCurrentPlayer(vkUserInfo) {
+  const localPlayerId = getLocalPlayerId();
 
-  $("openNicknameModalBtn")?.addEventListener("click", openNicknameModal);
-  $("closeNicknameModalBtn")?.addEventListener("click", () => closeModal("nicknameModal"));
-  $("saveNicknameBtn")?.addEventListener("click", savePlayerNickname);
-
-  $("closeAchievementDetailModalBtn")?.addEventListener("click", () => closeModal("achievementDetailModal"));
-  $("closeCharacterViewModalBtn")?.addEventListener("click", () => closeModal("characterViewModal"));
-}
-
-async function init() {
-  const appScreen = $("appScreen");
-
-  if (!appScreen) {
-    console.error("Элемент #appScreen не найден. Проверь index.html.");
-    return;
+  if (localPlayerId) {
+    try {
+      const player = await getPlayerById(localPlayerId);
+      if (player) return player;
+    } catch (e) {
+      console.warn("Не удалось загрузить локального игрока", e);
+    }
   }
 
-  const vkState = await initVkBridge();
-  console.log("VK state:", vkState);
+  if (vkUserInfo?.id) {
+    const vkPlayer = await resolveVkPlayer(vkUserInfo);
+    if (vkPlayer) return vkPlayer;
+  }
 
-  appScreen.classList.remove("hidden");
+  return null;
+}
 
-  initMainTabs();
-  initCabinetSubtabs();
-  bindUiActions(vkState.userInfo);
+async function loadAdminData() {
+  await loadWorldsWithCampaigns();
+  await loadWorldOptionsForAdmin();
+  await loadCampaignOptionsForAdmin($("sessionWorld")?.value || null);
+  await renderPublishedSessionsAdmin();
+  renderParticipantChips();
+}
 
-  initCharacterDeleteConfirm({
-    onReloadCabinet: () => loadCabinet(vkState.userInfo)
+function initTabs() {
+  document.querySelectorAll(".main-tab-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".main-tab-button").forEach((btn) => btn.classList.remove("active"));
+      document.querySelectorAll(".main-tab-panel").forEach((panel) => panel.classList.remove("active"));
+
+      button.classList.add("active");
+      const panelId = button.getAttribute("data-main-tab");
+      const panel = document.getElementById(panelId);
+      if (panel) panel.classList.add("active");
+    });
   });
+}
 
-  initCharacterCreateFeature({
-    onCreated: () => loadCabinet(vkState.userInfo)
-  });
+function showDenied(player, vkState) {
+  $("adminLoadingCard")?.classList.add("hidden");
+  $("adminPanel")?.classList.add("hidden");
+  $("adminDeniedCard")?.classList.remove("hidden");
 
-  const player = await loadCabinet(vkState.userInfo);
-  applyRoleUi(player);
+  const info = $("adminDeniedInfo");
+  if (!info) return;
 
-  if (!vkState.ok) {
-    showToast("VK Bridge не инициализировался. Проверь запуск внутри VK.", "error", 5000);
+  const role = player?.role || "неизвестно";
+  const playerId = player?.id || "—";
+  const vkId = vkState?.userInfo?.id || "—";
+
+  info.innerHTML = `
+    <div><b>Текущий player id:</b> ${playerId}</div>
+    <div><b>Текущая роль:</b> ${role}</div>
+    <div><b>VK ID:</b> ${vkId}</div>
+    <div style="margin-top:10px;">
+      Чтобы получить доступ, у записи в таблице <b>players</b> должна быть роль <b>admin</b>.
+    </div>
+  `;
+}
+
+async function showAdmin() {
+  $("adminLoadingCard")?.classList.add("hidden");
+  $("adminDeniedCard")?.classList.add("hidden");
+  $("adminPanel")?.classList.remove("hidden");
+
+  initTabs();
+  initAdminWorldsScreen();
+  initAdminParticipantsScreen();
+  initAdminSessionsScreen();
+
+  await loadAdminData();
+}
+
+async function initAdmin() {
+  try {
+    const vkState = await initVkBridge();
+    const player = await resolveCurrentPlayer(vkState.userInfo);
+
+    if (!player) {
+      showDenied(null, vkState);
+      return;
+    }
+
+    if (player.role !== "admin") {
+      showDenied(player, vkState);
+      return;
+    }
+
+    await showAdmin();
+  } catch (error) {
+    console.error("Ошибка запуска админки:", error);
+    $("adminLoadingCard")?.classList.add("hidden");
+    $("adminDeniedCard")?.classList.remove("hidden");
+
+    const info = $("adminDeniedInfo");
+    if (info) {
+      info.innerHTML = `
+        <div><b>Админка не запустилась.</b></div>
+        <div style="margin-top:8px;">${String(error?.message || error)}</div>
+      `;
+    }
+
+    showToast("Ошибка запуска админки", "error");
   }
 }
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", initAdmin);
