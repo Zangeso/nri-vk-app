@@ -59,7 +59,7 @@ function applyRoleUi(player, devParams) {
   const adminLinkBtn = $("adminLinkBtn");
   const resetTestPlayerBtn = $("resetTestPlayerBtn");
 
-  if (adminLinkBtn) {
+if (adminLinkBtn) {
   const isAdmin = player?.role === "admin";
   adminLinkBtn.classList.toggle("hidden", !isAdmin);
   adminLinkBtn.href = `admin.html${window.location.search || ""}${window.location.hash || ""}`;
