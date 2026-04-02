@@ -51,49 +51,6 @@ function initCabinetSubtabs() {
   });
 }
 
-function renderVkDebugInfo(userInfo, isVisible = false) {
-  const card = $("vkDebugCard");
-  const status = $("vkDebugStatus");
-  const info = $("vkDebugInfo");
-  const avatar = $("vkDebugAvatar");
-
-  if (!card || !status || !info || !avatar) return;
-
-  card.classList.toggle("hidden", !isVisible);
-
-  if (!userInfo) {
-    status.textContent = "Не удалось получить данные пользователя VK";
-    info.innerHTML = `
-      <div><b>VK ID:</b> —</div>
-      <div><b>Имя:</b> —</div>
-      <div><b>Город:</b> —</div>
-    `;
-    avatar.style.display = "none";
-    avatar.src = "";
-    return;
-  }
-
-  const fullName = [userInfo.first_name, userInfo.last_name]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-
-  status.textContent = "Данные из VK получены";
-  info.innerHTML = `
-    <div><b>VK ID:</b> ${userInfo.id ?? "—"}</div>
-    <div><b>Имя:</b> ${fullName || "—"}</div>
-    <div><b>Город:</b> ${userInfo.city?.title || "—"}</div>
-  `;
-
-  if (userInfo.photo_200 || userInfo.photo_100) {
-    avatar.src = userInfo.photo_200 || userInfo.photo_100;
-    avatar.style.display = "block";
-  } else {
-    avatar.style.display = "none";
-    avatar.src = "";
-  }
-}
-
 function applyRoleUi(player) {
   const adminLinkBtn = $("adminLinkBtn");
   const resetTestPlayerBtn = $("resetTestPlayerBtn");
@@ -225,8 +182,6 @@ async function init() {
 
   const vkState = await initVkBridge();
   console.log("VK state:", vkState);
-
-  renderVkDebugInfo(vkState.userInfo, false);
 
   appScreen.classList.remove("hidden");
 
