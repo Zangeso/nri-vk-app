@@ -60,13 +60,10 @@ function applyRoleUi(player, devParams) {
   const resetTestPlayerBtn = $("resetTestPlayerBtn");
 
   if (adminLinkBtn) {
-    const isAdmin = player?.role === "admin";
-    adminLinkBtn.classList.toggle("hidden", !isAdmin);
-
-    if (devParams.enabled) {
-      adminLinkBtn.href = `admin.html${window.location.search || ""}${window.location.hash || ""}`;
-    }
-  }
+  const isAdmin = player?.role === "admin";
+  adminLinkBtn.classList.toggle("hidden", !isAdmin);
+  adminLinkBtn.href = `admin.html${window.location.search || ""}${window.location.hash || ""}`;
+}
 
   if (resetTestPlayerBtn) {
     const isVisible = devParams.enabled || player?.auth_provider === "local_test";
