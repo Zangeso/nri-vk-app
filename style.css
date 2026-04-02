@@ -5998,3 +5998,232 @@ html[data-vk-mini-app="1"][data-vk-adaptivity="force_mobile"] .player-stats-pane
 html[data-vk-mini-app="1"][data-vk-adaptivity="force_mobile_compact"] .player-stats-panel {
   grid-template-columns: 1fr;
 }
+
+/* =========================================================
+   STEP 16 — STRONG VK DESKTOP LAYOUT OVERRIDE
+   Вставить В САМЫЙ КОНЕЦ style.css
+   ========================================================= */
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-window {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - 16px);
+  max-height: calc(100dvh - 16px);
+  overflow: hidden;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] #cabinetTab.main-tab-panel.active,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] #feedTab.main-tab-panel.active {
+  height: 100%;
+  min-height: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-dashboard-panel,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-feed-panel {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.92fr) minmax(320px, 1.08fr);
+  grid-template-rows: minmax(210px, auto) minmax(0, 1fr);
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-card {
+  min-height: 0;
+  overflow: hidden;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-player-card,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-card,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-characters-card,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-related-card {
+  height: 100%;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-card-main {
+  align-items: center;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-card-info {
+  min-width: 0;
+  width: 100%;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-card-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-card-title {
+  font-size: 21px;
+  line-height: 1.05;
+  margin: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-card-subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-stats-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-stat-tile {
+  min-height: 0;
+  padding: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-stat-number {
+  font-size: 20px;
+  line-height: 1;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-stat-label {
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-card-title {
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-card-note {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .achievements-card-shell {
+  padding: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board {
+  min-height: 0;
+  height: 100%;
+  align-items: flex-start;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board .compact-achievements-track,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board .achievements-orb-track {
+  gap: 10px;
+  padding: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board .compact-achievement-tile {
+  width: 124px;
+  min-width: 124px;
+  max-width: 124px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board .compact-achievement-image {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board .compact-achievement-title {
+  font-size: 11.5px;
+  line-height: 1.2;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board .compact-achievement-character,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-achievements-board .compact-achievement-meta {
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-filter-row {
+  margin-bottom: 8px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-search-input {
+  height: 40px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-characters-list,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-related-list,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .feed-stories-list {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-character-row,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-related-row {
+  padding: 12px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-character-name,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-related-player-name {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-character-meta,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-character-world,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-related-character-line,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-related-achievement-line {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-character-arrow,
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .dashboard-related-arrow {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  font-size: 18px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .feed-session-card-v2 {
+  padding: 14px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .feed-session-title {
+  font-size: 18px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .feed-section-block {
+  padding: 10px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-topbar {
+  flex-shrink: 0;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-tabs {
+  gap: 8px;
+}
+
+html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-main-tab.main-tab-button {
+  min-width: 0;
+  width: auto;
+  white-space: nowrap;
+}
+
+/* важно: не включаем мобильную колонку только из-за узкого окна VK на desktop */
+@media (min-width: 701px) {
+  html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .cabinet-dashboard-grid {
+    grid-template-columns: minmax(300px, 0.9fr) minmax(300px, 1.1fr) !important;
+    grid-template-rows: minmax(210px, auto) minmax(0, 1fr) !important;
+  }
+
+  html[data-vk-mini-app="1"][data-vk-platform="desktop_web"] .player-stats-panel {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
