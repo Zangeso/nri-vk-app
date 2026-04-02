@@ -302,13 +302,13 @@ function bindAdminExit() {
   if (!exitBtn || exitBtn.dataset.bound === "1") return;
 
   exitBtn.addEventListener("click", () => {
-    clearAdminId();
-    localStorage.removeItem("nri_owner_mode");
+  clearAdminId();
+  localStorage.removeItem("nri_owner_mode");
 
-    showToast("Выход из админки выполнен", "success", 1800);
+  showToast("Выход из админки выполнен", "success", 1800);
 
-    window.location.href = `index.html${window.location.search || ""}${window.location.hash || ""}`;
-  });
+  window.location.href = `index.html${window.location.search || ""}${window.location.hash || ""}`;
+});
 
   exitBtn.dataset.bound = "1";
 }
