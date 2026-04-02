@@ -2,20 +2,28 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>D&D Админка</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#10141c" />
+
+  <link rel="stylesheet" href="app.tokens.css" />
+  <link rel="stylesheet" href="app.base.css" />
+  <link rel="stylesheet" href="app.layout.css" />
+  <link rel="stylesheet" href="app.components.css" />
+  <link rel="stylesheet" href="app.admin.css" />
+  <link rel="stylesheet" href="app.vk.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
-<body class="admin-page">
+<body class="admin-page theme-dark">
   <div class="container admin-app-shell">
     <section class="admin-window">
       <header class="topbar premium-topbar admin-topbar admin-compact-topbar">
         <div class="admin-topbar-spacer" aria-hidden="true"></div>
 
         <div class="topbar-actions admin-topbar-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" type="button" title="Сменить тему" aria-label="Сменить тему">☀</button>
           <button
             id="adminExitBtn"
             class="icon-only-button admin-exit-btn"
@@ -64,7 +72,7 @@
                     Сначала создайте мир, затем при необходимости добавьте к нему кампании.
                   </p>
                 </div>
-                <button id="openCreateWorldBtn" class="small-button" type="button">Новый мир</button>
+                <button id="openCreateWorldBtn" class="section-action-btn" type="button">Новый мир</button>
               </div>
 
               <div id="worldsList" class="cards-list admin-scroll-area"></div>
@@ -84,28 +92,7 @@
                 </div>
 
                 <div class="admin-editor-scroll">
-                  <div class="admin-editor-steps">
-                    <div class="admin-step-chip is-active">
-                      <span class="admin-step-chip-number">1</span>
-                      <span class="admin-step-chip-text">Основа</span>
-                    </div>
-                    <div class="admin-step-chip">
-                      <span class="admin-step-chip-number">2</span>
-                      <span class="admin-step-chip-text">Материалы</span>
-                    </div>
-                    <div class="admin-step-chip">
-                      <span class="admin-step-chip-number">3</span>
-                      <span class="admin-step-chip-text">Итог</span>
-                    </div>
-                    <div class="admin-step-chip">
-                      <span class="admin-step-chip-number">4</span>
-                      <span class="admin-step-chip-text">Участники</span>
-                    </div>
-                    <div class="admin-step-chip">
-                      <span class="admin-step-chip-number">5</span>
-                      <span class="admin-step-chip-text">Публикация</span>
-                    </div>
-                  </div>
+                 
 
                   <section class="admin-form-block admin-form-step-block">
                     <div class="admin-form-block-head">
@@ -165,10 +152,21 @@
                     </div>
 
                     <div class="upload-block">
-                      <label for="sessionCoverFile">Основная картинка приключения</label>
-                      <input id="sessionCoverFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
-                      <div id="sessionCoverPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
-                    </div>
+  <label for="sessionCoverFile">Основная картинка приключения</label>
+  <input id="sessionCoverFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+
+  <div class="upload-preview-actions">
+    <div id="sessionCoverPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
+
+    <button
+      id="removeSessionCoverBtn"
+      class="secondary-action-btn is-danger-soft admin-inline-remove-btn"
+      type="button"
+    >
+      Убрать изображение
+    </button>
+  </div>
+</div>
                   </section>
 
                   <section class="admin-form-block admin-form-step-block">
@@ -196,7 +194,7 @@
                         <p class="muted small-text">Добавляй участников, их достижения и изображения для публикации.</p>
                       </div>
 
-                      <button id="openParticipantEditorBtn" class="small-button" type="button">Добавить участника</button>
+                      <button id="openParticipantEditorBtn" class="section-action-btn" type="button">Добавить участника</button>
                     </div>
 
                     <div id="sessionParticipantChips" class="chips-wrap admin-participants-block"></div>
@@ -213,23 +211,45 @@
                   </div>
 
                   <div class="modal-actions admin-editor-actions">
-                    <button id="publishSessionBtn" type="button">Опубликовать сессию</button>
-                    <button id="resetSessionEditorBtn" class="ghost-button" type="button">Сбросить форму</button>
+                    <button id="publishSessionBtn" class="primary-action-btn" type="button">
+  Опубликовать сессию
+</button>
+                    <button id="resetSessionEditorBtn" class="secondary-action-btn" type="button">Сбросить форму</button>
                   </div>
                 </div>
               </div>
 
               <div class="card premium-feed-card admin-module-card admin-published-card">
-                <div class="admin-published-card-head">
-                  <div class="section-head compact-section-head admin-section-head" style="margin-bottom:0;">
-                    <div>
-                      <h3>Опубликованные сессии</h3>
-                      <p class="muted small-text" style="margin:6px 0 0;">
-                        Здесь можно быстро открыть запись на редактирование или удалить её.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+               <div class="admin-published-card-head">
+  <div class="section-head compact-section-head admin-section-head" style="margin-bottom:0;">
+    <div>
+      <h3>Опубликованные сессии</h3>
+      <p class="muted small-text" style="margin:6px 0 0;">
+        Здесь можно быстро открыть запись на редактирование, удалить её или отфильтровать по дате.
+      </p>
+    </div>
+  </div>
+
+  <div class="admin-published-filters">
+    <div class="admin-published-filter-field">
+      <label for="publishedSessionsDateFrom">От даты</label>
+      <input id="publishedSessionsDateFrom" type="date" />
+    </div>
+
+    <div class="admin-published-filter-field">
+      <label for="publishedSessionsDateTo">До даты</label>
+      <input id="publishedSessionsDateTo" type="date" />
+    </div>
+
+    <button
+      id="clearPublishedSessionsFilterBtn"
+      class="secondary-action-btn admin-published-filter-reset"
+      type="button"
+    >
+      Сбросить
+    </button>
+  </div>
+</div>
 
                 <div class="admin-published-card-body">
                   <div id="publishedSessionsList" class="cards-list admin-scroll-area admin-published-list"></div>
@@ -320,10 +340,21 @@
       </div>
 
       <div class="upload-block">
-        <label for="participantAchievementImageFile">Изображение достижения</label>
-        <input id="participantAchievementImageFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
-        <div id="participantAchievementImagePreview" class="upload-preview empty">Изображение достижения ещё не выбрано</div>
-      </div>
+  <label for="participantAchievementImageFile">Изображение достижения</label>
+  <input id="participantAchievementImageFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+
+  <div class="upload-preview-actions">
+    <div id="participantAchievementImagePreview" class="upload-preview empty">Изображение достижения ещё не выбрано</div>
+
+    <button
+      id="removeParticipantAchievementImageBtn"
+      class="secondary-action-btn is-danger-soft admin-inline-remove-btn"
+      type="button"
+    >
+      Убрать изображение
+    </button>
+  </div>
+</div>
 
       <div class="modal-actions top-space">
         <button id="saveParticipantBtn" type="button">Сохранить участника</button>
@@ -366,6 +397,7 @@
   </div>
 
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <script src="vk-theme-runtime.js"></script>
   <script type="module" src="js/admin.js"></script>
 </body>
 </html>

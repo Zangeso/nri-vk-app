@@ -15,6 +15,31 @@ function $(id) {
   return document.getElementById(id);
 }
 
+function renderParticipantAchievementPreview(previewUrl = "") {
+  if (!$("participantAchievementImagePreview")) return;
+
+  if (previewUrl) {
+    $("participantAchievementImagePreview").innerHTML =
+      `<img src="${previewUrl}" class="preview-square preview-small-square" alt="preview" />`;
+    $("participantAchievementImagePreview").classList.remove("empty");
+    return;
+  }
+
+  $("participantAchievementImagePreview").innerHTML = "Изображение достижения ещё не выбрано";
+  $("participantAchievementImagePreview").classList.add("empty");
+}
+
+function removeParticipantAchievementImage() {
+  currentParticipantBlob = null;
+  currentParticipantPreviewUrl = "";
+
+  if ($("participantAchievementImageFile")) {
+    $("participantAchievementImageFile").value = "";
+  }
+
+  renderParticipantAchievementPreview("");
+}
+
 async function fetchCharactersForAdminOptions() {
   const { data, error } = await supabase
     .from("characters")
@@ -105,18 +130,9 @@ function fillParticipantFormFromPayload(payload) {
   }
 
   currentParticipantPreviewUrl = payload.imagePreviewUrl || "";
-  currentParticipantBlob = payload.croppedImageBlob || null;
+currentParticipantBlob = payload.croppedImageBlob || null;
 
-  if ($("participantAchievementImagePreview")) {
-    if (currentParticipantPreviewUrl) {
-      $("participantAchievementImagePreview").innerHTML =
-        `<img src="${currentParticipantPreviewUrl}" class="preview-square preview-small-square" alt="preview" />`;
-      $("participantAchievementImagePreview").classList.remove("empty");
-    } else {
-      $("participantAchievementImagePreview").innerHTML = "Изображение достижения ещё не выбрано";
-      $("participantAchievementImagePreview").classList.add("empty");
-    }
-  }
+renderParticipantAchievementPreview(currentParticipantPreviewUrl);
 }
 
 function resetParticipantForm() {
@@ -132,10 +148,7 @@ function resetParticipantForm() {
   if ($("participantCharacterResults")) $("participantCharacterResults").innerHTML = "";
   if ($("participantPlayerResults")) $("participantPlayerResults").innerHTML = "";
 
-  if ($("participantAchievementImagePreview")) {
-    $("participantAchievementImagePreview").innerHTML = "Изображение достижения ещё не выбрано";
-    $("participantAchievementImagePreview").classList.add("empty");
-  }
+  renderParticipantAchievementPreview("");
 }
 
 async function openParticipantModal(index = null) {
@@ -348,15 +361,11 @@ async function applyAchievementCrop() {
   }
 
   currentParticipantBlob = blob;
-  currentParticipantPreviewUrl = URL.createObjectURL(blob);
+currentParticipantPreviewUrl = URL.createObjectURL(blob);
 
-  if ($("participantAchievementImagePreview")) {
-    $("participantAchievementImagePreview").innerHTML =
-      `<img src="${currentParticipantPreviewUrl}" class="preview-square preview-small-square" alt="preview" />`;
-    $("participantAchievementImagePreview").classList.remove("empty");
-  }
+renderParticipantAchievementPreview(currentParticipantPreviewUrl);
 
-  closeAchievementCropModal();
+closeAchievementCropModal();
 }
 
 export function getAdminParticipants() {
@@ -396,6 +405,7 @@ export function initAdminParticipantsScreen() {
     reader.readAsDataURL(file);
   });
 
-  $("closeParticipantAchievementCropModalBtn")?.addEventListener("click", closeAchievementCropModal);
-  $("applyParticipantAchievementCropBtn")?.addEventListener("click", applyAchievementCrop);
+ $("closeParticipantAchievementCropModalBtn")?.addEventListener("click", closeAchievementCropModal);
+$("applyParticipantAchievementCropBtn")?.addEventListener("click", applyAchievementCrop);
+$("removeParticipantAchievementImageBtn")?.addEventListener("click", removeParticipantAchievementImage);
 }

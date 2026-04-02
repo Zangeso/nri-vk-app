@@ -51,7 +51,7 @@ export async function loadWorldsWithCampaigns() {
 
           <div class="compact-session-admin-actions">
             <button class="icon-only-button edit-world-btn" data-id="${world.id}" type="button" title="Редактировать">✏</button>
-            <button class="icon-only-button danger-icon-button delete-world-btn" data-id="${world.id}" type="button" title="Удалить">🗑</button>
+            <button class="danger-action-icon-btn delete-world-btn" data-id="${world.id}" type="button" title="Удалить">🗑</button>
           </div>
         </div>
 
@@ -74,7 +74,7 @@ export async function loadWorldsWithCampaigns() {
 
                       <div class="compact-session-admin-actions">
                         <button class="icon-only-button edit-campaign-btn" data-id="${campaign.id}" type="button" title="Редактировать">✏</button>
-                        <button class="icon-only-button danger-icon-button delete-campaign-btn" data-id="${campaign.id}" type="button" title="Удалить">🗑</button>
+                        <button class="danger-action-icon-btn delete-campaign-btn" data-id="${campaign.id}" type="button" title="Удалить">🗑</button>
                       </div>
                     </div>
                   `).join("")}

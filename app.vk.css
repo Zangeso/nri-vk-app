@@ -1,0 +1,80 @@
+
+html,
+body {
+  width: 100%;
+}
+
+html[data-vk-mini-app="1"] body,
+body[data-vk-mini-app="1"] {
+  min-height: var(--vk-viewport-height, 100svh);
+}
+
+html[data-vk-adaptivity="force_mobile"] .container,
+body[data-vk-adaptivity="force_mobile"] .container {
+  padding-left: max(12px, calc(var(--safe-left) + 12px));
+  padding-right: max(12px, calc(var(--safe-right) + 12px));
+}
+
+html[data-vk-platform="mobile_iphone"] .container,
+html[data-vk-platform="mobile_android"] .container,
+body[data-vk-platform="mobile_iphone"] .container,
+body[data-vk-platform="mobile_android"] .container {
+  width: min(100%, 920px);
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding:
+      max(14px, calc(var(--safe-top) + 10px))
+      max(14px, calc(var(--safe-right) + 12px))
+      max(18px, calc(var(--safe-bottom) + 16px))
+      max(14px, calc(var(--safe-left) + 12px));
+  }
+
+  .card,
+  .dashboard-card,
+  .admin-module-card,
+  .modal-box {
+    padding: 16px;
+  }
+
+  .player-card-title {
+    font-size: clamp(22px, 6vw, 30px);
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding:
+      max(12px, calc(var(--safe-top) + 8px))
+      max(12px, calc(var(--safe-right) + 10px))
+      max(16px, calc(var(--safe-bottom) + 14px))
+      max(12px, calc(var(--safe-left) + 10px));
+  }
+
+  .card,
+  .dashboard-card,
+  .admin-module-card,
+  .modal-box {
+    border-radius: 20px;
+    padding: 14px;
+  }
+
+  .icon-button,
+  .icon-only-button,
+  .cabinet-icon-btn,
+  .slider-arrow-btn,
+  .theme-toggle-btn {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+
+  .feed-achievement-orb-circle,
+  .character-achievement-orb-image,
+  .achievement-orb-image,
+  .compact-achievement-image {
+    width: 72px;
+    height: 72px;
+  }
+}

@@ -5,11 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Кабинет игрока</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#10141c" />
+
+  <link rel="stylesheet" href="app.tokens.css" />
+  <link rel="stylesheet" href="app.base.css" />
+  <link rel="stylesheet" href="app.layout.css" />
+  <link rel="stylesheet" href="app.components.css" />
+  <link rel="stylesheet" href="app.cabinet.css" />
+  <link rel="stylesheet" href="app.vk.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
-<body>
+<body class="theme-dark">
   <div class="container cabinet-app-shell">
     <section id="appScreen" class="cabinet-window hidden">
       <div class="cabinet-topbar">
@@ -19,6 +26,7 @@
         </div>
 
         <div class="cabinet-topbar-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" type="button" title="Сменить тему" aria-label="Сменить тему">☀</button>
           <a id="adminLinkBtn" class="cabinet-icon-btn hidden" href="admin.html" title="Админка" aria-label="Админка">⚙</a>
           <button id="resetTestPlayerBtn" class="cabinet-icon-btn hidden" type="button" title="Сбросить тестовый вход" aria-label="Сбросить тестовый вход">↺</button>
         </div>
@@ -256,6 +264,7 @@
   </div>
 
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <script src="vk-theme-runtime.js"></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

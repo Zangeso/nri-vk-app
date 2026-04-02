@@ -25,8 +25,113 @@ let sessionCoverCropper = null;
 let sessionCoverBlob = null;
 let sessionCoverPreviewUrl = "";
 
+
+const publishedSessionFilters = {
+  from: "",
+  to: ""
+};
+
+function readPublishedSessionFilters() {
+  publishedSessionFilters.from = $("publishedSessionsDateFrom")?.value || "";
+  publishedSessionFilters.to = $("publishedSessionsDateTo")?.value || "";
+}
+
+function getSessionTimeForFilter(session) {
+  if (!session?.session_date) return null;
+
+  const date = new Date(`${session.session_date}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return null;
+
+  return date.getTime();
+}
+
+function filterPublishedSessions(sessions = []) {
+  const fromValue = publishedSessionFilters.from;
+  const toValue = publishedSessionFilters.to;
+
+  if (!fromValue && !toValue) {
+    return sessions;
+  }
+
+  const fromTime = fromValue
+    ? new Date(`${fromValue}T00:00:00`).getTime()
+    : null;
+
+  const toTime = toValue
+    ? new Date(`${toValue}T23:59:59`).getTime()
+    : null;
+
+  return sessions.filter((session) => {
+    const sessionTime = getSessionTimeForFilter(session);
+    if (sessionTime === null) return false;
+
+    if (fromTime !== null && sessionTime < fromTime) return false;
+    if (toTime !== null && sessionTime > toTime) return false;
+
+    return true;
+  });
+}
+
+function bindPublishedSessionFilterControls() {
+  const fromInput = $("publishedSessionsDateFrom");
+  const toInput = $("publishedSessionsDateTo");
+  const clearBtn = $("clearPublishedSessionsFilterBtn");
+
+  if (fromInput && fromInput.dataset.bound !== "1") {
+    fromInput.addEventListener("change", async () => {
+      readPublishedSessionFilters();
+      await renderPublishedSessionsAdmin();
+    });
+    fromInput.dataset.bound = "1";
+  }
+
+  if (toInput && toInput.dataset.bound !== "1") {
+    toInput.addEventListener("change", async () => {
+      readPublishedSessionFilters();
+      await renderPublishedSessionsAdmin();
+    });
+    toInput.dataset.bound = "1";
+  }
+
+  if (clearBtn && clearBtn.dataset.bound !== "1") {
+    clearBtn.addEventListener("click", async () => {
+      if (fromInput) fromInput.value = "";
+      if (toInput) toInput.value = "";
+
+      readPublishedSessionFilters();
+      await renderPublishedSessionsAdmin();
+    });
+    clearBtn.dataset.bound = "1";
+  }
+}
+
 function $(id) {
   return document.getElementById(id);
+}
+
+function renderSessionCoverPreview(previewUrl = "") {
+  if (!$("sessionCoverPreview")) return;
+
+  if (previewUrl) {
+    $("sessionCoverPreview").innerHTML =
+      `<img src="${escapeHtml(previewUrl)}" class="preview-session-cover" alt="preview" />`;
+    $("sessionCoverPreview").classList.remove("empty");
+    return;
+  }
+
+  $("sessionCoverPreview").innerHTML = "Изображение ещё не выбрано";
+  $("sessionCoverPreview").classList.add("empty");
+}
+
+function removeSessionCover() {
+  sessionCoverBlob = null;
+  sessionCoverPreviewUrl = "";
+
+  if ($("sessionCoverFile")) {
+    $("sessionCoverFile").value = "";
+  }
+
+  renderSessionCoverPreview("");
 }
 
 function openSessionCoverCropModal(imageSrc) {
@@ -75,14 +180,12 @@ async function applySessionCoverCrop() {
     return;
   }
 
-  sessionCoverBlob = blob;
-  sessionCoverPreviewUrl = URL.createObjectURL(blob);
+ sessionCoverBlob = blob;
+sessionCoverPreviewUrl = URL.createObjectURL(blob);
 
-  $("sessionCoverPreview").innerHTML =
-    `<img src="${sessionCoverPreviewUrl}" class="preview-session-cover" alt="preview" />`;
-  $("sessionCoverPreview").classList.remove("empty");
+renderSessionCoverPreview(sessionCoverPreviewUrl);
 
-  closeSessionCoverCropModal();
+closeSessionCoverCropModal();
 }
 
 export function resetSessionEditor() {
@@ -97,11 +200,10 @@ export function resetSessionEditor() {
   $("sessionResultText").value = "";
   $("sessionCoverFile").value = "";
 
-  sessionCoverBlob = null;
-  sessionCoverPreviewUrl = "";
+ sessionCoverBlob = null;
+sessionCoverPreviewUrl = "";
 
-  $("sessionCoverPreview").innerHTML = "Изображение ещё не выбрано";
-  $("sessionCoverPreview").classList.add("empty");
+renderSessionCoverPreview("");
 
   resetAdminParticipants();
 
@@ -164,7 +266,10 @@ export async function renderPublishedSessionsAdmin() {
   if (!$("publishedSessionsList")) return;
 
   try {
+    readPublishedSessionFilters();
+
     const sessions = await getSessions();
+    const filteredSessions = filterPublishedSessions(sessions || []);
 
     if (!sessions.length) {
       $("publishedSessionsList").innerHTML =
@@ -172,7 +277,13 @@ export async function renderPublishedSessionsAdmin() {
       return;
     }
 
-    $("publishedSessionsList").innerHTML = sessions.map((session) => `
+    if (!filteredSessions.length) {
+      $("publishedSessionsList").innerHTML =
+        `<div class="card-item">По выбранному диапазону дат сессий не найдено.</div>`;
+      return;
+    }
+
+    $("publishedSessionsList").innerHTML = filteredSessions.map((session) => `
       <div class="card-item compact-session-admin-card">
         <div class="compact-session-admin-top">
           <div>
@@ -186,7 +297,7 @@ export async function renderPublishedSessionsAdmin() {
 
           <div class="compact-session-admin-actions">
             <button class="icon-only-button edit-session-btn" data-id="${session.id}" type="button" title="Редактировать">✏</button>
-            <button class="icon-only-button danger-icon-button delete-session-btn" data-id="${session.id}" type="button" title="Удалить">🗑</button>
+            <button class="danger-action-icon-btn delete-session-btn" data-id="${session.id}" type="button" title="Удалить">🗑</button>
           </div>
         </div>
 
@@ -223,17 +334,10 @@ async function editSessionHandler(sessionId) {
     $("sessionTrackFile").value = "";
     $("sessionCoverFile").value = "";
 
-    sessionCoverBlob = null;
-    sessionCoverPreviewUrl = session.cover_url || "";
+   sessionCoverBlob = null;
+sessionCoverPreviewUrl = session.cover_url || "";
 
-    if (session.cover_url) {
-      $("sessionCoverPreview").innerHTML =
-        `<img src="${escapeHtml(session.cover_url)}" class="preview-session-cover" alt="preview" />`;
-      $("sessionCoverPreview").classList.remove("empty");
-    } else {
-      $("sessionCoverPreview").innerHTML = "Изображение ещё не выбрано";
-      $("sessionCoverPreview").classList.add("empty");
-    }
+renderSessionCoverPreview(sessionCoverPreviewUrl);
 
     const participantsFromEntries = (entries || []).map((entry) => ({
       characterId: entry.character_id,
@@ -285,12 +389,14 @@ export function initAdminSessionsScreen() {
     reader.onload = (event) => openSessionCoverCropModal(event.target.result);
     reader.readAsDataURL(file);
   });
+$("closeSessionCoverCropModalBtn")?.addEventListener("click", closeSessionCoverCropModal);
+$("applySessionCoverCropBtn")?.addEventListener("click", applySessionCoverCrop);
+$("removeSessionCoverBtn")?.addEventListener("click", removeSessionCover);
 
-  $("closeSessionCoverCropModalBtn")?.addEventListener("click", closeSessionCoverCropModal);
-  $("applySessionCoverCropBtn")?.addEventListener("click", applySessionCoverCrop);
+$("publishSessionBtn")?.addEventListener("click", publishSession);
+$("resetSessionEditorBtn")?.addEventListener("click", resetSessionEditor);
 
-  $("publishSessionBtn")?.addEventListener("click", publishSession);
-  $("resetSessionEditorBtn")?.addEventListener("click", resetSessionEditor);
+  bindPublishedSessionFilterControls();
 
   $("sessionWorld")?.addEventListener("change", async () => {
     const selectedWorldId = $("sessionWorld").value || null;
