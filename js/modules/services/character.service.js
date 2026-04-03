@@ -124,3 +124,82 @@ export async function getLatestWorldByCharacterIds(characterIds) {
 
   return map;
 }
+
+export async function getFavoriteCharacterByPlayer(playerId) {
+  if (!playerId) return null;
+
+  const { data: characters, error: charactersError } = await supabase
+    .from("characters")
+    .select("id, name, race, class_name, description, avatar_url, track_url, created_at")
+    .eq("player_id", playerId)
+    .order("created_at", { ascending: false });
+
+  if (charactersError) throw charactersError;
+
+  const characterList = characters || [];
+  if (!characterList.length) return null;
+
+  const characterIds = characterList.map((item) => item.id);
+
+  const { data: entries, error: entriesError } = await supabase
+    .from("session_entries")
+    .select(`
+      character_id,
+      sessions (
+        id,
+        session_date
+      )
+    `)
+    .in("character_id", characterIds);
+
+  if (entriesError) throw entriesError;
+
+  if (!entries?.length) {
+    return characterList[0] || null;
+  }
+
+  const statMap = new Map();
+
+  for (const character of characterList) {
+    statMap.set(String(character.id), {
+      count: 0,
+      latestSessionTime: 0
+    });
+  }
+
+  for (const row of entries) {
+    const characterId = String(row.character_id || "");
+    if (!characterId || !statMap.has(characterId)) continue;
+
+    const bucket = statMap.get(characterId);
+    bucket.count += 1;
+
+    const sessionTime = row.sessions?.session_date
+      ? new Date(row.sessions.session_date).getTime()
+      : 0;
+
+    if (sessionTime > bucket.latestSessionTime) {
+      bucket.latestSessionTime = sessionTime;
+    }
+  }
+
+  const rankedCharacters = [...characterList].sort((a, b) => {
+    const aStat = statMap.get(String(a.id)) || { count: 0, latestSessionTime: 0 };
+    const bStat = statMap.get(String(b.id)) || { count: 0, latestSessionTime: 0 };
+
+    if (bStat.count !== aStat.count) {
+      return bStat.count - aStat.count;
+    }
+
+    if (bStat.latestSessionTime !== aStat.latestSessionTime) {
+      return bStat.latestSessionTime - aStat.latestSessionTime;
+    }
+
+    const aCreated = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const bCreated = b.created_at ? new Date(b.created_at).getTime() : 0;
+
+    return bCreated - aCreated;
+  });
+
+  return rankedCharacters[0] || null;
+}

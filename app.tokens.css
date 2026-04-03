@@ -1,4 +1,3 @@
-
 :root {
   --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -16,9 +15,9 @@
   --space-6: 24px;
   --space-7: 32px;
 
-  --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 14px 36px rgba(15, 23, 42, 0.1);
-  --shadow-lg: 0 24px 56px rgba(15, 23, 42, 0.14);
+  --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.18);
+  --shadow-md: 0 14px 36px rgba(15, 23, 42, 0.24);
+  --shadow-lg: 0 24px 56px rgba(15, 23, 42, 0.3);
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
@@ -28,21 +27,23 @@
   --app-max-width: 1240px;
   --app-max-width-admin: 1320px;
 
-  --bg: #0f1115;
-  --bg-elevated: #171a21;
-  --bg-soft: #1d2129;
-  --surface: #171b23;
-  --surface-2: #1d2430;
-  --surface-3: #232b39;
+  /* ===== Base dark theme ===== */
+  --bg: #0c1017;
+  --bg-elevated: #121824;
+  --bg-soft: #18202d;
+
+  --surface: #151c27;
+  --surface-2: #1b2431;
+  --surface-3: #243042;
   --surface-contrast: #f5f7fb;
 
   --text: #f3f6fb;
-  --text-soft: #d7deeb;
-  --text-muted: #99a6bb;
+  --text-soft: #d8e0ed;
+  --text-muted: #9aa8bf;
   --text-inverse: #0e1320;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
 
   --accent: #4f8cff;
   --accent-hover: #3b7cf8;
@@ -54,13 +55,33 @@
 
   --backdrop: rgba(6, 10, 18, 0.76);
 
-  --field-bg: #131821;
-  --field-border: rgba(255, 255, 255, 0.1);
+  --field-bg: #121924;
+  --field-border: rgba(255, 255, 255, 0.12);
   --field-placeholder: #7f8ca1;
 
-  --tab-bg: rgba(255, 255, 255, 0.05);
+  --tab-bg: rgba(255, 255, 255, 0.06);
   --tab-active-bg: #ffffff;
   --tab-active-text: #111827;
+
+  /* ===== Semantic panel tokens ===== */
+  --panel-bg: color-mix(in srgb, var(--surface) 92%, transparent);
+  --panel-bg-elevated: color-mix(in srgb, var(--surface-2) 94%, transparent);
+  --panel-subtle-bg: color-mix(in srgb, var(--surface-2) 78%, transparent);
+  --panel-strong-bg: color-mix(in srgb, var(--surface-3) 88%, transparent);
+
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --panel-border-strong: rgba(255, 255, 255, 0.16);
+  --panel-hover-border: color-mix(in srgb, var(--accent) 34%, var(--panel-border));
+  --panel-shadow: 0 14px 34px rgba(4, 10, 20, 0.28);
+
+  /* ===== Dashboard sizing ===== */
+  --dashboard-shell-gap: clamp(12px, 1.2vw, 18px);
+  --dashboard-card-padding: clamp(14px, 1.2vw, 20px);
+  --dashboard-head-gap: clamp(10px, 0.9vw, 14px);
+  --dashboard-title-size: clamp(18px, 1.3vw, 24px);
+  --dashboard-kicker-size: 11px;
+  --dashboard-stat-number-size: clamp(24px, 1.8vw, 30px);
+  --dashboard-avatar-size: clamp(72px, 5.5vw, 96px);
 
   --card-padding: 18px;
   --content-gap: 16px;
@@ -70,9 +91,10 @@ body.theme-light {
   --bg: #f3f5f9;
   --bg-elevated: #f7f9fc;
   --bg-soft: #eef2f7;
+
   --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --surface-3: #eef3f9;
+  --surface-2: #f7f9fc;
+  --surface-3: #eaf0f7;
   --surface-contrast: #151b27;
 
   --text: #0f1728;
@@ -104,4 +126,14 @@ body.theme-light {
   --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.05);
   --shadow-md: 0 14px 36px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 24px 56px rgba(15, 23, 42, 0.12);
+
+  --panel-bg: #ffffff;
+  --panel-bg-elevated: #fbfcfe;
+  --panel-subtle-bg: #f5f8fc;
+  --panel-strong-bg: #edf3fa;
+
+  --panel-border: rgba(15, 23, 40, 0.08);
+  --panel-border-strong: rgba(15, 23, 40, 0.14);
+  --panel-hover-border: color-mix(in srgb, var(--accent) 28%, var(--panel-border));
+  --panel-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
 }

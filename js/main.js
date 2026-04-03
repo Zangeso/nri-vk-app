@@ -266,7 +266,9 @@ async function loadCabinet(vkUserInfo = null, devParams = getDevParams()) {
     playerId = player.id;
   }
 
-  let player = await renderPlayerProfileScreen(playerId);
+  let player = await renderPlayerProfileScreen(playerId, {
+  onOpenAchievement: openAchievementDetailModal
+});
 
   if (!player) {
     clearLocalPlayer();
@@ -275,7 +277,9 @@ async function loadCabinet(vkUserInfo = null, devParams = getDevParams()) {
     if (!fallbackPlayer) return null;
 
     playerId = fallbackPlayer.id;
-    player = await renderPlayerProfileScreen(playerId);
+    player = await renderPlayerProfileScreen(playerId, {
+  onOpenAchievement: openAchievementDetailModal
+});
   }
 
   if (!player) return null;

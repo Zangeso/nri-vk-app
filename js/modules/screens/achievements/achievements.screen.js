@@ -1,6 +1,5 @@
 import { getAchievementsByPlayer } from '../../services/achievement.service.js';
 import { renderAchievementsBoardHtml } from '../../ui/achievement-board.js';
-import { initHorizontalSlider } from '../../ui/horizontal-slider.js';
 import { showToast } from '../../toast.js';
 
 function $(id) {
@@ -34,17 +33,7 @@ export async function renderAchievementsScreen({ playerId, onOpenAchievement }) 
     }
 
     $("achievementBoard").innerHTML = renderAchievementsBoardHtml(achievements);
-
     bindAchievementButtons(onOpenAchievement);
-
-    if (achievements.length) {
-      initHorizontalSlider(
-        "achievementsTrack",
-        "achievementsPrevBtn",
-        "achievementsNextBtn",
-        180
-      );
-    }
   } catch (error) {
     showToast("Ошибка загрузки достижений: " + error.message, "error");
   }
