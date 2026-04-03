@@ -35,16 +35,13 @@
 }
 
 .dashboard-card-title {
-  margin: 6px 0 0;
-  font-size: var(--dashboard-title-size);
-  line-height: 1.08;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
 }
 
 .dashboard-card-note {
-  margin: 8px 0 0;
-  color: var(--text-muted);
-  max-width: 40ch;
-  line-height: 1.4;
+  display: none;
 }
 
 .dashboard-player-card,
@@ -74,6 +71,12 @@
 
 .dashboard-card-head-main {
   min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-card-head-main .dashboard-card-kicker {
+  margin: 0;
 }
 
 .dashboard-module__body {
@@ -89,16 +92,17 @@
     "hero"
     "favorite"
     "stats";
-  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: repeat(3, minmax(0, 1fr));
 }
 
 .player-card-hero {
   grid-area: hero;
+  min-width: 0;
+  min-height: 0;
   display: grid;
   grid-template-columns: var(--dashboard-avatar-size) minmax(0, 1fr);
   gap: var(--space-4);
   align-items: center;
-  min-width: 0;
 }
 
 .player-card-avatar {
@@ -113,6 +117,12 @@
 .player-card-info,
 .player-card-identity {
   min-width: 0;
+}
+
+.player-card-info {
+  display: flex;
+  align-items: center;
+  min-height: 0;
 }
 
 .player-card-name-row {
@@ -142,12 +152,10 @@
   min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: var(--space-3);
-  padding-top: var(--space-2);
+  gap: var(--space-2);
 }
 
-.player-favorite-head,
-.player-stats-head {
+.player-favorite-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -155,8 +163,7 @@
   min-width: 0;
 }
 
-.player-favorite-label,
-.player-stats-label {
+.player-favorite-label {
   font-size: 13px;
   line-height: 1.2;
   font-weight: 800;
@@ -171,32 +178,26 @@
   align-self: stretch;
 }
 
-.player-favorite-character-card .dashboard-character-arrow {
-  color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 26%, var(--panel-border));
-}
-
 .player-stats-block {
   grid-area: stats;
   min-width: 0;
   min-height: 0;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: var(--space-3);
+  display: flex;
 }
 
 .player-stats-panel {
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-3);
-  min-height: 0;
   align-content: stretch;
 }
 
 .player-stat-tile {
   min-width: 0;
   min-height: 0;
-  padding: 14px 12px;
+  padding: 12px 10px;
   border-radius: var(--radius-md);
   background: linear-gradient(
     180deg,
@@ -207,7 +208,7 @@
   display: grid;
   place-items: center;
   text-align: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .player-stat-number {
@@ -326,25 +327,21 @@
   word-break: break-word;
 }
 
-@media (max-width: 1100px) {
-  .achievements-grid-track {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+.dashboard-head-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 0;
+  flex-shrink: 0;
 }
 
-@media (max-width: 760px) {
-  .achievements-grid-track {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-
-.dashboard-filter-row {
-  margin-bottom: var(--space-3);
-}
-
-.dashboard-search-input {
-  width: 100%;
+.dashboard-search-input--compact {
+  width: 140px;
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
 }
 
 .dashboard-characters-list,
@@ -356,19 +353,35 @@
   align-content: start;
 }
 
+.dashboard-characters-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  align-content: start;
+}
+
+.dashboard-related-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  align-content: start;
+}
+
 .dashboard-character-row,
 .dashboard-character-row-v2,
 .dashboard-related-row,
 .dashboard-related-row-v2 {
   width: 100%;
+  min-width: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding: 13px 14px;
+  gap: var(--space-3);
+  padding: 12px 13px;
   text-align: left;
   background: var(--panel-subtle-bg);
   border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
   transition:
     border-color 0.2s ease,
     transform 0.18s ease,
@@ -388,40 +401,39 @@
 .dashboard-character-main,
 .dashboard-related-main {
   min-width: 0;
-  flex: 1;
+  flex: 1 1 auto;
+  display: grid;
+  gap: 4px;
 }
 
 .dashboard-character-name,
 .dashboard-related-player-name,
 .dashboard-related-topline {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
-  line-height: 1.3;
+  line-height: 1.2;
+  min-width: 0;
 }
 
-.dashboard-character-meta,
+.dashboard-character-meta {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--text-soft);
+}
+
 .dashboard-character-world,
 .dashboard-related-character-line,
 .dashboard-related-achievement-line,
 .dashboard-related-meta {
-  margin-top: 4px;
   font-size: 12px;
   line-height: 1.35;
   color: var(--text-muted);
 }
 
-.dashboard-character-arrow,
-.dashboard-related-arrow {
-  width: 30px;
-  min-width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+.dashboard-character-world {
+  margin-top: 0;
   color: var(--text-muted);
+  word-break: break-word;
 }
 
 .feed-stories-list {
@@ -654,7 +666,28 @@
   white-space: pre-line;
 }
 
+@media (max-width: 1100px) {
+  .achievements-grid-track {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .dashboard-characters-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 900px) {
+  .dashboard-head-tools {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .dashboard-search-input--compact {
+    width: min(180px, 100%);
+  }
+
   .cabinet-app-shell {
     height: auto;
     min-height: calc(100svh - var(--safe-top) - var(--safe-bottom));
@@ -685,8 +718,17 @@
 }
 
 @media (max-width: 760px) {
+  .dashboard-card-head,
+  .dashboard-module__head {
+    flex-wrap: wrap;
+  }
+
   .player-card-name-row {
     gap: var(--space-2);
+  }
+
+  .player-card-surface {
+    grid-template-rows: auto auto auto;
   }
 
   .player-stats-panel {
@@ -695,6 +737,10 @@
 
   .player-stat-tile {
     min-height: 88px;
+  }
+
+  .achievements-grid-track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .feed-title-row,

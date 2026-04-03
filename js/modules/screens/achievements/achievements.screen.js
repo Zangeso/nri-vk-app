@@ -2,6 +2,8 @@ import { getAchievementsByPlayer } from '../../services/achievement.service.js';
 import { renderAchievementsBoardHtml } from '../../ui/achievement-board.js';
 import { showToast } from '../../toast.js';
 
+let currentAchievementSearchQuery = "";
+
 function $(id) {
   return document.getElementById(id);
 }
@@ -22,6 +24,44 @@ function bindAchievementButtons(onOpenAchievement) {
   });
 }
 
+function filterAchievements(achievements = []) {
+  const query = currentAchievementSearchQuery.trim().toLowerCase();
+  if (!query) return [...achievements];
+
+  return achievements.filter((item) => {
+    const title = String(item.title || "").toLowerCase();
+    const character = String(item.characters?.name || "").toLowerCase();
+    return title.includes(query) || character.includes(query);
+  });
+}
+
+function renderAchievementsList({ achievements, onOpenAchievement }) {
+  const container = $("achievementBoard");
+  if (!container) return;
+
+  const filteredAchievements = filterAchievements(achievements);
+
+  if (!filteredAchievements.length) {
+    container.innerHTML = currentAchievementSearchQuery.trim()
+      ? '<div class="dashboard-empty-state">Ничего не найдено.</div>'
+      : renderAchievementsBoardHtml([]);
+    return;
+  }
+
+  container.innerHTML = renderAchievementsBoardHtml(filteredAchievements);
+  bindAchievementButtons(onOpenAchievement);
+}
+
+function bindAchievementSearch({ achievements, onOpenAchievement }) {
+  const input = $("achievementSearchInput");
+  if (!input) return;
+
+  input.oninput = () => {
+    currentAchievementSearchQuery = input.value || "";
+    renderAchievementsList({ achievements, onOpenAchievement });
+  };
+}
+
 export async function renderAchievementsScreen({ playerId, onOpenAchievement }) {
   if (!$("achievementBoard")) return;
 
@@ -32,8 +72,15 @@ export async function renderAchievementsScreen({ playerId, onOpenAchievement }) 
       $("statAchievements").textContent = String(achievements.length);
     }
 
-    $("achievementBoard").innerHTML = renderAchievementsBoardHtml(achievements);
-    bindAchievementButtons(onOpenAchievement);
+    renderAchievementsList({
+      achievements,
+      onOpenAchievement
+    });
+
+    bindAchievementSearch({
+      achievements,
+      onOpenAchievement
+    });
   } catch (error) {
     showToast("Ошибка загрузки достижений: " + error.message, "error");
   }

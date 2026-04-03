@@ -34,118 +34,128 @@
 
       <section id="cabinetTab" class="main-tab-panel active cabinet-dashboard-panel">
         <div class="cabinet-dashboard-grid cabinet-dashboard-grid--quad">
-  <section class="dashboard-card dashboard-module dashboard-player-card">
-  <div class="dashboard-module__head dashboard-card-head">
-    <span class="dashboard-card-kicker">Игрок</span>
-  </div>
-
-  <div class="dashboard-module__body">
-    <div class="player-card-surface">
-      <div class="player-card-hero">
-        <img id="playerAvatar" class="player-card-avatar" src="" alt="Аватар игрока" />
-
-        <div class="player-card-info">
-          <div class="player-card-name-row">
-            <div class="player-card-identity">
-              <h2 id="playerNickname" class="player-card-title">Игрок</h2>
-              <p id="playerFullName" class="player-card-subtitle">Имя из VK появится позже</p>
+          <section class="dashboard-card dashboard-module dashboard-player-card">
+            <div class="dashboard-module__head dashboard-card-head">
+              <span class="dashboard-card-kicker">Игрок</span>
             </div>
 
-            <button
-              id="openNicknameModalBtn"
-              class="cabinet-icon-btn small"
-              type="button"
-              title="Редактировать ник"
-              aria-label="Редактировать ник"
-            >✏</button>
-          </div>
+            <div class="dashboard-module__body">
+              <div class="player-card-surface">
+                <div class="player-card-hero">
+                  <img id="playerAvatar" class="player-card-avatar" src="" alt="Аватар игрока" />
+
+                  <div class="player-card-info">
+                    <div class="player-card-name-row">
+                      <div class="player-card-identity">
+                        <h2 id="playerNickname" class="player-card-title">Игрок</h2>
+                        <p id="playerFullName" class="player-card-subtitle">Имя из VK появится позже</p>
+                      </div>
+
+                      <button
+                        id="openNicknameModalBtn"
+                        class="cabinet-icon-btn small"
+                        type="button"
+                        title="Редактировать ник"
+                        aria-label="Редактировать ник"
+                      >✏</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="player-favorite-block">
+                  <div class="player-favorite-head">
+                    <span class="player-favorite-label">Любимый персонаж</span>
+                  </div>
+
+                  <div id="favoriteCharacterCard"></div>
+                </div>
+
+                <div class="player-stats-block">
+                  <div class="player-stats-panel">
+                    <div class="player-stat-tile">
+                      <span class="player-stat-number" id="statCharacters">0</span>
+                      <span class="player-stat-label">Персонажи</span>
+                    </div>
+
+                    <div class="player-stat-tile">
+                      <span class="player-stat-number" id="statAchievements">0</span>
+                      <span class="player-stat-label">Достижения</span>
+                    </div>
+
+                    <div class="player-stat-tile">
+                      <span class="player-stat-number" id="statSessions">0</span>
+                      <span class="player-stat-label">Сессии</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-card dashboard-module dashboard-achievements-card">
+            <div class="dashboard-module__head dashboard-card-head achievements-card-head">
+              <div class="dashboard-card-head-main">
+                <span class="dashboard-card-kicker">Коллекция достижений</span>
+              </div>
+
+              <div class="dashboard-head-tools">
+                <input
+                  id="achievementSearchInput"
+                  class="dashboard-search-input dashboard-search-input--compact"
+                  type="text"
+                  placeholder="Поиск"
+                  aria-label="Поиск достижений"
+                />
+              </div>
+            </div>
+
+            <div class="dashboard-module__body">
+              <div class="achievements-card-shell">
+                <div id="achievementBoard" class="dashboard-achievements-board"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-card dashboard-module dashboard-characters-card">
+            <div class="dashboard-module__head dashboard-card-head">
+              <div>
+                <span class="dashboard-card-kicker">Персонажи игрока</span>
+              </div>
+
+              <div class="dashboard-head-tools">
+                <input
+                  id="characterSearchInput"
+                  class="dashboard-search-input dashboard-search-input--compact"
+                  type="text"
+                  placeholder="Поиск"
+                  aria-label="Поиск персонажей"
+                />
+
+                <button id="openCharacterModalBtn" class="small-button cabinet-add-btn" type="button">＋</button>
+              </div>
+            </div>
+
+            <div class="dashboard-module__body">
+              <div id="charactersList" class="dashboard-characters-list"></div>
+            </div>
+          </section>
+
+          <section class="dashboard-card dashboard-module dashboard-related-card">
+            <div class="dashboard-module__head dashboard-card-head">
+              <div>
+                <span class="dashboard-card-kicker">Связи</span>
+              </div>
+            </div>
+
+            <div class="dashboard-module__body">
+              <div id="relatedPlayersList" class="dashboard-related-list">
+                <div class="dashboard-empty-state">
+                  Блок связанных игроков подключим следующим шагом.
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
-
-      <div class="player-favorite-block">
-        <div class="player-favorite-head">
-          <span class="player-favorite-label">Любимый персонаж</span>
-        </div>
-
-        <div id="favoriteCharacterCard"></div>
-      </div>
-
-      <div class="player-stats-block">
-        <div class="player-stats-head">
-          <span class="player-stats-label">Статистика кабинета</span>
-        </div>
-
-        <div class="player-stats-panel">
-          <div class="player-stat-tile">
-            <span class="player-stat-number" id="statCharacters">0</span>
-            <span class="player-stat-label">Персонажи</span>
-          </div>
-
-          <div class="player-stat-tile">
-            <span class="player-stat-number" id="statAchievements">0</span>
-            <span class="player-stat-label">Достижения</span>
-          </div>
-
-          <div class="player-stat-tile">
-            <span class="player-stat-number" id="statSessions">0</span>
-            <span class="player-stat-label">Сессии</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-  <section class="dashboard-card dashboard-module dashboard-achievements-card">
-    <div class="dashboard-module__head dashboard-card-head achievements-card-head">
-      <div class="dashboard-card-head-main">
-        <span class="dashboard-card-kicker">Коллекция</span>
-        <h3 class="dashboard-card-title">Достижения</h3>
-        <p class="dashboard-card-note">Последние и самые заметные награды игрока</p>
-      </div>
-
-     
-    </div>
-
-    <div class="dashboard-module__body">
-      <div class="achievements-card-shell">
-        <div id="achievementBoard" class="dashboard-achievements-board"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="dashboard-card dashboard-module dashboard-characters-card">
-    <div class="dashboard-module__head dashboard-card-head">
-      <div>
-        <span class="dashboard-card-kicker">Персонажи</span>
-        <h3 class="dashboard-card-title">Список персонажей</h3>
-      </div>
-
-      <button id="openCharacterModalBtn" class="small-button cabinet-add-btn" type="button">＋</button>
-    </div>
-
-    <div class="dashboard-module__body">
-      <div id="charactersList" class="dashboard-characters-list"></div>
-    </div>
-  </section>
-
-  <section class="dashboard-card dashboard-module dashboard-related-card">
-    <div class="dashboard-module__head dashboard-card-head">
-      <div>
-        <span class="dashboard-card-kicker">Связи</span>
-        <h3 class="dashboard-card-title">Игроки из последних общих сессий</h3>
-      </div>
-    </div>
-
-    <div class="dashboard-module__body">
-      <div id="relatedPlayersList" class="dashboard-related-list">
-        <div class="dashboard-empty-state">
-          Блок связанных игроков подключим следующим шагом.
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
       </section>
 
       <section id="feedTab" class="main-tab-panel cabinet-feed-panel">

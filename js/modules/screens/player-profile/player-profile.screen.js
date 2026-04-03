@@ -5,7 +5,7 @@ import {
 
 import {
   getFavoriteCharacterByPlayer,
-  getLatestWorldByCharacterIds
+  getWorldsByCharacterIds
 } from '../../services/character.service.js';
 
 import { openReadOnlyCharacterModal } from '../characters/characters.screen.js';
@@ -37,10 +37,14 @@ function renderFavoriteCharacterEmpty() {
   `;
 }
 
-function buildFavoriteCharacterRow(character, worldName = "") {
+function buildFavoriteCharacterRow(character, worldNames = []) {
   const race = character.race || "Раса не указана";
   const className = character.class_name || "Класс не указан";
   const metaLine = `${race} • ${className}`;
+
+  const worldsLine = Array.isArray(worldNames) && worldNames.length
+    ? `Миры: ${worldNames.map((w) => escapeHtml(w)).join(" • ")}`
+    : "Миры пока не указаны";
 
   return `
     <button
@@ -50,32 +54,22 @@ function buildFavoriteCharacterRow(character, worldName = "") {
       title="Открыть карточку любимого персонажа"
     >
       <div class="dashboard-character-main">
-        <div class="dashboard-character-name-row">
+        <div class="dashboard-character-topline">
           <strong class="dashboard-character-name">
             ${escapeHtml(character.name || "Без имени")}
           </strong>
+
+          <span class="dashboard-character-meta-inline">
+            ${escapeHtml(metaLine)}
+          </span>
         </div>
 
-        <div class="dashboard-character-meta">
-          ${escapeHtml(metaLine)}
+        <div class="dashboard-character-world dashboard-character-world-muted">
+          ${worldsLine}
         </div>
-
-        ${
-          worldName
-            ? `
-              <div class="dashboard-character-world">
-                Мир: ${escapeHtml(worldName)}
-              </div>
-            `
-            : `
-              <div class="dashboard-character-world dashboard-character-world-muted">
-                Мир пока не указан
-              </div>
-            `
-        }
       </div>
 
-      <div class="dashboard-character-arrow" aria-hidden="true">★</div>
+     
     </button>
   `;
 }
@@ -109,16 +103,16 @@ async function renderFavoriteCharacter(playerId, onOpenAchievement) {
       return;
     }
 
-    let worldName = "";
+    let worldNames = [];
 
-    try {
-      const worldNameById = await getLatestWorldByCharacterIds([favoriteCharacter.id]);
-      worldName = worldNameById[favoriteCharacter.id] || "";
-    } catch (error) {
-      console.warn("Не удалось загрузить мир любимого персонажа", error);
-    }
+try {
+  const worldsById = await getWorldsByCharacterIds([favoriteCharacter.id]);
+  worldNames = worldsById[favoriteCharacter.id] || [];
+} catch (error) {
+  console.warn("Не удалось загрузить миры любимого персонажа", error);
+}
 
-    container.innerHTML = buildFavoriteCharacterRow(favoriteCharacter, worldName);
+    container.innerHTML = buildFavoriteCharacterRow(favoriteCharacter, worldNames);
     bindFavoriteCharacterCard(onOpenAchievement);
   } catch (error) {
     console.warn("Не удалось загрузить любимого персонажа", error);

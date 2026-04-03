@@ -92,7 +92,7 @@ const { error } = await supabase
 if (error) throw error;
 }
 
-export async function getLatestWorldByCharacterIds(characterIds) {
+export async function getWorldsByCharacterIds(characterIds) {
   if (!Array.isArray(characterIds) || !characterIds.length) {
     return {};
   }
@@ -108,18 +108,43 @@ export async function getLatestWorldByCharacterIds(characterIds) {
         )
       )
     `)
-    .in("character_id", characterIds)
-    .order("created_at", { ascending: false });
+    .in("character_id", characterIds);
 
   if (error) throw error;
 
   const map = {};
 
-  for (const row of data || []) {
-    if (!row.character_id) continue;
-    if (map[row.character_id]) continue;
+  for (const characterId of characterIds) {
+    map[characterId] = [];
+  }
 
-    map[row.character_id] = row.sessions?.worlds?.title || "";
+  const worldBuckets = new Map();
+
+  for (const row of data || []) {
+    const characterId = row.character_id;
+    const worldTitle = row.sessions?.worlds?.title || "";
+    const sessionTime = row.sessions?.session_date
+      ? new Date(row.sessions.session_date).getTime()
+      : 0;
+
+    if (!characterId || !worldTitle) continue;
+
+    if (!worldBuckets.has(characterId)) {
+      worldBuckets.set(characterId, new Map());
+    }
+
+    const byWorld = worldBuckets.get(characterId);
+    const prevTime = byWorld.get(worldTitle) || 0;
+
+    if (sessionTime > prevTime) {
+      byWorld.set(worldTitle, sessionTime);
+    }
+  }
+
+  for (const [characterId, byWorld] of worldBuckets.entries()) {
+    map[characterId] = [...byWorld.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([title]) => title);
   }
 
   return map;

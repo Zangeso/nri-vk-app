@@ -1,7 +1,7 @@
 import {
   getCharactersByPlayer,
   getCharacterById,
-  getLatestWorldByCharacterIds
+  getWorldsByCharacterIds
 } from '../../services/character.service.js';
 
 import { getAchievementsByCharacter } from '../../services/character-achievement.service.js';
@@ -41,10 +41,14 @@ function renderCharactersEmptyState() {
   return '<div class="dashboard-empty-state">У тебя пока нет персонажей.</div>';
 }
 
-function buildCharacterRow(character, worldName = "") {
+function buildCharacterRow(character, worldNames = []) {
   const race = character.race || "Раса не указана";
   const className = character.class_name || "Класс не указан";
   const metaLine = `${race} • ${className}`;
+
+  const worldsLine = Array.isArray(worldNames) && worldNames.length
+    ? `Миры: ${worldNames.map((item) => escapeHtml(item)).join(" • ")}`
+    : "Миры пока не указаны";
 
   return `
     <button
@@ -55,31 +59,21 @@ function buildCharacterRow(character, worldName = "") {
     >
       <div class="dashboard-character-main">
         <div class="dashboard-character-name-row">
-          <strong class="dashboard-character-name">
-            ${escapeHtml(character.name || "Без имени")}
-          </strong>
-        </div>
+  <strong class="dashboard-character-name">
+    ${escapeHtml(character.name || "Без имени")}
+  </strong>
+</div>
 
-        <div class="dashboard-character-meta">
-          ${escapeHtml(metaLine)}
-        </div>
+<div class="dashboard-character-meta">
+  ${escapeHtml(metaLine)}
+</div>
 
-        ${
-          worldName
-            ? `
-              <div class="dashboard-character-world">
-                Мир: ${escapeHtml(worldName)}
-              </div>
-            `
-            : `
-              <div class="dashboard-character-world dashboard-character-world-muted">
-                Мир пока не указан
-              </div>
-            `
-        }
+<div class="dashboard-character-world dashboard-character-world-muted">
+  ${worldsLine}
+</div>
       </div>
 
-      <div class="dashboard-character-arrow" aria-hidden="true">›</div>
+     
     </button>
   `;
 }
@@ -238,7 +232,7 @@ async function openCharacterModalFromRow({
 
 function renderCharactersRows({
   characters,
-  worldNameById,
+  worldsByCharacterId,
   onOpenAchievement,
   onReloadCabinet
 }) {
@@ -255,7 +249,7 @@ function renderCharactersRows({
   }
 
   container.innerHTML = filteredCharacters
-    .map((character) => buildCharacterRow(character, worldNameById[character.id] || ""))
+    .map((character) => buildCharacterRow(character, worldsByCharacterId[character.id] || []))
     .join("");
 
   container.querySelectorAll(".dashboard-character-row").forEach((button) => {
@@ -271,19 +265,21 @@ function renderCharactersRows({
 
 function bindCharacterSearch({
   characters,
-  worldNameById,
+  worldsByCharacterId,
   onOpenAchievement,
   onReloadCabinet
 }) {
   const input = $("characterSearchInput");
   if (!input) return;
 
+  input.value = currentSearchQuery;
+
   input.oninput = () => {
     currentSearchQuery = input.value || "";
 
     renderCharactersRows({
       characters,
-      worldNameById,
+      worldsByCharacterId,
       onOpenAchievement,
       onReloadCabinet
     });
@@ -343,28 +339,28 @@ export async function renderCharactersScreen({
 
     characters = await getRecentCharacterOrder(playerId, characters);
 
-    let worldNameById = {};
-    try {
-      worldNameById = await getLatestWorldByCharacterIds(
-        characters.map((character) => character.id)
-      );
-    } catch (error) {
-      console.warn("Не удалось загрузить последние миры персонажей", error);
-    }
+    let worldsByCharacterId = {};
+try {
+  worldsByCharacterId = await getWorldsByCharacterIds(
+    characters.map((character) => character.id)
+  );
+} catch (error) {
+  console.warn("Не удалось загрузить миры персонажей", error);
+}
 
-    renderCharactersRows({
-      characters,
-      worldNameById,
-      onOpenAchievement,
-      onReloadCabinet
-    });
+renderCharactersRows({
+  characters,
+  worldsByCharacterId,
+  onOpenAchievement,
+  onReloadCabinet
+});
 
-    bindCharacterSearch({
-      characters,
-      worldNameById,
-      onOpenAchievement,
-      onReloadCabinet
-    });
+bindCharacterSearch({
+  characters,
+  worldsByCharacterId,
+  onOpenAchievement,
+  onReloadCabinet
+});
   } catch (error) {
     container.innerHTML = '<div class="dashboard-empty-state">Не удалось загрузить персонажей.</div>';
     showToast("Ошибка загрузки персонажей: " + error.message, "error");
