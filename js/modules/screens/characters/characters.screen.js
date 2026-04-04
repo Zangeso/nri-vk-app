@@ -59,21 +59,19 @@ function buildCharacterRow(character, worldNames = []) {
     >
       <div class="dashboard-character-main">
         <div class="dashboard-character-name-row">
-  <strong class="dashboard-character-name">
-    ${escapeHtml(character.name || "Без имени")}
-  </strong>
-</div>
+          <strong class="dashboard-character-name">
+            ${escapeHtml(character.name || "Без имени")}
+          </strong>
+        </div>
 
-<div class="dashboard-character-meta">
-  ${escapeHtml(metaLine)}
-</div>
+        <div class="dashboard-character-meta">
+          ${escapeHtml(metaLine)}
+        </div>
 
-<div class="dashboard-character-world dashboard-character-world-muted">
-  ${worldsLine}
-</div>
+        <div class="dashboard-character-world dashboard-character-world-muted">
+          ${worldsLine}
+        </div>
       </div>
-
-     
     </button>
   `;
 }
@@ -151,13 +149,50 @@ async function openCharacterModalFromRow({
     const character = await getCharacterById(characterId);
     const characterAchievements = await getAchievementsByCharacter(characterId);
 
+    let worldNames = [];
+    try {
+      const worldsByCharacterId = await getWorldsByCharacterIds([characterId]);
+      worldNames = worldsByCharacterId[characterId] || [];
+    } catch (error) {
+      console.warn("Не удалось загрузить миры персонажа", error);
+    }
+
     $("characterViewContent").innerHTML = renderCharacterViewModalContent(
       character,
       characterAchievements,
-      { readOnly, ownerLabel }
+      {
+        readOnly,
+        ownerLabel,
+        worldNames
+      }
     );
 
     openModal("characterViewModal");
+
+    const modalHeaderActions = document.getElementById("characterModalHeaderActions");
+    if (modalHeaderActions) {
+      if (readOnly) {
+        modalHeaderActions.innerHTML = "";
+      } else {
+        modalHeaderActions.innerHTML = `
+          <button
+            id="openInlineEditBtn"
+            class="icon-only-button"
+            type="button"
+            title="Редактировать"
+            aria-label="Редактировать"
+          >✏</button>
+
+          <button
+            id="openInlineDeleteBtn"
+            class="icon-only-button danger-icon-button"
+            type="button"
+            title="Удалить"
+            aria-label="Удалить"
+          >🗑</button>
+        `;
+      }
+    }
 
     if (readOnly) {
       document.querySelectorAll(".character-achievement-orb-btn").forEach((button) => {
@@ -189,9 +224,14 @@ async function openCharacterModalFromRow({
     bindCharacterViewActions({
       characterId: character.id,
       originalTrackUrl: character.track_url || null,
-      onSave: async (targetCharacterId, oldTrackUrl) => {
+      originalAvatarUrl: character.avatar_url || null,
+      onSave: async (targetCharacterId, oldTrackUrl, oldAvatarUrl) => {
         try {
-          await saveInlineCharacterForm(targetCharacterId, oldTrackUrl);
+          await saveInlineCharacterForm(
+            targetCharacterId,
+            oldTrackUrl,
+            oldAvatarUrl
+          );
 
           showToast("Персонаж обновлён", "success");
           closeModal("characterViewModal");
@@ -340,27 +380,27 @@ export async function renderCharactersScreen({
     characters = await getRecentCharacterOrder(playerId, characters);
 
     let worldsByCharacterId = {};
-try {
-  worldsByCharacterId = await getWorldsByCharacterIds(
-    characters.map((character) => character.id)
-  );
-} catch (error) {
-  console.warn("Не удалось загрузить миры персонажей", error);
-}
+    try {
+      worldsByCharacterId = await getWorldsByCharacterIds(
+        characters.map((character) => character.id)
+      );
+    } catch (error) {
+      console.warn("Не удалось загрузить миры персонажей", error);
+    }
 
-renderCharactersRows({
-  characters,
-  worldsByCharacterId,
-  onOpenAchievement,
-  onReloadCabinet
-});
+    renderCharactersRows({
+      characters,
+      worldsByCharacterId,
+      onOpenAchievement,
+      onReloadCabinet
+    });
 
-bindCharacterSearch({
-  characters,
-  worldsByCharacterId,
-  onOpenAchievement,
-  onReloadCabinet
-});
+    bindCharacterSearch({
+      characters,
+      worldsByCharacterId,
+      onOpenAchievement,
+      onReloadCabinet
+    });
   } catch (error) {
     container.innerHTML = '<div class="dashboard-empty-state">Не удалось загрузить персонажей.</div>';
     showToast("Ошибка загрузки персонажей: " + error.message, "error");

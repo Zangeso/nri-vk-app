@@ -37,39 +37,32 @@ function renderFavoriteCharacterEmpty() {
   `;
 }
 
-function buildFavoriteCharacterRow(character, worldNames = []) {
+function buildFavoriteCharacterRow(character) {
   const race = character.race || "Раса не указана";
   const className = character.class_name || "Класс не указан";
-  const metaLine = `${race} • ${className}`;
-
-  const worldsLine = Array.isArray(worldNames) && worldNames.length
-    ? `Миры: ${worldNames.map((w) => escapeHtml(w)).join(" • ")}`
-    : "Миры пока не указаны";
 
   return `
     <button
       class="dashboard-character-row dashboard-character-row-v2 player-favorite-character-card"
       data-id="${character.id}"
       type="button"
-      title="Открыть карточку любимого персонажа"
+      title="Открыть карточку персонажа"
     >
+      <div class="player-favorite-mark" aria-hidden="true">
+        <span class="player-favorite-mark-icon">★</span>
+      </div>
+
       <div class="dashboard-character-main">
-        <div class="dashboard-character-topline">
+        <div class="dashboard-character-name-row">
           <strong class="dashboard-character-name">
             ${escapeHtml(character.name || "Без имени")}
           </strong>
-
-          <span class="dashboard-character-meta-inline">
-            ${escapeHtml(metaLine)}
-          </span>
         </div>
 
-        <div class="dashboard-character-world dashboard-character-world-muted">
-          ${worldsLine}
+        <div class="dashboard-character-meta">
+          ${escapeHtml(`${race} • ${className}`)}
         </div>
       </div>
-
-     
     </button>
   `;
 }

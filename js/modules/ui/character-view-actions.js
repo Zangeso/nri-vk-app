@@ -1,38 +1,122 @@
 export function bindCharacterViewActions({
   characterId,
   originalTrackUrl = null,
+  originalAvatarUrl = null,
   onSave,
   onDelete,
   onOpenAchievement,
   onInitSlider
 }) {
   const editBtn = document.getElementById("openInlineEditBtn");
-  const cancelBtn = document.getElementById("cancelInlineEditBtn");
-  const saveBtn = document.getElementById("saveInlineEditBtn");
   const deleteBtn = document.getElementById("openInlineDeleteBtn");
-  const editBlock = document.getElementById("characterInlineEditBlock");
 
-  if (editBtn && editBlock) {
-    editBtn.addEventListener("click", () => {
-      editBlock.classList.remove("hidden");
+  const sheet = document.getElementById("characterInlineSheet");
+
+  const avatarInput = document.getElementById("inlineCharacterAvatarFile");
+  const avatarPreview = document.getElementById("inlineCharacterAvatarPreview");
+  const avatarPickBtn = document.getElementById("inlineCharacterAvatarPickBtn");
+
+  const trackInput = document.getElementById("inlineCharacterTrackFile");
+
+  let isEditing = false;
+
+  function applyHeaderState() {
+    if (!editBtn || !deleteBtn) return;
+
+    if (isEditing) {
+      editBtn.innerHTML = `💾 <span>Сохранить изменения</span>`;
+      editBtn.classList.add("character-header-save-btn");
+      editBtn.setAttribute("title", "Сохранить изменения");
+      editBtn.setAttribute("aria-label", "Сохранить изменения");
+
+      deleteBtn.innerHTML = `↺`;
+      deleteBtn.setAttribute("title", "Отмена");
+      deleteBtn.setAttribute("aria-label", "Отмена");
+      deleteBtn.classList.remove("danger-icon-button");
+    } else {
+      editBtn.innerHTML = `✏`;
+      editBtn.classList.remove("character-header-save-btn");
+      editBtn.setAttribute("title", "Редактировать");
+      editBtn.setAttribute("aria-label", "Редактировать");
+
+      deleteBtn.innerHTML = `🗑`;
+      deleteBtn.setAttribute("title", "Удалить");
+      deleteBtn.setAttribute("aria-label", "Удалить");
+      deleteBtn.classList.add("danger-icon-button");
+    }
+  }
+
+  function resetInlineFiles() {
+    if (avatarInput) {
+      avatarInput.value = "";
+    }
+
+    if (trackInput) {
+      trackInput.value = "";
+    }
+  }
+
+  function resetAvatarPreview() {
+    if (!avatarPreview) return;
+    avatarPreview.src = originalAvatarUrl || avatarPreview.dataset.fallback || avatarPreview.src;
+  }
+
+  function setEditing(next) {
+    isEditing = Boolean(next);
+
+    if (sheet) {
+      sheet.classList.toggle("is-editing", isEditing);
+    }
+
+    applyHeaderState();
+  }
+
+  if (avatarPreview && !avatarPreview.dataset.fallback) {
+    avatarPreview.dataset.fallback = avatarPreview.src || "";
+  }
+
+  if (editBtn) {
+    editBtn.addEventListener("click", async () => {
+      if (!isEditing) {
+        setEditing(true);
+        return;
+      }
+
+      if (onSave) {
+        await onSave(characterId, originalTrackUrl, originalAvatarUrl);
+      }
     });
   }
 
-  if (cancelBtn && editBlock) {
-    cancelBtn.addEventListener("click", () => {
-      editBlock.classList.add("hidden");
-    });
-  }
-
-  if (saveBtn && onSave) {
-    saveBtn.addEventListener("click", async () => {
-      await onSave(characterId, originalTrackUrl);
-    });
-  }
-
-  if (deleteBtn && onDelete) {
+  if (deleteBtn) {
     deleteBtn.addEventListener("click", () => {
-      onDelete(characterId);
+      if (isEditing) {
+        resetInlineFiles();
+        resetAvatarPreview();
+        setEditing(false);
+        return;
+      }
+
+      if (onDelete) {
+        onDelete(characterId);
+      }
+    });
+  }
+
+  if (avatarPickBtn && avatarInput) {
+    avatarPickBtn.addEventListener("click", () => {
+      if (!isEditing) return;
+      avatarInput.click();
+    });
+  }
+
+  if (avatarInput && avatarPreview) {
+    avatarInput.addEventListener("change", () => {
+      const file = avatarInput.files?.[0];
+      if (!file) return;
+
+      const url = URL.createObjectURL(file);
+      avatarPreview.src = url;
     });
   }
 
@@ -53,4 +137,6 @@ export function bindCharacterViewActions({
   if (onInitSlider) {
     onInitSlider();
   }
+
+  applyHeaderState();
 }

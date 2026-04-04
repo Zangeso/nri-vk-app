@@ -2,94 +2,107 @@ import { supabase } from '../supabase.js';
 import { uploadImage, uploadAudio } from './storage.service.js';
 
 export async function getCharactersByPlayer(playerId) {
-const { data, error } = await supabase
-.from("characters")
-.select("id, name, race, class_name, description, avatar_url, track_url")
-.eq("player_id", playerId)
-.order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("characters")
+    .select("id, name, race, class_name, description, avatar_url, track_url")
+    .eq("player_id", playerId)
+    .order("created_at", { ascending: false });
 
-if (error) throw error;
-return data || [];
+  if (error) throw error;
+  return data || [];
 }
 
 export async function getCharacterById(characterId) {
-const { data, error } = await supabase
-.from("characters")
-.select("*")
-.eq("id", characterId)
-.single();
+  const { data, error } = await supabase
+    .from("characters")
+    .select("*")
+    .eq("id", characterId)
+    .single();
 
-if (error) throw error;
-return data;
+  if (error) throw error;
+  return data;
 }
 
 export async function createCharacter(playerId, characterData, avatarBlob = null, trackFile = null) {
-let avatarUrl = null;
-let trackUrl = null;
+  let avatarUrl = null;
+  let trackUrl = null;
 
-if (avatarBlob) {
-avatarUrl = await uploadImage(avatarBlob, "avatars", "character_avatar");
+  if (avatarBlob) {
+    avatarUrl = await uploadImage(avatarBlob, "avatars", "character_avatar");
+  }
+
+  if (trackFile) {
+    trackUrl = await uploadAudio(trackFile, "character_track");
+  }
+
+  const payload = {
+    player_id: playerId,
+    world_id: null,
+    name: characterData.name,
+    race: characterData.race || null,
+    class_name: characterData.className || null,
+    level: 1,
+    avatar_url: avatarUrl,
+    track_url: trackUrl,
+    description: characterData.description || null
+  };
+
+  const { data, error } = await supabase
+    .from("characters")
+    .insert([payload])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
-if (trackFile) {
-trackUrl = await uploadAudio(trackFile, "character_track");
-}
+export async function updateCharacter(
+  characterId,
+  characterData,
+  trackFile = null,
+  oldTrackUrl = null,
+  avatarFile = null,
+  oldAvatarUrl = null
+) {
+  let trackUrl = oldTrackUrl || null;
+  let avatarUrl = oldAvatarUrl || null;
 
-const payload = {
-player_id: playerId,
-world_id: null,
-name: characterData.name,
-race: characterData.race || null,
-class_name: characterData.className || null,
-level: 1,
-avatar_url: avatarUrl,
-track_url: trackUrl,
-description: characterData.description || null
-};
+  if (trackFile) {
+    trackUrl = await uploadAudio(trackFile, "character_track");
+  }
 
-const { data, error } = await supabase
-.from("characters")
-.insert([payload])
-.select()
-.single();
+  if (avatarFile) {
+    avatarUrl = await uploadImage(avatarFile, "avatars", "character_avatar");
+  }
 
-if (error) throw error;
-return data;
-}
+  const payload = {
+    name: characterData.name,
+    race: characterData.race || null,
+    class_name: characterData.className || null,
+    avatar_url: avatarUrl,
+    track_url: trackUrl,
+    description: characterData.description || null
+  };
 
-export async function updateCharacter(characterId, characterData, trackFile = null, oldTrackUrl = null) {
-let trackUrl = oldTrackUrl || null;
+  const { data, error } = await supabase
+    .from("characters")
+    .update(payload)
+    .eq("id", characterId)
+    .select()
+    .single();
 
-if (trackFile) {
-trackUrl = await uploadAudio(trackFile, "character_track");
-}
-
-const payload = {
-name: characterData.name,
-race: characterData.race || null,
-class_name: characterData.className || null,
-track_url: trackUrl,
-description: characterData.description || null
-};
-
-const { data, error } = await supabase
-.from("characters")
-.update(payload)
-.eq("id", characterId)
-.select()
-.single();
-
-if (error) throw error;
-return data;
+  if (error) throw error;
+  return data;
 }
 
 export async function deleteCharacter(characterId) {
-const { error } = await supabase
-.from("characters")
-.delete()
-.eq("id", characterId);
+  const { error } = await supabase
+    .from("characters")
+    .delete()
+    .eq("id", characterId);
 
-if (error) throw error;
+  if (error) throw error;
 }
 
 export async function getWorldsByCharacterIds(characterIds) {
