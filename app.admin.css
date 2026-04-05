@@ -1,6 +1,7 @@
 
 .admin-page {
   min-height: 100svh;
+  overflow: hidden;
 }
 
 .admin-topbar-spacer {
@@ -9,21 +10,44 @@
 
 .admin-panel-shell {
   min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-main-tabs .main-tab-button {
   min-width: 220px;
-}
+  min-height: 42px;
+}}
 
 .admin-worlds-module,
 .admin-editor-card,
 .admin-published-card {
   min-width: 0;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-editor-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 12px;
+  overflow: hidden;
 }
 
 .admin-form-step-block {
   display: grid;
-  gap: var(--space-4);
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--panel-subtle-bg);
+  border: 1px solid var(--panel-border);
 }
 
 .admin-step-title-row {
@@ -31,20 +55,22 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  margin-bottom: 2px;
 }
 
 .admin-step-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 74px;
+  min-width: 70px;
   padding: 7px 10px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--accent) 16%, transparent);
   color: var(--accent);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .admin-step-badge-final {
@@ -53,15 +79,145 @@
 }
 
 .admin-publish-bar {
-  margin-top: var(--space-4);
-  padding: 16px;
+  margin-top: 0;
+  padding: 14px 16px;
   border-radius: var(--radius-lg);
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  border: 1px solid var(--panel-border);
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: 14px;
   flex-wrap: wrap;
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+}
+
+.admin-editor-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.admin-session-stepper {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.admin-session-step-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
+  background: var(--surface-2);
+  color: var(--text-soft);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-session-step-chip.is-active {
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface-2));
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 26%, var(--panel-border));
+}
+
+.admin-session-step-chip__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.admin-session-step-panel {
+  display: none;
+  min-height: 0;
+  align-content: start;
+  gap: 12px;
+}
+
+.admin-session-step-panel.is-active {
+  display: grid;
+}
+
+.admin-publish-bar-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.admin-editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-published-card {
+  gap: 12px;
+}
+
+.admin-published-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-published-filters {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-published-filter-field {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-published-filter-field label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.admin-form-block-head-with-action {
+  align-items: flex-start;
+}
+
+.admin-participants-block {
+  align-content: start;
+  min-height: 0;
+}
+
+@media (max-width: 900px) {
+  .admin-publish-bar {
+    align-items: stretch;
+  }
+
+  .admin-editor-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .admin-editor-actions > * {
+    flex: 1 1 auto;
+  }
 }
 
 .admin-publish-bar-text {

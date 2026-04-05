@@ -24,7 +24,7 @@ let editingSessionId = null;
 let sessionCoverCropper = null;
 let sessionCoverBlob = null;
 let sessionCoverPreviewUrl = "";
-
+let currentAdminSessionStep = 1;
 
 const publishedSessionFilters = {
   from: "",
@@ -107,6 +107,70 @@ function bindPublishedSessionFilterControls() {
 
 function $(id) {
   return document.getElementById(id);
+}
+
+function setAdminSessionStep(step) {
+  currentAdminSessionStep = step === 2 ? 2 : 1;
+  syncAdminSessionStepUi();
+}
+
+function validateAdminSessionStepOne() {
+  const date = $("sessionDate")?.value || "";
+  const worldId = $("sessionWorld")?.value || "";
+  const title = $("sessionTitle")?.value.trim() || "";
+  const participants = getAdminParticipants();
+
+  if (!date) {
+    showToast("Укажи дату сессии", "error");
+    return false;
+  }
+
+  if (!worldId) {
+    showToast("Выбери мир", "error");
+    return false;
+  }
+
+  if (!title) {
+    showToast("Укажи название записи", "error");
+    return false;
+  }
+
+  if (!participants.length) {
+    showToast("Добавь хотя бы одного участника", "error");
+    return false;
+  }
+
+  return true;
+}
+
+function syncAdminSessionStepUi() {
+  const isStepTwo = currentAdminSessionStep === 2;
+
+  $("adminSessionStep1Panel")?.classList.toggle("is-active", !isStepTwo);
+  $("adminSessionStep2Panel")?.classList.toggle("is-active", isStepTwo);
+
+  $("adminSessionStep1Chip")?.classList.toggle("is-active", !isStepTwo);
+  $("adminSessionStep2Chip")?.classList.toggle("is-active", isStepTwo);
+
+  $("adminSessionBackBtn")?.classList.toggle("hidden", !isStepTwo);
+  $("adminSessionNextBtn")?.classList.toggle("hidden", isStepTwo);
+  $("publishSessionBtn")?.classList.toggle("hidden", !isStepTwo);
+
+  if ($("adminSessionStepBadge")) {
+    $("adminSessionStepBadge").textContent = isStepTwo ? "Шаг 2 из 2" : "Шаг 1 из 2";
+  }
+
+  if ($("adminSessionStepTitle")) {
+    $("adminSessionStepTitle").textContent = isStepTwo
+      ? "Дополнительные материалы"
+      : "Основа публикации";
+  }
+
+  if ($("adminSessionStepNote")) {
+    $("adminSessionStepNote").textContent = isStepTwo
+      ? "Добавь ссылку, трек и обложку. После этого можно публиковать."
+      : "Заполни базовую информацию, итог и участников.";
+  }
 }
 
 function renderSessionCoverPreview(previewUrl = "") {
@@ -208,6 +272,7 @@ renderSessionCoverPreview("");
   resetAdminParticipants();
 
   $("publishSessionBtn").textContent = "Опубликовать сессию";
+   setAdminSessionStep(1);
 }
 
 async function publishSession() {
@@ -350,7 +415,7 @@ renderSessionCoverPreview(sessionCoverPreviewUrl);
     }));
 
     setAdminParticipants(participantsFromEntries);
-
+    setAdminSessionStep(1);
     $("publishSessionBtn").textContent = "Сохранить изменения";
     document.querySelector('[data-main-tab="adminSessionTab"]')?.click();
   } catch (error) {
@@ -395,7 +460,25 @@ $("removeSessionCoverBtn")?.addEventListener("click", removeSessionCover);
 
 $("publishSessionBtn")?.addEventListener("click", publishSession);
 $("resetSessionEditorBtn")?.addEventListener("click", resetSessionEditor);
+  $("adminSessionNextBtn")?.addEventListener("click", () => {
+    if (!validateAdminSessionStepOne()) return;
+    setAdminSessionStep(2);
+  });
 
+  $("adminSessionBackBtn")?.addEventListener("click", () => {
+    setAdminSessionStep(1);
+  });
+
+  $("adminSessionStep1Chip")?.addEventListener("click", () => {
+    setAdminSessionStep(1);
+  });
+
+  $("adminSessionStep2Chip")?.addEventListener("click", () => {
+    if (!validateAdminSessionStepOne()) return;
+    setAdminSessionStep(2);
+  });
+
+  syncAdminSessionStepUi();
   bindPublishedSessionFilterControls();
 
   $("sessionWorld")?.addEventListener("change", async () => {

@@ -20,7 +20,12 @@
   <div class="container admin-app-shell">
     <section class="admin-window">
       <header class="topbar premium-topbar admin-topbar admin-compact-topbar">
-        <div class="admin-topbar-spacer" aria-hidden="true"></div>
+        <div class="admin-topbar-main">
+          <div class="admin-title-stack">
+            <span class="admin-shell-kicker">Control Center</span>
+            <h1 class="admin-shell-title">Админка кампании</h1>
+          </div>
+        </div>
 
         <div class="topbar-actions admin-topbar-actions">
           <button id="themeToggleBtn" class="theme-toggle-btn" type="button" title="Сменить тему" aria-label="Сменить тему">☀</button>
@@ -34,7 +39,7 @@
         </div>
       </header>
 
-      <section id="adminLoadingCard" class="card premium-profile-card">
+      <section id="adminLoadingCard" class="card premium-profile-card admin-state-card">
         <div class="section-head compact-section-head">
           <div>
             <h2 style="margin:0; font-size:24px;">Проверка доступа</h2>
@@ -43,7 +48,7 @@
         </div>
       </section>
 
-      <section id="adminDeniedCard" class="card premium-profile-card hidden">
+      <section id="adminDeniedCard" class="card premium-profile-card hidden admin-state-card">
         <div class="section-head compact-section-head">
           <div>
             <h2 style="margin:0; font-size:24px;">Доступ запрещён</h2>
@@ -62,222 +67,266 @@
           <button class="main-tab-button" data-main-tab="adminSessionTab" type="button">Публикация сессии</button>
         </div>
 
-        <div class="admin-panels-frame">
+        <div class="admin-panels-frame admin-panels-frame--shell">
           <section id="adminWorldsTab" class="main-tab-panel active admin-main-panel">
-            <div class="card premium-feed-card admin-module-card admin-worlds-module">
-              <div class="section-head compact-section-head admin-section-head">
-                <div>
-                  <h3>Миры и кампании</h3>
-                  <p class="muted small-text" style="margin:6px 0 0;">
-                    Сначала создайте мир, затем при необходимости добавьте к нему кампании.
-                  </p>
-                </div>
-                <button id="openCreateWorldBtn" class="section-action-btn" type="button">Новый мир</button>
-              </div>
-
-              <div id="worldsList" class="cards-list admin-scroll-area"></div>
-            </div>
-          </section>
-
-          <section id="adminSessionTab" class="main-tab-panel admin-main-panel">
-            <div class="admin-session-layout">
-              <div class="card premium-feed-card admin-module-card admin-editor-card">
-                <div class="section-head compact-section-head admin-section-head">
+            <div class="admin-workspace admin-workspace--single">
+              <div class="card premium-feed-card admin-module-card admin-screen-card admin-worlds-screen">
+                <div class="section-head compact-section-head admin-section-head admin-section-head--sticky">
                   <div>
-                    <h3>Публикация сессии</h3>
+                    <h3>Миры и кампании</h3>
                     <p class="muted small-text" style="margin:6px 0 0;">
-                      Заполняй форму сверху вниз: основа, материалы, итог и участники.
+                      Сначала создайте мир, затем при необходимости добавьте к нему кампании.
                     </p>
                   </div>
+                  <button id="openCreateWorldBtn" class="section-action-btn" type="button">Новый мир</button>
                 </div>
 
-                <div class="admin-editor-scroll">
-                 
-
-                  <section class="admin-form-block admin-form-step-block">
-                    <div class="admin-form-block-head">
-                      <div class="admin-step-title-row">
-                        <span class="admin-step-badge">Шаг 1</span>
-                        <h4>Основа публикации</h4>
-                      </div>
-                      <p class="muted small-text">Дата, мир, кампания и название записи.</p>
-                    </div>
-
-                    <div class="form-grid compact-form-grid">
-                      <div>
-                        <label for="sessionDate">Дата сессии</label>
-                        <input id="sessionDate" type="date" />
-                      </div>
-
-                      <div>
-                        <label for="sessionWorld">Мир</label>
-                        <select id="sessionWorld">
-                          <option value="">Выберите мир</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label for="sessionCampaign">Кампания</label>
-                        <select id="sessionCampaign">
-                          <option value="">Ваншот</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label for="sessionTitle">Название записи</label>
-                        <input id="sessionTitle" type="text" placeholder="Например: Руины у чёрной реки" />
-                      </div>
-                    </div>
-                  </section>
-
-                  <section class="admin-form-block admin-form-step-block">
-                    <div class="admin-form-block-head">
-                      <div class="admin-step-title-row">
-                        <span class="admin-step-badge">Шаг 2</span>
-                        <h4>Материалы публикации</h4>
-                      </div>
-                      <p class="muted small-text">Ссылка на пересказ, трек и обложка сессии.</p>
-                    </div>
-
-                    <div class="form-grid compact-form-grid">
-                      <div>
-                        <label for="sessionRecapLink">Ссылка на пересказ</label>
-                        <input id="sessionRecapLink" type="text" placeholder="Ссылка на пересказ или пост" />
-                      </div>
-
-                      <div>
-                        <label for="sessionTrackFile">Трек публикации</label>
-                        <input id="sessionTrackFile" type="file" accept=".mp3,.wav,.ogg,audio/*" />
-                      </div>
-                    </div>
-
-                    <div class="upload-block">
-  <label for="sessionCoverFile">Основная картинка приключения</label>
-  <input id="sessionCoverFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
-
-  <div class="upload-preview-actions">
-    <div id="sessionCoverPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
-
-    <button
-      id="removeSessionCoverBtn"
-      class="secondary-action-btn is-danger-soft admin-inline-remove-btn"
-      type="button"
-    >
-      Убрать изображение
-    </button>
-  </div>
-</div>
-                  </section>
-
-                  <section class="admin-form-block admin-form-step-block">
-                    <div class="admin-form-block-head">
-                      <div class="admin-step-title-row">
-                        <span class="admin-step-badge">Шаг 3</span>
-                        <h4>Итог приключения</h4>
-                      </div>
-                      <p class="muted small-text">Короткий итог, который появится в публикации.</p>
-                    </div>
-
-                    <div>
-                      <label for="sessionResultText">Результат приключения</label>
-                      <textarea id="sessionResultText" rows="5" placeholder="Чем закончилась сессия"></textarea>
-                    </div>
-                  </section>
-
-                  <section class="admin-form-block admin-form-step-block">
-                    <div class="admin-form-block-head admin-form-block-head-with-action">
-                      <div>
-                        <div class="admin-step-title-row">
-                          <span class="admin-step-badge">Шаг 4</span>
-                          <h4>Участники и достижения</h4>
-                        </div>
-                        <p class="muted small-text">Добавляй участников, их достижения и изображения для публикации.</p>
-                      </div>
-
-                      <button id="openParticipantEditorBtn" class="section-action-btn" type="button">Добавить участника</button>
-                    </div>
-
-                    <div id="sessionParticipantChips" class="chips-wrap admin-participants-block"></div>
-                  </section>
-                </div>
-
-                <div class="admin-publish-bar">
-                  <div class="admin-publish-bar-text">
-                    <span class="admin-step-badge admin-step-badge-final">Шаг 5</span>
-                    <div>
-                      <strong>Публикация</strong>
-                      <div class="muted small-text">Когда всё заполнено, можно публиковать или сбросить форму.</div>
-                    </div>
-                  </div>
-
-                  <div class="modal-actions admin-editor-actions">
-                    <button id="publishSessionBtn" class="primary-action-btn" type="button">
-  Опубликовать сессию
-</button>
-                    <button id="resetSessionEditorBtn" class="secondary-action-btn" type="button">Сбросить форму</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card premium-feed-card admin-module-card admin-published-card">
-               <div class="admin-published-card-head">
-  <div class="section-head compact-section-head admin-section-head" style="margin-bottom:0;">
-    <div>
-      <h3>Опубликованные сессии</h3>
-      <p class="muted small-text" style="margin:6px 0 0;">
-        Здесь можно быстро открыть запись на редактирование, удалить её или отфильтровать по дате.
-      </p>
-    </div>
-  </div>
-
-  <div class="admin-published-filters">
-    <div class="admin-published-filter-field">
-      <label for="publishedSessionsDateFrom">От даты</label>
-      <input id="publishedSessionsDateFrom" type="date" />
-    </div>
-
-    <div class="admin-published-filter-field">
-      <label for="publishedSessionsDateTo">До даты</label>
-      <input id="publishedSessionsDateTo" type="date" />
-    </div>
-
-    <button
-      id="clearPublishedSessionsFilterBtn"
-      class="secondary-action-btn admin-published-filter-reset"
-      type="button"
-    >
-      Сбросить
-    </button>
-  </div>
-</div>
-
-                <div class="admin-published-card-body">
-                  <div id="publishedSessionsList" class="cards-list admin-scroll-area admin-published-list"></div>
+                <div class="admin-screen-scroll">
+                  <div id="worldsList" class="cards-list admin-scroll-area admin-scroll-area--fill"></div>
                 </div>
               </div>
             </div>
           </section>
+
+         
+<section id="adminSessionTab" class="main-tab-panel admin-main-panel">
+  <div class="admin-session-layout">
+    <div class="card premium-feed-card admin-module-card admin-editor-card">
+      <div class="section-head compact-section-head admin-section-head">
+        <div>
+          <h3>Публикация сессии</h3>
+          <p class="muted small-text" style="margin:6px 0 0;">
+            Собери основу сессии, затем добавь материалы и опубликуй.
+          </p>
+        </div>
+      </div>
+
+      <div class="admin-editor-body">
+        <div class="admin-session-stepper">
+          <button
+            id="adminSessionStep1Chip"
+            class="admin-session-step-chip is-active"
+            type="button"
+          >
+            <span class="admin-session-step-chip__index">1</span>
+            <span class="admin-session-step-chip__text">Основа публикации</span>
+          </button>
+
+          <button
+            id="adminSessionStep2Chip"
+            class="admin-session-step-chip"
+            type="button"
+          >
+            <span class="admin-session-step-chip__index">2</span>
+            <span class="admin-session-step-chip__text">Доп. материалы</span>
+          </button>
+        </div>
+
+        <div class="admin-editor-scroll">
+          <div
+            id="adminSessionStep1Panel"
+            class="admin-session-step-panel is-active"
+          >
+            <section class="admin-form-block admin-form-step-block">
+              <div class="admin-form-block-head">
+                <div class="admin-step-title-row">
+                  <span class="admin-step-badge">Шаг 1</span>
+                  <h4>Основа публикации</h4>
+                </div>
+                <p class="muted small-text">Дата, мир, кампания и название записи.</p>
+              </div>
+
+              <div class="form-grid compact-form-grid">
+                <div>
+                  <label for="sessionDate">Дата сессии</label>
+                  <input id="sessionDate" type="date" />
+                </div>
+
+                <div>
+                  <label for="sessionWorld">Мир</label>
+                  <select id="sessionWorld">
+                    <option value="">Выберите мир</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="sessionCampaign">Кампания</label>
+                  <select id="sessionCampaign">
+                    <option value="">Ваншот</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="sessionTitle">Название записи</label>
+                  <input id="sessionTitle" type="text" placeholder="Например: Руины у чёрной реки" />
+                </div>
+              </div>
+            </section>
+
+            <section class="admin-form-block admin-form-step-block">
+              <div class="admin-form-block-head">
+                <div class="admin-step-title-row">
+                  <span class="admin-step-badge">Шаг 1</span>
+                  <h4>Итог сессии</h4>
+                </div>
+                <p class="muted small-text">Короткое описание того, что произошло в приключении.</p>
+              </div>
+
+              <div>
+                <label for="sessionResultText">Итог приключения</label>
+                <textarea
+                  id="sessionResultText"
+                  rows="6"
+                  placeholder="Кратко опишите, что произошло на сессии"
+                ></textarea>
+              </div>
+            </section>
+
+            <section class="admin-form-block admin-form-step-block">
+              <div class="admin-form-block-head admin-form-block-head-with-action">
+                <div>
+                  <div class="admin-step-title-row">
+                    <span class="admin-step-badge">Шаг 1</span>
+                    <h4>Участники и достижения</h4>
+                  </div>
+                  <p class="muted small-text">Добавь персонажей и оформи достижения для участников.</p>
+                </div>
+
+                <button id="openParticipantEditorBtn" class="section-action-btn" type="button">
+                  Добавить участника
+                </button>
+              </div>
+
+              <div id="sessionParticipantChips" class="chips-wrap admin-participants-block"></div>
+            </section>
+          </div>
+
+          <div
+            id="adminSessionStep2Panel"
+            class="admin-session-step-panel"
+          >
+            <section class="admin-form-block admin-form-step-block">
+              <div class="admin-form-block-head">
+                <div class="admin-step-title-row">
+                  <span class="admin-step-badge">Шаг 2</span>
+                  <h4>Дополнительные материалы</h4>
+                </div>
+                <p class="muted small-text">Ссылка на пересказ, трек и обложка публикации.</p>
+              </div>
+
+              <div class="form-grid compact-form-grid">
+                <div>
+                  <label for="sessionRecapLink">Ссылка на пересказ</label>
+                  <input id="sessionRecapLink" type="text" placeholder="Ссылка на пересказ или пост" />
+                </div>
+
+                <div>
+                  <label for="sessionTrackFile">Трек публикации</label>
+                  <input id="sessionTrackFile" type="file" accept=".mp3,.wav,.ogg,audio/*" />
+                </div>
+              </div>
+
+              <div class="upload-block">
+                <label for="sessionCoverFile">Основная картинка приключения</label>
+                <input id="sessionCoverFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+
+                <div class="upload-preview-actions">
+                  <div id="sessionCoverPreview" class="upload-preview empty">Изображение ещё не выбрано</div>
+
+                  <button
+                    id="removeSessionCoverBtn"
+                    class="secondary-action-btn is-danger-soft admin-inline-remove-btn"
+                    type="button"
+                  >
+                    Убрать изображение
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="admin-publish-bar">
+          <div class="admin-publish-bar-text">
+            <span id="adminSessionStepBadge" class="admin-step-badge admin-step-badge-final">Шаг 1 из 2</span>
+            <div>
+              <strong id="adminSessionStepTitle">Основа публикации</strong>
+              <div id="adminSessionStepNote" class="muted small-text">Заполни базовую информацию, итог и участников.</div>
+            </div>
+          </div>
+
+          <div class="modal-actions admin-editor-actions">
+            <button id="resetSessionEditorBtn" class="secondary-action-btn" type="button">
+              Сбросить форму
+            </button>
+
+            <button id="adminSessionBackBtn" class="secondary-action-btn hidden" type="button">
+              Назад
+            </button>
+
+            <button id="adminSessionNextBtn" class="primary-action-btn" type="button">
+              Далее
+            </button>
+
+            <button id="publishSessionBtn" class="primary-action-btn hidden" type="button">
+              Опубликовать сессию
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card premium-feed-card admin-module-card admin-published-card">
+      <div class="section-head compact-section-head admin-section-head">
+        <div>
+          <h3>Опубликованные сессии</h3>
+          <p class="muted small-text" style="margin:6px 0 0;">
+            Фильтруй, просматривай и редактируй уже опубликованные записи.
+          </p>
+        </div>
+
+        <div class="admin-published-filters">
+          <div class="admin-published-filter-field">
+            <label for="publishedSessionsDateFrom">От</label>
+            <input id="publishedSessionsDateFrom" type="date" />
+          </div>
+
+          <div class="admin-published-filter-field">
+            <label for="publishedSessionsDateTo">До</label>
+            <input id="publishedSessionsDateTo" type="date" />
+          </div>
+
+          <button id="clearPublishedSessionsFilterBtn" class="secondary-action-btn" type="button">
+            Сбросить
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-published-card-body">
+        <div id="publishedSessionsList" class="admin-published-list admin-scroll-area"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+        
         </div>
       </section>
     </section>
   </div>
 
   <div id="worldModal" class="modal hidden">
-    <div class="modal-box small-modal-box">
+    <div class="modal-box">
       <div class="modal-header">
         <h3 id="worldModalTitle">Новый мир</h3>
         <button id="closeWorldModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
-      <div>
-        <label for="worldTitle">Название мира</label>
-        <input id="worldTitle" type="text" placeholder="Название мира" />
-      </div>
+      <label for="worldTitleInput">Название мира</label>
+      <input id="worldTitleInput" type="text" placeholder="Например: Королевство Ноктарион" />
 
-      <div class="top-space">
-        <label for="worldDescription">Описание</label>
-        <textarea id="worldDescription" rows="4" placeholder="Краткое описание мира"></textarea>
-      </div>
+      <label for="worldDescriptionInput">Описание</label>
+      <textarea id="worldDescriptionInput" rows="4" placeholder="Краткое описание мира"></textarea>
 
       <div class="modal-actions top-space">
         <button id="saveWorldBtn" type="button">Сохранить</button>
@@ -286,21 +335,19 @@
   </div>
 
   <div id="campaignModal" class="modal hidden">
-    <div class="modal-box small-modal-box">
+    <div class="modal-box">
       <div class="modal-header">
         <h3 id="campaignModalTitle">Новая кампания</h3>
         <button id="closeCampaignModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
-      <div>
-        <label for="campaignTitle">Название кампании</label>
-        <input id="campaignTitle" type="text" placeholder="Название кампании" />
-      </div>
+      <input id="campaignWorldIdInput" type="hidden" />
 
-      <div class="top-space">
-        <label for="campaignDescription">Описание</label>
-        <textarea id="campaignDescription" rows="4" placeholder="Краткое описание кампании"></textarea>
-      </div>
+      <label for="campaignTitleInput">Название кампании</label>
+      <input id="campaignTitleInput" type="text" placeholder="Например: Тени в Лунных катакомбах" />
+
+      <label for="campaignDescriptionInput">Описание</label>
+      <textarea id="campaignDescriptionInput" rows="4" placeholder="Краткое описание кампании"></textarea>
 
       <div class="modal-actions top-space">
         <button id="saveCampaignBtn" type="button">Сохранить</button>
@@ -309,52 +356,74 @@
   </div>
 
   <div id="participantModal" class="modal hidden">
-    <div class="modal-box large-modal-box">
+    <div class="modal-box admin-participant-modal-box">
       <div class="modal-header">
-        <h3 id="participantModalTitle">Участник</h3>
+        <h3 id="participantModalTitle">Участник сессии</h3>
         <button id="closeParticipantModalBtn" class="icon-button" type="button">✕</button>
       </div>
 
-      <div class="form-grid compact-form-grid">
-        <div>
-          <label for="participantPlayerSearch">Игрок</label>
-          <input id="participantPlayerSearch" type="text" placeholder="Начни вводить имя игрока" />
+      <div class="admin-form-step-block">
+        <div class="admin-form-block-head">
+          <div class="admin-step-title-row">
+            <span class="admin-step-badge">1</span>
+            <h4>Выбор персонажа</h4>
+          </div>
+          <p class="muted small-text">Найдите персонажа по имени или по игроку.</p>
         </div>
 
-        <div>
-          <label for="participantCharacterSearch">Персонаж</label>
-          <input id="participantCharacterSearch" type="text" placeholder="Начни вводить имя персонажа" />
+        <div class="form-grid compact-form-grid">
+          <div>
+            <label for="participantCharacterSearch">Поиск по персонажу</label>
+            <input id="participantCharacterSearch" type="text" placeholder="Например: Элария" />
+          </div>
+
+          <div>
+            <label for="participantPlayerSearch">Поиск по игроку</label>
+            <input id="participantPlayerSearch" type="text" placeholder="Например: Влад" />
+          </div>
+        </div>
+
+        <div id="participantCharacterResults" class="cards-list admin-scroll-area"></div>
+      </div>
+
+      <div class="admin-form-step-block top-space">
+        <div class="admin-form-block-head">
+          <div class="admin-step-title-row">
+            <span class="admin-step-badge">2</span>
+            <h4>Достижение</h4>
+          </div>
+          <p class="muted small-text">Добавьте название, описание и изображение достижения.</p>
+        </div>
+
+        <div class="form-grid compact-form-grid">
+          <div>
+            <label for="participantAchievementTitle">Название достижения</label>
+            <input id="participantAchievementTitle" type="text" placeholder="Например: Победил древнего стража" />
+          </div>
+
+          <div>
+            <label for="participantAchievementDescription">Описание достижения</label>
+            <textarea id="participantAchievementDescription" rows="4" placeholder="Краткое описание достижения"></textarea>
+          </div>
+        </div>
+
+        <div class="upload-block">
+          <label for="participantAchievementImageFile">Изображение достижения</label>
+          <input id="participantAchievementImageFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+
+          <div class="upload-preview-actions">
+            <div id="participantAchievementImagePreview" class="upload-preview empty">Изображение достижения ещё не выбрано</div>
+
+            <button
+              id="removeParticipantAchievementImageBtn"
+              class="secondary-action-btn is-danger-soft admin-inline-remove-btn"
+              type="button"
+            >
+              Убрать изображение
+            </button>
+          </div>
         </div>
       </div>
-
-      <div id="participantCharacterResults" class="top-space"></div>
-
-      <div class="top-space">
-        <label for="participantAchievementTitle">Название достижения</label>
-        <input id="participantAchievementTitle" type="text" placeholder="Например: Сердце руин" />
-      </div>
-
-      <div class="top-space">
-        <label for="participantAchievementDescription">Описание достижения</label>
-        <textarea id="participantAchievementDescription" rows="4" placeholder="Что произошло"></textarea>
-      </div>
-
-      <div class="upload-block">
-  <label for="participantAchievementImageFile">Изображение достижения</label>
-  <input id="participantAchievementImageFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
-
-  <div class="upload-preview-actions">
-    <div id="participantAchievementImagePreview" class="upload-preview empty">Изображение достижения ещё не выбрано</div>
-
-    <button
-      id="removeParticipantAchievementImageBtn"
-      class="secondary-action-btn is-danger-soft admin-inline-remove-btn"
-      type="button"
-    >
-      Убрать изображение
-    </button>
-  </div>
-</div>
 
       <div class="modal-actions top-space">
         <button id="saveParticipantBtn" type="button">Сохранить участника</button>

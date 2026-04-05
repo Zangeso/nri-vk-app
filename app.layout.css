@@ -190,18 +190,89 @@ body.admin-page .container,
 
 /* ===== Admin ===== */
 
+.admin-app-shell {
+  min-height: calc(100svh - var(--safe-top) - var(--safe-bottom));
+  height: calc(100svh - var(--safe-top) - var(--safe-bottom));
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-window {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-panel-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-panels-frame--shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-panels-frame--shell > .main-tab-panel {
+  display: none !important;
+  min-height: 0;
+}
+
+.admin-panels-frame--shell > .main-tab-panel.active {
+  display: flex !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.admin-main-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .admin-session-layout {
-  grid-template-columns: minmax(0, 1.06fr) minmax(340px, 0.94fr);
-  align-items: start;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+  gap: var(--content-gap);
+  align-items: stretch;
+}
+
+.admin-worlds-module,
+.admin-editor-card,
+.admin-published-card {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-editor-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+  padding-bottom: 8px;
 }
 
 .admin-scroll-area {
-  max-height: 620px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
   padding-right: 2px;
 }
 
 .admin-scroll-area::-webkit-scrollbar,
+.admin-editor-scroll::-webkit-scrollbar,
 .dashboard-characters-list::-webkit-scrollbar,
 .dashboard-related-list::-webkit-scrollbar,
 .feed-stories-list::-webkit-scrollbar,
@@ -215,6 +286,7 @@ body.admin-page .container,
 }
 
 .admin-scroll-area::-webkit-scrollbar-thumb,
+.admin-editor-scroll::-webkit-scrollbar-thumb,
 .dashboard-characters-list::-webkit-scrollbar-thumb,
 .dashboard-related-list::-webkit-scrollbar-thumb,
 .feed-stories-list::-webkit-scrollbar-thumb,
@@ -225,6 +297,153 @@ body.admin-page .container,
 .circle-board-track::-webkit-scrollbar-thumb {
   background: var(--border-strong);
   border-radius: 999px;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1080px) {
+  .admin-session-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .cabinet-dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    height: auto;
+  }
+
+  .cabinet-dashboard-grid--quad {
+    height: auto;
+    min-height: auto;
+  }
+
+  .cabinet-window > .main-tab-panel.active {
+    display: block !important;
+  }
+
+  .admin-app-shell {
+    height: auto;
+    min-height: calc(100svh - var(--safe-top) - var(--safe-bottom));
+  }
+
+  .admin-window,
+  .admin-panel-shell,
+  .admin-panels-frame--shell,
+  .admin-main-panel,
+  .admin-session-layout,
+  .admin-worlds-module,
+  .admin-editor-card,
+  .admin-published-card {
+    min-height: auto;
+    height: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar,
+  .cabinet-topbar,
+  .admin-topbar,
+  .section-head,
+  .dashboard-card-head,
+  .admin-form-block-head,
+  .admin-published-card-head {
+    margin-bottom: var(--space-4);
+  }
+
+  .topbar,
+  .cabinet-topbar,
+  .admin-topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar-actions,
+  .cabinet-topbar-actions,
+  .admin-topbar-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .main-tabs,
+  .cabinet-tabs {
+    width: 100%;
+  }
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1080px) {
+  .admin-session-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .cabinet-dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    height: auto;
+  }
+
+  .cabinet-dashboard-grid--quad {
+    height: auto;
+    min-height: auto;
+  }
+
+  .cabinet-window > .main-tab-panel.active,
+  .admin-window > .main-tab-panel.active {
+    display: block !important;
+  }
+
+  .admin-app-shell {
+    height: auto;
+    min-height: calc(100svh - var(--safe-top) - var(--safe-bottom));
+  }
+
+  .admin-window,
+  .admin-panel-shell,
+  .admin-panels-frame,
+  .admin-main-panel,
+  .admin-session-layout,
+  .admin-worlds-module,
+  .admin-editor-card,
+  .admin-published-card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar,
+  .cabinet-topbar,
+  .admin-topbar,
+  .section-head,
+  .dashboard-card-head,
+  .admin-form-block-head,
+  .admin-published-card-head {
+    margin-bottom: var(--space-4);
+  }
+
+  .topbar,
+  .cabinet-topbar,
+  .admin-topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar-actions,
+  .cabinet-topbar-actions,
+  .admin-topbar-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .main-tabs,
+  .cabinet-tabs {
+    width: 100%;
+  }
 }
 
 /* ===== Responsive ===== */
