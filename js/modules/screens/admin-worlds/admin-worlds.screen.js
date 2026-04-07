@@ -42,48 +42,85 @@ export async function loadWorldsWithCampaigns() {
     );
 
     $("worldsList").innerHTML = worldsWithCampaigns.map((world) => `
-      <div class="card-item world-master-card">
-        <div class="world-master-top">
-          <div>
-            <h4>${escapeHtml(world.title)}</h4>
-            <p>${escapeHtml(world.description || "Без описания")}</p>
+      <article class="card-item world-master-card world-master-card--redesign">
+        <div class="world-master-card__head">
+          <div class="world-master-card__title-group">
+            <h4 class="world-master-card__title">${escapeHtml(world.title)}</h4>
+            <p class="world-master-card__description">
+              ${escapeHtml(world.description || "Без описания")}
+            </p>
           </div>
 
-          <div class="compact-session-admin-actions">
-            <button class="icon-only-button edit-world-btn" data-id="${world.id}" type="button" title="Редактировать">✏</button>
-            <button class="danger-action-icon-btn delete-world-btn" data-id="${world.id}" type="button" title="Удалить">🗑</button>
+          <div class="world-master-card__actions">
+            <button
+              class="icon-only-button edit-world-btn"
+              data-id="${world.id}"
+              type="button"
+              title="Редактировать мир"
+              aria-label="Редактировать мир"
+            >✏</button>
+
+            <button
+              class="danger-action-icon-btn delete-world-btn"
+              data-id="${world.id}"
+              type="button"
+              title="Удалить мир"
+              aria-label="Удалить мир"
+            >🗑</button>
           </div>
         </div>
 
-        <div class="world-campaigns-block">
-          <div class="world-campaigns-head">
+        <div class="world-master-card__campaigns">
+          <div class="world-master-card__campaigns-head">
             <strong>Кампании</strong>
-            <button class="small-button add-campaign-to-world-btn" data-id="${world.id}" type="button">Добавить кампанию</button>
+
+            <button
+              class="small-button add-campaign-to-world-btn"
+              data-id="${world.id}"
+              type="button"
+            >
+              + Кампания
+            </button>
           </div>
 
           ${
             world.campaigns.length
               ? `
-                <div class="world-campaigns-list">
+                <div class="world-master-card__campaigns-list">
                   ${world.campaigns.map((campaign) => `
-                    <div class="world-campaign-row">
-                      <div>
+                    <div class="world-campaign-row world-campaign-row--redesign">
+                      <div class="world-campaign-row__main">
                         <div class="world-campaign-title">${escapeHtml(campaign.title)}</div>
-                        <div class="muted small-text">${escapeHtml(campaign.description || "Без описания")}</div>
+                        <div class="muted small-text">
+                          ${escapeHtml(campaign.description || "Без описания")}
+                        </div>
                       </div>
 
                       <div class="compact-session-admin-actions">
-                        <button class="icon-only-button edit-campaign-btn" data-id="${campaign.id}" type="button" title="Редактировать">✏</button>
-                        <button class="danger-action-icon-btn delete-campaign-btn" data-id="${campaign.id}" type="button" title="Удалить">🗑</button>
+                        <button
+                          class="icon-only-button edit-campaign-btn"
+                          data-id="${campaign.id}"
+                          type="button"
+                          title="Редактировать кампанию"
+                          aria-label="Редактировать кампанию"
+                        >✏</button>
+
+                        <button
+                          class="danger-action-icon-btn delete-campaign-btn"
+                          data-id="${campaign.id}"
+                          type="button"
+                          title="Удалить кампанию"
+                          aria-label="Удалить кампанию"
+                        >🗑</button>
                       </div>
                     </div>
                   `).join("")}
                 </div>
               `
-              : `<div class="muted small-text">Кампаний пока нет</div>`
+              : `<div class="world-master-card__empty muted small-text">Кампаний пока нет</div>`
           }
         </div>
-      </div>
+      </article>
     `).join("");
 
     document.querySelectorAll(".edit-world-btn").forEach((btn) => {

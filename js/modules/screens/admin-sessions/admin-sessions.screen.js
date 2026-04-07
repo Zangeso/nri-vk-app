@@ -1,6 +1,6 @@
 import { showToast } from '../../toast.js';
 import { openModal, closeModal } from '../../ui/modal.js';
-import { escapeHtml, formatDate, cleanDisplayText } from '../../utils.js';
+import { escapeHtml, formatDate, cleanDisplayText, truncateText } from '../../utils.js';
 
 import {
   getSessions,
@@ -10,30 +10,82 @@ import {
   deleteSession
 } from '../../services/session.service.js';
 
+import { getCampaignsByWorld } from '../../services/world.service.js';
+
 import {
   getAdminParticipants,
   setAdminParticipants,
-  resetAdminParticipants
+  resetAdminParticipants,
+  ensureEditParticipantBindings,
+  renderParticipantChips
 } from '../admin-participants/admin-participants.screen.js';
 
-import {
-  loadCampaignOptionsForAdmin
-} from '../admin-worlds/admin-worlds.screen.js';
-
-let editingSessionId = null;
 let sessionCoverCropper = null;
-let sessionCoverBlob = null;
-let sessionCoverPreviewUrl = "";
-let currentAdminSessionStep = 1;
+let activeCoverCropContext = 'create';
 
-const publishedSessionFilters = {
-  from: "",
-  to: ""
+const editorState = {
+  create: {
+    sessionId: null,
+    coverBlob: null,
+    coverPreviewUrl: ''
+  },
+  edit: {
+    sessionId: null,
+    coverBlob: null,
+    coverPreviewUrl: ''
+  }
 };
 
+const publishedSessionFilters = {
+  from: '',
+  to: ''
+};
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+function getEditorConfig(context = 'create') {
+  if (context === 'edit') {
+    return {
+      dateId: 'editSessionDate',
+      worldId: 'editSessionWorld',
+      campaignId: 'editSessionCampaign',
+      titleId: 'editSessionTitle',
+      recapId: 'editSessionRecapLink',
+      resultId: 'editSessionResultText',
+      trackId: 'editSessionTrackFile',
+      coverFileId: 'editSessionCoverFile',
+      coverPreviewId: 'editSessionCoverPreview',
+      removeCoverBtnId: 'removeEditSessionCoverBtn',
+      participantsId: 'editSessionParticipantChips',
+      publishBtnId: 'saveSessionEditBtn'
+    };
+  }
+
+  return {
+    dateId: 'sessionDate',
+    worldId: 'sessionWorld',
+    campaignId: 'sessionCampaign',
+    titleId: 'sessionTitle',
+    recapId: 'sessionRecapLink',
+    resultId: 'sessionResultText',
+    trackId: 'sessionTrackFile',
+    coverFileId: 'sessionCoverFile',
+    coverPreviewId: 'sessionCoverPreview',
+    removeCoverBtnId: 'removeSessionCoverBtn',
+    participantsId: 'sessionParticipantChips',
+    publishBtnId: 'publishSessionBtn'
+  };
+}
+
+function getState(context = 'create') {
+  return editorState[context] || editorState.create;
+}
+
 function readPublishedSessionFilters() {
-  publishedSessionFilters.from = $("publishedSessionsDateFrom")?.value || "";
-  publishedSessionFilters.to = $("publishedSessionsDateTo")?.value || "";
+  publishedSessionFilters.from = $('publishedSessionsDateFrom')?.value || '';
+  publishedSessionFilters.to = $('publishedSessionsDateTo')?.value || '';
 }
 
 function getSessionTimeForFilter(session) {
@@ -73,143 +125,86 @@ function filterPublishedSessions(sessions = []) {
 }
 
 function bindPublishedSessionFilterControls() {
-  const fromInput = $("publishedSessionsDateFrom");
-  const toInput = $("publishedSessionsDateTo");
-  const clearBtn = $("clearPublishedSessionsFilterBtn");
+  const fromInput = $('publishedSessionsDateFrom');
+  const toInput = $('publishedSessionsDateTo');
+  const clearBtn = $('clearPublishedSessionsFilterBtn');
 
-  if (fromInput && fromInput.dataset.bound !== "1") {
-    fromInput.addEventListener("change", async () => {
+  if (fromInput && fromInput.dataset.bound !== '1') {
+    fromInput.addEventListener('change', async () => {
       readPublishedSessionFilters();
       await renderPublishedSessionsAdmin();
     });
-    fromInput.dataset.bound = "1";
+    fromInput.dataset.bound = '1';
   }
 
-  if (toInput && toInput.dataset.bound !== "1") {
-    toInput.addEventListener("change", async () => {
+  if (toInput && toInput.dataset.bound !== '1') {
+    toInput.addEventListener('change', async () => {
       readPublishedSessionFilters();
       await renderPublishedSessionsAdmin();
     });
-    toInput.dataset.bound = "1";
+    toInput.dataset.bound = '1';
   }
 
-  if (clearBtn && clearBtn.dataset.bound !== "1") {
-    clearBtn.addEventListener("click", async () => {
-      if (fromInput) fromInput.value = "";
-      if (toInput) toInput.value = "";
-
+  if (clearBtn && clearBtn.dataset.bound !== '1') {
+    clearBtn.addEventListener('click', async () => {
+      if (fromInput) fromInput.value = '';
+      if (toInput) toInput.value = '';
       readPublishedSessionFilters();
       await renderPublishedSessionsAdmin();
     });
-    clearBtn.dataset.bound = "1";
+    clearBtn.dataset.bound = '1';
   }
 }
 
-function $(id) {
-  return document.getElementById(id);
-}
+function renderSessionCoverPreview(context = 'create', previewUrl = '') {
+  const config = getEditorConfig(context);
+  const preview = $(config.coverPreviewId);
+  const removeBtn = $(config.removeCoverBtnId);
 
-function setAdminSessionStep(step) {
-  currentAdminSessionStep = step === 2 ? 2 : 1;
-  syncAdminSessionStepUi();
-}
-
-function validateAdminSessionStepOne() {
-  const date = $("sessionDate")?.value || "";
-  const worldId = $("sessionWorld")?.value || "";
-  const title = $("sessionTitle")?.value.trim() || "";
-  const participants = getAdminParticipants();
-
-  if (!date) {
-    showToast("Укажи дату сессии", "error");
-    return false;
-  }
-
-  if (!worldId) {
-    showToast("Выбери мир", "error");
-    return false;
-  }
-
-  if (!title) {
-    showToast("Укажи название записи", "error");
-    return false;
-  }
-
-  if (!participants.length) {
-    showToast("Добавь хотя бы одного участника", "error");
-    return false;
-  }
-
-  return true;
-}
-
-function syncAdminSessionStepUi() {
-  const isStepTwo = currentAdminSessionStep === 2;
-
-  $("adminSessionStep1Panel")?.classList.toggle("is-active", !isStepTwo);
-  $("adminSessionStep2Panel")?.classList.toggle("is-active", isStepTwo);
-
-  $("adminSessionStep1Chip")?.classList.toggle("is-active", !isStepTwo);
-  $("adminSessionStep2Chip")?.classList.toggle("is-active", isStepTwo);
-
-  $("adminSessionBackBtn")?.classList.toggle("hidden", !isStepTwo);
-  $("adminSessionNextBtn")?.classList.toggle("hidden", isStepTwo);
-  $("publishSessionBtn")?.classList.toggle("hidden", !isStepTwo);
-
-  if ($("adminSessionStepBadge")) {
-    $("adminSessionStepBadge").textContent = isStepTwo ? "Шаг 2 из 2" : "Шаг 1 из 2";
-  }
-
-  if ($("adminSessionStepTitle")) {
-    $("adminSessionStepTitle").textContent = isStepTwo
-      ? "Дополнительные материалы"
-      : "Основа публикации";
-  }
-
-  if ($("adminSessionStepNote")) {
-    $("adminSessionStepNote").textContent = isStepTwo
-      ? "Добавь ссылку, трек и обложку. После этого можно публиковать."
-      : "Заполни базовую информацию, итог и участников.";
-  }
-}
-
-function renderSessionCoverPreview(previewUrl = "") {
-  if (!$("sessionCoverPreview")) return;
+  if (!preview) return;
 
   if (previewUrl) {
-    $("sessionCoverPreview").innerHTML =
+    preview.innerHTML =
       `<img src="${escapeHtml(previewUrl)}" class="preview-session-cover" alt="preview" />`;
-    $("sessionCoverPreview").classList.remove("empty");
+    preview.classList.remove('empty');
+    removeBtn?.classList.remove('hidden');
     return;
   }
 
-  $("sessionCoverPreview").innerHTML = "Изображение ещё не выбрано";
-  $("sessionCoverPreview").classList.add("empty");
+  preview.innerHTML = 'Изображение ещё не выбрано';
+  preview.classList.add('empty');
+  removeBtn?.classList.add('hidden');
 }
 
-function removeSessionCover() {
-  sessionCoverBlob = null;
-  sessionCoverPreviewUrl = "";
+function removeSessionCover(context = 'create') {
+  const state = getState(context);
+  const config = getEditorConfig(context);
 
-  if ($("sessionCoverFile")) {
-    $("sessionCoverFile").value = "";
+  state.coverBlob = null;
+  state.coverPreviewUrl = '';
+
+  if ($(config.coverFileId)) {
+    $(config.coverFileId).value = '';
   }
 
-  renderSessionCoverPreview("");
+  renderSessionCoverPreview(context, '');
 }
 
-function openSessionCoverCropModal(imageSrc) {
-  $("sessionCoverCropImage").src = imageSrc;
-  openModal("sessionCoverCropModal");
+function openSessionCoverCropModal(imageSrc, context = 'create') {
+  activeCoverCropContext = context;
+  if (!$('sessionCoverCropImage')) return;
+
+  $('sessionCoverCropImage').src = imageSrc;
+  openModal('sessionCoverCropModal');
 
   if (sessionCoverCropper) {
     sessionCoverCropper.destroy();
   }
 
-  sessionCoverCropper = new Cropper($("sessionCoverCropImage"), {
+  sessionCoverCropper = new Cropper($('sessionCoverCropImage'), {
     aspectRatio: 16 / 9,
     viewMode: 1,
-    dragMode: "move",
+    dragMode: 'move',
     autoCropArea: 1,
     responsive: true,
     background: false
@@ -217,7 +212,7 @@ function openSessionCoverCropModal(imageSrc) {
 }
 
 function closeSessionCoverCropModal() {
-  closeModal("sessionCoverCropModal");
+  closeModal('sessionCoverCropModal');
 
   if (sessionCoverCropper) {
     sessionCoverCropper.destroy();
@@ -231,104 +226,388 @@ async function applySessionCoverCrop() {
   const canvas = sessionCoverCropper.getCroppedCanvas({ width: 1280, height: 720 });
 
   if (!canvas) {
-    showToast("Не удалось обрезать изображение", "error");
+    showToast('Не удалось обрезать изображение', 'error');
     return;
   }
 
   const blob = await new Promise((resolve) => {
-    canvas.toBlob(resolve, "image/jpeg", 0.88);
+    canvas.toBlob(resolve, 'image/jpeg', 0.88);
   });
 
   if (!blob) {
-    showToast("Не удалось подготовить изображение", "error");
+    showToast('Не удалось подготовить изображение', 'error');
     return;
   }
 
- sessionCoverBlob = blob;
-sessionCoverPreviewUrl = URL.createObjectURL(blob);
+  const state = getState(activeCoverCropContext);
+  state.coverBlob = blob;
+  state.coverPreviewUrl = URL.createObjectURL(blob);
 
-renderSessionCoverPreview(sessionCoverPreviewUrl);
-
-closeSessionCoverCropModal();
+  renderSessionCoverPreview(activeCoverCropContext, state.coverPreviewUrl);
+  closeSessionCoverCropModal();
 }
 
-export function resetSessionEditor() {
-  editingSessionId = null;
+async function fillCampaignSelect(selectId, worldId = null, selectedCampaignId = null) {
+  const select = $(selectId);
+  if (!select) return;
 
-  $("sessionDate").value = "";
-  $("sessionWorld").value = "";
-  $("sessionCampaign").value = "";
-  $("sessionTitle").value = "";
-  $("sessionRecapLink").value = "";
-  $("sessionTrackFile").value = "";
-  $("sessionResultText").value = "";
-  $("sessionCoverFile").value = "";
+  if (!worldId) {
+    select.innerHTML = `<option value="">Ваншот</option>`;
+    select.value = '';
+    return;
+  }
 
- sessionCoverBlob = null;
-sessionCoverPreviewUrl = "";
+  try {
+    const campaigns = await getCampaignsByWorld(worldId);
 
-renderSessionCoverPreview("");
+    select.innerHTML = `
+      <option value="">Ваншот</option>
+      ${(campaigns || []).map((campaign) => `
+        <option value="${campaign.id}">${escapeHtml(campaign.title || 'Кампания')}</option>
+      `).join('')}
+    `;
 
-  resetAdminParticipants();
+    select.value = selectedCampaignId || '';
+  } catch (error) {
+    select.innerHTML = `<option value="">Ваншот</option>`;
+    select.value = '';
+    showToast('Ошибка загрузки кампаний: ' + error.message, 'error');
+  }
+}
 
-  $("publishSessionBtn").textContent = "Опубликовать сессию";
-   setAdminSessionStep(1);
+function readSessionEditorData(context = 'create') {
+  const config = getEditorConfig(context);
+  const state = getState(context);
+
+  return {
+    sessionId: state.sessionId || null,
+    date: $(config.dateId)?.value || '',
+    worldId: $(config.worldId)?.value || null,
+    campaignId: $(config.campaignId)?.value || null,
+    title: $(config.titleId)?.value.trim() || '',
+    recapLink: $(config.recapId)?.value.trim() || '',
+    resultText: $(config.resultId)?.value.trim() || '',
+    trackFile: $(config.trackId)?.files?.[0] || null,
+    coverBlob: state.coverBlob || null
+  };
+}
+
+function validateSessionEditor(context = 'create') {
+  const data = readSessionEditorData(context);
+  const participants = getAdminParticipants(context);
+
+  if (!data.date) {
+    showToast('Укажи дату сессии', 'error');
+    return false;
+  }
+
+  if (!data.worldId) {
+    showToast('Выбери мир', 'error');
+    return false;
+  }
+
+  if (!data.title) {
+    showToast('Укажи название записи', 'error');
+    return false;
+  }
+
+  if (!participants.length) {
+    showToast('Добавь хотя бы одного участника', 'error');
+    return false;
+  }
+
+  return true;
+}
+
+function resetSessionEditor(context = 'create') {
+  const config = getEditorConfig(context);
+  const state = getState(context);
+
+  state.sessionId = null;
+  state.coverBlob = null;
+  state.coverPreviewUrl = '';
+
+  $(config.dateId) && ($(config.dateId).value = '');
+  $(config.worldId) && ($(config.worldId).value = '');
+  $(config.campaignId) && ($(config.campaignId).innerHTML = `<option value="">Ваншот</option>`);
+  $(config.titleId) && ($(config.titleId).value = '');
+  $(config.recapId) && ($(config.recapId).value = '');
+  $(config.trackId) && ($(config.trackId).value = '');
+  $(config.resultId) && ($(config.resultId).value = '');
+  $(config.coverFileId) && ($(config.coverFileId).value = '');
+
+  renderSessionCoverPreview(context, '');
+  resetAdminParticipants(context);
+
+  if (context === 'create' && $(config.publishBtnId)) {
+    $(config.publishBtnId).textContent = 'Опубликовать сессию';
+  }
+}
+
+function cloneWorldOptionsToEditModal() {
+  const source = $('sessionWorld');
+  const target = $('editSessionWorld');
+
+  if (!source || !target) return;
+  target.innerHTML = source.innerHTML;
+}
+
+function renderEditSessionModalContent() {
+  return `
+    <div class="admin-edit-session-form">
+      <div class="admin-edit-session-grid">
+        <div>
+          <label for="editSessionDate">Дата</label>
+          <input id="editSessionDate" type="date" />
+        </div>
+
+        <div>
+          <label for="editSessionWorld">Мир</label>
+          <select id="editSessionWorld">
+            <option value="">Выберите мир</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="editSessionCampaign">Кампания</label>
+          <select id="editSessionCampaign">
+            <option value="">Ваншот</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="editSessionTitle">Название</label>
+          <input id="editSessionTitle" type="text" placeholder="Название сессии" />
+        </div>
+      </div>
+
+      <div class="admin-edit-session-split">
+        <div class="admin-edit-session-result">
+          <label for="editSessionResultText">Итог</label>
+          <textarea id="editSessionResultText" rows="3"></textarea>
+        </div>
+
+        <div class="admin-edit-session-participants">
+          <div class="admin-session-participants-head">
+            <span>Участники</span>
+            <button id="openEditParticipantEditorBtn" class="section-action-btn" type="button">+</button>
+          </div>
+
+          <div id="editSessionParticipantChips" class="chips-wrap"></div>
+        </div>
+      </div>
+
+      <div class="admin-edit-session-grid admin-edit-session-grid--materials">
+  <div class="admin-session-materials-layout">
+    <div class="admin-session-cover">
+      <label>Обложка</label>
+
+      <div class="admin-cover-box">
+        <div id="editSessionCoverPreview" class="admin-cover-preview empty">
+          Нет изображения
+        </div>
+
+        <button
+          id="removeEditSessionCoverBtn"
+          class="admin-cover-remove hidden"
+          type="button"
+        >✕</button>
+      </div>
+    </div>
+
+    <div class="admin-session-materials-side">
+      <div class="admin-session-materials-actions">
+        <label class="admin-compact-upload-btn" for="editSessionCoverFile">Выбрать обложку</label>
+        <input id="editSessionCoverFile" type="file" accept="image/png,image/jpeg,image/jpg,image/webp,image/*" />
+
+        <label class="admin-compact-upload-btn" for="editSessionTrackFile">Выбрать трек</label>
+        <input id="editSessionTrackFile" type="file" accept=".mp3,.wav,.ogg,audio/*" />
+      </div>
+
+      <div class="admin-session-materials-link">
+        <label for="editSessionRecapLink">Ссылка на пересказ</label>
+        <input id="editSessionRecapLink" type="text" />
+      </div>
+    </div>
+  </div>
+</div>
+  `;
+}
+
+async function bindEditSessionModal(session, entries) {
+  $('sessionEditContainer').innerHTML = renderEditSessionModalContent();
+
+  cloneWorldOptionsToEditModal();
+
+  const editState = getState('edit');
+  editState.sessionId = session.id;
+  editState.coverBlob = null;
+  editState.coverPreviewUrl = session.cover_url || '';
+
+  $('editSessionDate').value = session.session_date || '';
+  $('editSessionWorld').value = session.world_id || '';
+  await fillCampaignSelect('editSessionCampaign', session.world_id || null, session.campaign_id || '');
+  $('editSessionTitle').value = session.title || '';
+  $('editSessionRecapLink').value = session.recap_link || '';
+  $('editSessionResultText').value = session.short_story || '';
+  $('editSessionTrackFile').value = '';
+  $('editSessionCoverFile').value = '';
+
+  renderSessionCoverPreview('edit', editState.coverPreviewUrl);
+
+  const participantsFromEntries = (entries || []).map((entry) => ({
+    characterId: entry.character_id,
+    characterName: entry.characters?.name || 'Персонаж',
+    playerName: entry.characters?.players?.nickname || 'Игрок',
+    achievementTitle: entry.achievement_title || '',
+    achievementDescription: entry.achievement_description || '',
+    croppedImageBlob: null,
+    imagePreviewUrl: entry.achievement_image_url || ''
+  }));
+
+  setAdminParticipants(participantsFromEntries, 'edit');
+  ensureEditParticipantBindings();
+
+  $('editSessionWorld')?.addEventListener('change', async () => {
+    await fillCampaignSelect('editSessionCampaign', $('editSessionWorld').value || null, '');
+  });
+
+  $('editSessionCoverFile')?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Выбери изображение', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => openSessionCoverCropModal(event.target.result, 'edit');
+    reader.readAsDataURL(file);
+  });
+
+  $('removeEditSessionCoverBtn')?.addEventListener('click', () => removeSessionCover('edit'));
+}
+
+async function openEditSessionModal(sessionId) {
+  try {
+    const session = await getSessionById(sessionId);
+    const entries = await getSessionEntries(sessionId);
+
+    await bindEditSessionModal(session, entries);
+    openModal('sessionEditModal');
+  } catch (error) {
+    showToast('Ошибка загрузки сессии: ' + error.message, 'error');
+  }
+}
+
+function closeEditSessionModal() {
+  resetSessionEditor('edit');
+  $('sessionEditContainer') && ($('sessionEditContainer').innerHTML = '');
+  closeModal('sessionEditModal');
+}
+
+async function saveEditSession() {
+  if (!validateSessionEditor('edit')) return;
+
+  const data = readSessionEditorData('edit');
+  const participants = getAdminParticipants('edit');
+
+  try {
+    await saveSessionWithParticipants(data.sessionId, data, participants);
+    closeEditSessionModal();
+    await renderPublishedSessionsAdmin();
+    showToast('Сессия обновлена', 'success');
+  } catch (error) {
+    showToast('Ошибка сохранения: ' + (error?.message || 'неизвестная ошибка'), 'error');
+  }
 }
 
 async function publishSession() {
-  const date = $("sessionDate").value;
-  const worldId = $("sessionWorld").value || null;
-  const campaignId = $("sessionCampaign").value || null;
-  const title = $("sessionTitle").value.trim();
-  const recapLink = $("sessionRecapLink").value.trim();
-  const resultText = $("sessionResultText").value.trim();
-  const trackFile = $("sessionTrackFile")?.files?.[0] || null;
+  if (!validateSessionEditor('create')) return;
 
-  if (!date) {
-    showToast("Укажи дату сессии", "error");
-    return;
-  }
-
-  if (!worldId) {
-    showToast("Выбери мир", "error");
-    return;
-  }
-
-  if (!title) {
-    showToast("Укажи название записи", "error");
-    return;
-  }
-
-  const participants = getAdminParticipants();
-
-  if (!participants.length) {
-    showToast("Добавь хотя бы одного участника", "error");
-    return;
-  }
-
-  const sessionData = {
-    date,
-    worldId,
-    campaignId,
-    title,
-    recapLink,
-    resultText,
-    trackFile,
-    coverBlob: sessionCoverBlob
-  };
+  const data = readSessionEditorData('create');
+  const participants = getAdminParticipants('create');
 
   try {
-    await saveSessionWithParticipants(editingSessionId, sessionData, participants);
-    resetSessionEditor();
+    await saveSessionWithParticipants(null, data, participants);
+    resetSessionEditor('create');
     await renderPublishedSessionsAdmin();
-    showToast(editingSessionId ? "Сессия обновлена" : "Сессия опубликована", "success");
+    showToast('Сессия опубликована', 'success');
   } catch (error) {
-    showToast("Ошибка публикации: " + (error?.message || "неизвестная ошибка"), "error");
+    showToast('Ошибка публикации: ' + (error?.message || 'неизвестная ошибка'), 'error');
   }
 }
 
+async function deleteSessionHandler(sessionId) {
+  if (!confirm('Удалить эту публикацию сессии и все связанные достижения?')) return;
+
+  try {
+    await deleteSession(sessionId);
+    await renderPublishedSessionsAdmin();
+    showToast('Публикация удалена', 'success');
+  } catch (error) {
+    showToast('Ошибка удаления: ' + error.message, 'error');
+  }
+}
+
+function renderPublishedSessionCard(session) {
+  const worldTitle = session.worlds?.title || 'Мир не указан';
+  const campaignTitle = session.campaigns?.title || 'Ваншот';
+  const story = truncateText(cleanDisplayText(session.short_story || 'Краткое описание пока не добавлено.'), 180);
+
+  return `
+    <div class="compact-session-admin-card">
+      <div class="compact-session-admin-top">
+        <div>
+          <h4>${escapeHtml(session.title || 'Сессия')}</h4>
+          <p class="muted small-text">
+            ${escapeHtml(formatDate(session.session_date) || '—')}
+            • ${escapeHtml(worldTitle)}
+            • ${escapeHtml(campaignTitle)}
+          </p>
+        </div>
+
+        <div class="compact-session-admin-actions">
+          <button
+            class="icon-only-button edit-session-btn"
+            type="button"
+            data-session-id="${session.id}"
+            title="Редактировать"
+            aria-label="Редактировать"
+          >✏</button>
+
+          <button
+            class="danger-action-icon-btn delete-session-btn"
+            type="button"
+            data-session-id="${session.id}"
+            title="Удалить"
+            aria-label="Удалить"
+          >🗑</button>
+        </div>
+      </div>
+
+      <p>${story}</p>
+    </div>
+  `;
+}
+
+function bindPublishedSessionActions() {
+  document.querySelectorAll('.edit-session-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      openEditSessionModal(button.dataset.sessionId);
+    });
+  });
+
+  document.querySelectorAll('.delete-session-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      deleteSessionHandler(button.dataset.sessionId);
+    });
+  });
+}
+
 export async function renderPublishedSessionsAdmin() {
-  if (!$("publishedSessionsList")) return;
+  if (!$('publishedSessionsList')) return;
 
   try {
     readPublishedSessionFilters();
@@ -337,153 +616,59 @@ export async function renderPublishedSessionsAdmin() {
     const filteredSessions = filterPublishedSessions(sessions || []);
 
     if (!sessions.length) {
-      $("publishedSessionsList").innerHTML =
+      $('publishedSessionsList').innerHTML =
         `<div class="card-item">Пока нет опубликованных сессий.</div>`;
       return;
     }
 
     if (!filteredSessions.length) {
-      $("publishedSessionsList").innerHTML =
-        `<div class="card-item">По выбранному диапазону дат сессий не найдено.</div>`;
+      $('publishedSessionsList').innerHTML =
+        `<div class="card-item">Ничего не найдено по выбранному диапазону.</div>`;
       return;
     }
 
-    $("publishedSessionsList").innerHTML = filteredSessions.map((session) => `
-      <div class="card-item compact-session-admin-card">
-        <div class="compact-session-admin-top">
-          <div>
-            <h4>${escapeHtml(session.title)}</h4>
-            <p class="muted">
-              ${escapeHtml(formatDate(session.session_date))}
-              • ${cleanDisplayText(session.worlds?.title || "—")}
-              • ${cleanDisplayText(session.campaigns?.title || "Ваншот")}
-            </p>
-          </div>
+    $('publishedSessionsList').innerHTML = filteredSessions
+      .map((session) => renderPublishedSessionCard(session))
+      .join('');
 
-          <div class="compact-session-admin-actions">
-            <button class="icon-only-button edit-session-btn" data-id="${session.id}" type="button" title="Редактировать">✏</button>
-            <button class="danger-action-icon-btn delete-session-btn" data-id="${session.id}" type="button" title="Удалить">🗑</button>
-          </div>
-        </div>
-
-        <p>${cleanDisplayText(session.short_story || "Итог приключения не заполнен.")}</p>
-      </div>
-    `).join("");
-
-    document.querySelectorAll(".edit-session-btn").forEach((btn) => {
-      btn.addEventListener("click", () => editSessionHandler(btn.dataset.id));
-    });
-
-    document.querySelectorAll(".delete-session-btn").forEach((btn) => {
-      btn.addEventListener("click", () => deleteSessionHandler(btn.dataset.id));
-    });
+    bindPublishedSessionActions();
   } catch (error) {
-    showToast("Ошибка загрузки сессий: " + error.message, "error");
-  }
-}
-
-async function editSessionHandler(sessionId) {
-  try {
-    const session = await getSessionById(sessionId);
-    const entries = await getSessionEntries(sessionId);
-
-    editingSessionId = session.id;
-
-    $("sessionDate").value = session.session_date || "";
-    $("sessionWorld").value = session.world_id || "";
-    await loadCampaignOptionsForAdmin(session.world_id || null);
-    $("sessionCampaign").value = session.campaign_id || "";
-    $("sessionTitle").value = session.title || "";
-    $("sessionRecapLink").value = session.recap_link || "";
-    $("sessionResultText").value = session.short_story || "";
-    $("sessionTrackFile").value = "";
-    $("sessionCoverFile").value = "";
-
-   sessionCoverBlob = null;
-sessionCoverPreviewUrl = session.cover_url || "";
-
-renderSessionCoverPreview(sessionCoverPreviewUrl);
-
-    const participantsFromEntries = (entries || []).map((entry) => ({
-      characterId: entry.character_id,
-      characterName: entry.characters?.name || "Персонаж",
-      playerName: entry.characters?.players?.nickname || "Игрок",
-      achievementTitle: entry.achievement_title || "",
-      achievementDescription: entry.achievement_description || "",
-      croppedImageBlob: null,
-      imagePreviewUrl: entry.achievement_image_url || ""
-    }));
-
-    setAdminParticipants(participantsFromEntries);
-    setAdminSessionStep(1);
-    $("publishSessionBtn").textContent = "Сохранить изменения";
-    document.querySelector('[data-main-tab="adminSessionTab"]')?.click();
-  } catch (error) {
-    showToast("Ошибка загрузки сессии: " + error.message, "error");
-  }
-}
-
-async function deleteSessionHandler(sessionId) {
-  if (!confirm("Удалить эту публикацию сессии и все связанные достижения?")) return;
-
-  try {
-    await deleteSession(sessionId);
-
-    if (editingSessionId === sessionId) {
-      resetSessionEditor();
-    }
-
-    showToast("Публикация удалена", "success");
-    await renderPublishedSessionsAdmin();
-  } catch (error) {
-    showToast("Ошибка удаления: " + error.message, "error");
+    $('publishedSessionsList').innerHTML =
+      `<div class="card-item">Ошибка загрузки: ${escapeHtml(error.message || 'неизвестная ошибка')}</div>`;
   }
 }
 
 export function initAdminSessionsScreen() {
-  $("sessionCoverFile")?.addEventListener("change", (e) => {
+  $('sessionCoverFile')?.addEventListener('change', (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      showToast("Выбери изображение", "error");
+    if (!file.type.startsWith('image/')) {
+      showToast('Выбери изображение', 'error');
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => openSessionCoverCropModal(event.target.result);
+    reader.onload = (event) => openSessionCoverCropModal(event.target.result, 'create');
     reader.readAsDataURL(file);
   });
-$("closeSessionCoverCropModalBtn")?.addEventListener("click", closeSessionCoverCropModal);
-$("applySessionCoverCropBtn")?.addEventListener("click", applySessionCoverCrop);
-$("removeSessionCoverBtn")?.addEventListener("click", removeSessionCover);
 
-$("publishSessionBtn")?.addEventListener("click", publishSession);
-$("resetSessionEditorBtn")?.addEventListener("click", resetSessionEditor);
-  $("adminSessionNextBtn")?.addEventListener("click", () => {
-    if (!validateAdminSessionStepOne()) return;
-    setAdminSessionStep(2);
-  });
+  $('closeSessionCoverCropModalBtn')?.addEventListener('click', closeSessionCoverCropModal);
+  $('applySessionCoverCropBtn')?.addEventListener('click', applySessionCoverCrop);
 
-  $("adminSessionBackBtn")?.addEventListener("click", () => {
-    setAdminSessionStep(1);
-  });
+  $('removeSessionCoverBtn')?.addEventListener('click', () => removeSessionCover('create'));
+  $('publishSessionBtn')?.addEventListener('click', publishSession);
+  $('resetSessionEditorBtn')?.addEventListener('click', () => resetSessionEditor('create'));
 
-  $("adminSessionStep1Chip")?.addEventListener("click", () => {
-    setAdminSessionStep(1);
-  });
+  $('closeSessionEditModalBtn')?.addEventListener('click', closeEditSessionModal);
+  $('saveSessionEditBtn')?.addEventListener('click', saveEditSession);
 
-  $("adminSessionStep2Chip")?.addEventListener("click", () => {
-    if (!validateAdminSessionStepOne()) return;
-    setAdminSessionStep(2);
-  });
-
-  syncAdminSessionStepUi();
   bindPublishedSessionFilterControls();
 
-  $("sessionWorld")?.addEventListener("change", async () => {
-    const selectedWorldId = $("sessionWorld").value || null;
-    await loadCampaignOptionsForAdmin(selectedWorldId);
-    $("sessionCampaign").value = "";
+  $('sessionWorld')?.addEventListener('change', async () => {
+    await fillCampaignSelect('sessionCampaign', $('sessionWorld').value || null, '');
   });
+
+  renderSessionCoverPreview('create', '');
+  renderParticipantChips('create');
 }

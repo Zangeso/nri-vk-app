@@ -1,4 +1,3 @@
-
 .admin-page {
   min-height: 100svh;
   overflow: hidden;
@@ -19,7 +18,7 @@
 .admin-main-tabs .main-tab-button {
   min-width: 220px;
   min-height: 42px;
-}}
+}
 
 .admin-worlds-module,
 .admin-editor-card,
@@ -32,29 +31,13 @@
   overflow: hidden;
 }
 
-.admin-editor-body {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 12px;
-  overflow: hidden;
-}
-
 .admin-form-step-block {
-  display: grid;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 16px;
-  background: var(--panel-subtle-bg);
-  border: 1px solid var(--panel-border);
+  gap: 6px;
+  padding: 8px 10px;
 }
 
 .admin-step-title-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 6px;
   margin-bottom: 0;
 }
 
@@ -73,120 +56,465 @@
   letter-spacing: 0.04em;
 }
 
-.admin-editor-card .form-grid.compact-form-grid {
-  gap: 10px;
-}
-
-.admin-editor-card label {
-  margin-bottom: 4px;
-  font-size: 12px;
-}
-
-.admin-editor-card input,
-.admin-editor-card select,
-.admin-editor-card textarea {
-  min-height: 40px;
-  padding: 8px 10px;
-}
-
-.admin-editor-card textarea {
-  min-height: 84px;
-}
-
-
 .admin-step-badge-final {
   background: color-mix(in srgb, var(--success) 14%, transparent);
   color: var(--success);
 }
 
+.admin-editor-card .form-grid.compact-form-grid {
+  gap: 10px;
+}
+
+.admin-editor-card .section-head {
+  margin-bottom: 6px;
+}
+
+.admin-editor-card h3 {
+  margin-bottom: 2px;
+}
+
+.admin-editor-card label {
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.admin-editor-card input,
+.admin-editor-card select {
+  min-height: 36px;
+  padding: 6px 8px;
+}
+
+.admin-editor-card textarea {
+  min-height: 70px;
+  padding: 6px 8px;
+}
+
+/* ===== New session ===== */
+
+.admin-session-single {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.admin-session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.admin-session-header h3 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.admin-session-scroll {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.admin-session-row {
+  display: grid;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: var(--panel-subtle-bg);
+  border: 1px solid var(--panel-border);
+  min-width: 0;
+}
+
+.admin-session-row--grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.admin-session-row--split {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: start;
+  min-height: 0;
+}
+
+.admin-session-row--materials,
+.admin-edit-session-grid--materials {
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.admin-session-result,
+.admin-session-participants,
+.admin-session-cover {
+  min-width: 0;
+  min-height: 0;
+}
+
+.admin-session-result {
+  overflow: hidden;
+}
+
+.admin-session-participants {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  overflow: visible;
+  padding-right: 0;
+  align-content: start;
+}
+
+.admin-session-participants-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-session-participants-head span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-session-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-session-actions > * {
+  flex: 1 1 0;
+}
+
 .admin-publish-bar {
   margin-top: 0;
-  padding: 14px 16px;
-  border-radius: var(--radius-lg);
+  padding: 10px 12px;
+  border-radius: 16px;
   background: var(--surface-2);
   border: 1px solid var(--panel-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-  position: sticky;
-  bottom: 0;
-  z-index: 4;
+  gap: 10px;
+  flex-wrap: nowrap;
 }
 
-.admin-editor-body {
-  flex: 1 1 auto;
+/* ===== History ===== */
+
+.admin-history {
   min-height: 0;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   overflow: hidden;
 }
 
-.admin-session-stepper {
+.admin-history-head {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-history-head h3 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.admin-history-filters {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  flex-wrap: nowrap;
+  width: auto;
+}
+
+.admin-history-filters input[type="date"] {
+  width: 148px;
+  min-width: 148px;
+}
+
+.admin-history-reset-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.admin-history-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  padding-right: 2px;
+}
+
+/* ===== Edit session modal ===== */
+
+.admin-session-modal {
+  width: min(100%, 880px);
+  max-width: 880px;
+  max-height: min(88svh, 760px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-session-modal .modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.admin-session-modal .modal-head h3 {
+  margin: 0;
+}
+
+#sessionEditContainer {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.admin-edit-session-form {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-edit-session-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--panel-subtle-bg);
+  border: 1px solid var(--panel-border);
+}
+
+.admin-edit-session-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 10px;
+}
+
+.admin-edit-session-result,
+.admin-edit-session-participants {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--panel-subtle-bg);
+  border: 1px solid var(--panel-border);
+}
+
+.admin-edit-session-participants {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  overflow: auto;
+  align-content: start;
+}
+
+/* ===== Shared session fields ===== */
+
+.admin-session-single label,
+.admin-history label,
+.admin-edit-session-form label {
+  display: inline-block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.admin-session-single input,
+.admin-session-single select,
+.admin-edit-session-form input,
+.admin-edit-session-form select {
+  min-height: 36px;
+  padding: 6px 8px;
+}
+
+.admin-session-single textarea,
+.admin-edit-session-form textarea {
+  min-height: 72px;
+  padding: 6px 8px;
+}
+
+.admin-session-single input[type="file"],
+.admin-edit-session-form input[type="file"] {
+  min-height: auto;
+  padding: 0;
+}
+
+/* ===== Materials ===== */
+
+.admin-session-materials-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 10px;
   align-items: stretch;
+}
+
+.admin-session-materials-side {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-session-materials-actions {
+  display: grid;
   gap: 8px;
 }
 
-.admin-session-step-chip {
+.admin-session-materials-link {
+  min-width: 0;
+}
+
+.admin-compact-upload-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 42px;
-  padding: 0 14px;
-  border-radius: 14px;
-  border: 1px solid var(--panel-border);
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
   background: var(--surface-2);
-  color: var(--text-soft);
+  color: var(--text);
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
 
-.admin-session-step-chip.is-active {
-  background: color-mix(in srgb, var(--accent) 14%, var(--surface-2));
-  color: var(--text);
-  border-color: color-mix(in srgb, var(--accent) 26%, var(--panel-border));
+.admin-session-materials-actions input[type="file"] {
+  display: none;
 }
 
-.admin-session-step-chip__index {
+.admin-cover-box {
+  position: relative;
+  min-height: 124px;
+  height: 124px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.admin-cover-box input[type="file"] {
+  display: block;
+  width: 100%;
+}
+
+.admin-cover-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  color: var(--text-muted);
+}
+
+.admin-cover-preview.empty {
+  color: var(--text-muted);
+}
+
+.preview-session-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-cover-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--text);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 18%, transparent);
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 800;
+  cursor: pointer;
+  z-index: 2;
 }
 
-.admin-session-step-panel {
-  display: none;
-  min-height: 0;
-  align-content: start;
-  gap: 12px;
+.admin-cover-remove.hidden {
+  display: none !important;
 }
 
-.admin-session-step-panel.is-active {
-  display: grid;
-}
+/* ===== Participants ===== */
 
-.admin-publish-bar-text {
+.admin-participants-block,
+#sessionParticipantChips,
+#editSessionParticipantChips {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.admin-editor-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
 }
+
+.admin-participant-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 4px 8px 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  max-width: 100%;
+}
+
+.admin-participant-tag__name {
+  font-size: 12px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.admin-participant-tag__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-participant-tag__btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* ===== Published sessions list ===== */
 
 .admin-published-card {
   gap: 12px;
@@ -198,18 +526,20 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 
 .admin-published-filters {
   display: flex;
   align-items: end;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .admin-published-filter-field {
   display: grid;
   gap: 6px;
+  min-width: 160px;
 }
 
 .admin-published-filter-field label {
@@ -217,76 +547,13 @@
   color: var(--text-muted);
 }
 
+.admin-published-filter-reset {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .admin-form-block-head-with-action {
   align-items: flex-start;
-}
-
-.admin-participants-block {
-  align-content: start;
-  min-height: 0;
-}
-
-@media (max-width: 900px) {
-  .admin-publish-bar {
-    align-items: stretch;
-  }
-
-  .admin-editor-actions {
-    width: 100%;
-    justify-content: stretch;
-  }
-
-  .admin-editor-actions > * {
-    flex: 1 1 auto;
-  }
-}
-
-.admin-publish-bar-text {
-  display: flex;
-  gap: var(--space-3);
-  align-items: flex-start;
-}
-
-.world-master-top,
-.world-campaigns-head,
-.world-campaign-row,
-.published-session-top,
-.admin-participant-card-top,
-.compact-session-admin-top {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-  align-items: flex-start;
-}
-
-.world-master-top h4,
-.world-campaign-title,
-.published-session-title {
-  margin: 0;
-}
-
-.world-master-top p,
-.published-session-meta,
-.admin-participant-meta {
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.admin-published-filters,
-.published-sessions-filter-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
-  align-items: end;
-}
-
-.admin-published-filter-field {
-  display: grid;
-}
-
-.admin-published-filter-reset {
-  width: 100%;
 }
 
 .admin-inline-actions,
@@ -304,10 +571,6 @@
   margin-bottom: var(--space-4);
 }
 
-.admin-published-card-body {
-  min-width: 0;
-}
-
 .admin-published-list .card-item,
 .compact-session-admin-card {
   padding: 14px;
@@ -319,17 +582,33 @@
   border-radius: var(--radius-md);
 }
 
-.compact-session-admin-top h4 {
-  margin: 0 0 6px;
+.compact-session-admin-top,
+.world-master-top,
+.world-campaigns-head,
+.world-campaign-row,
+.published-session-top,
+.admin-participant-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
-.compact-session-admin-top p {
+.compact-session-admin-top h4,
+.world-master-top h4,
+.world-campaign-title,
+.published-session-title {
+  margin: 0;
+}
+
+.compact-session-admin-top p,
+.world-master-top p,
+.published-session-meta,
+.admin-participant-meta {
   margin: 0;
   color: var(--text-muted);
-}
-
-.admin-participants-block {
-  min-height: 44px;
+  line-height: 1.5;
 }
 
 .admin-published-list,
@@ -337,25 +616,167 @@
   margin-top: 0;
 }
 
+/* ===== Worlds & campaigns ===== */
+
+.world-master-card--redesign {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border: 1px solid var(--panel-border);
+}
+
+.world-master-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.world-master-card__title-group {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.world-master-card__title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.world-master-card__description {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.world-master-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.world-master-card__campaigns {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.world-master-card__campaigns-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.world-master-card__campaigns-list {
+  display: grid;
+  gap: 8px;
+}
+
+.world-campaign-row--redesign {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.world-campaign-row__main {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.world-master-card__empty {
+  padding: 8px 0 2px;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 900px) {
+  .admin-session-row--grid,
+  .admin-edit-session-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-session-row--split,
+  .admin-edit-session-split,
+  .admin-session-row--materials,
+  .admin-edit-session-grid--materials {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .admin-session-materials-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-history-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-history-filters {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .admin-history-filters input[type="date"] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-published-filters {
+    flex-wrap: wrap;
+  }
+
+  .admin-publish-bar {
+    align-items: stretch;
+  }
+
+  .admin-session-actions {
+    flex-wrap: nowrap;
+  }
+}
+
 @media (max-width: 760px) {
   .admin-main-tabs .main-tab-button {
     min-width: 0;
   }
 
-  .admin-published-filters,
-  .published-sessions-filter-row {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-publish-bar {
-    flex-direction: column;
-  }
-
+  .world-master-card__head,
+  .world-master-card__campaigns-head,
+  .world-campaign-row--redesign,
   .world-master-top,
   .world-campaign-row,
   .published-session-top,
   .admin-participant-card-top,
   .compact-session-admin-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .world-master-card__actions,
+  .compact-session-admin-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-session-row--grid,
+  .admin-edit-session-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-session-actions {
     flex-direction: column;
   }
 }

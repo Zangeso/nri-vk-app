@@ -84,7 +84,7 @@ body.admin-page .container,
   min-height: 0;
 }
 
-/* Внутри кабинета панели должны быть строго взаимоисключающими */
+/* Кабинет */
 .cabinet-window > .main-tab-panel {
   display: none !important;
   min-height: 0;
@@ -101,6 +101,19 @@ body.admin-page .container,
 .cabinet-window > .cabinet-feed-panel.active {
   flex: 1 1 auto;
   min-height: 0;
+}
+
+/* Админка */
+.admin-panels-frame--shell > .main-tab-panel {
+  display: none !important;
+  min-height: 0;
+}
+
+.admin-panels-frame--shell > .main-tab-panel.active {
+  display: flex !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
 }
 
 /* ===== Common section heads ===== */
@@ -127,15 +140,11 @@ body.admin-page .container,
   flex-wrap: wrap;
 }
 
-/* ===== Cabinet fixed dashboard shell ===== */
-
-.cabinet-dashboard-grid,
-.admin-session-layout {
-  display: grid;
-  gap: var(--content-gap);
-}
+/* ===== Cabinet ===== */
 
 .cabinet-dashboard-grid {
+  display: grid;
+  gap: var(--content-gap);
   flex: 1 1 auto;
   min-height: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -188,7 +197,7 @@ body.admin-page .container,
   overflow: hidden;
 }
 
-/* ===== Admin ===== */
+/* ===== Admin fixed shell ===== */
 
 .admin-app-shell {
   min-height: calc(100svh - var(--safe-top) - var(--safe-bottom));
@@ -216,36 +225,29 @@ body.admin-page .container,
   min-height: 0;
   display: flex;
   flex-direction: column;
-}
-
-.admin-panels-frame--shell > .main-tab-panel {
-  display: none !important;
-  min-height: 0;
-}
-
-.admin-panels-frame--shell > .main-tab-panel.active {
-  display: flex !important;
-  flex: 1 1 auto;
-  min-height: 0;
-  flex-direction: column;
+  overflow: hidden;
 }
 
 .admin-main-panel {
   flex: 1 1 auto;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.admin-session-layout {
+.admin-workspace,
+.admin-workspace--single {
   flex: 1 1 auto;
   min-height: 0;
-  height: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
-  gap: var(--content-gap);
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.admin-worlds-module,
+.admin-worlds-screen,
+.admin-module-card,
+.admin-screen-card,
 .admin-editor-card,
 .admin-published-card {
   min-width: 0;
@@ -256,23 +258,37 @@ body.admin-page .container,
   overflow: hidden;
 }
 
-.admin-editor-scroll {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-  padding-right: 2px;
-  padding-bottom: 8px;
-}
-
-.admin-scroll-area {
-  flex: 1 1 auto;
+.admin-screen-scroll,
+.admin-editor-scroll,
+.admin-scroll-area,
+.admin-history-list,
+#sessionEditContainer {
   min-height: 0;
   overflow: auto;
   padding-right: 2px;
 }
 
-.admin-scroll-area::-webkit-scrollbar,
+.admin-screen-scroll,
+.admin-editor-scroll,
+.admin-scroll-area,
+.admin-history-list,
+#sessionEditContainer,
+.dashboard-characters-list,
+.dashboard-related-list,
+.feed-stories-list,
+.modal-box,
+.characters-scroll-track,
+.compact-achievements-track,
+.character-achievements-orb-track,
+.circle-board-track {
+  scrollbar-width: thin;
+}
+
+.admin-screen-scroll::-webkit-scrollbar,
 .admin-editor-scroll::-webkit-scrollbar,
+.admin-scroll-area::-webkit-scrollbar,
+.admin-history-list::-webkit-scrollbar,
+#sessionEditContainer::-webkit-scrollbar,
 .dashboard-characters-list::-webkit-scrollbar,
 .dashboard-related-list::-webkit-scrollbar,
 .feed-stories-list::-webkit-scrollbar,
@@ -285,8 +301,11 @@ body.admin-page .container,
   height: 8px;
 }
 
-.admin-scroll-area::-webkit-scrollbar-thumb,
+.admin-screen-scroll::-webkit-scrollbar-thumb,
 .admin-editor-scroll::-webkit-scrollbar-thumb,
+.admin-scroll-area::-webkit-scrollbar-thumb,
+.admin-history-list::-webkit-scrollbar-thumb,
+#sessionEditContainer::-webkit-scrollbar-thumb,
 .dashboard-characters-list::-webkit-scrollbar-thumb,
 .dashboard-related-list::-webkit-scrollbar-thumb,
 .feed-stories-list::-webkit-scrollbar-thumb,
@@ -301,86 +320,6 @@ body.admin-page .container,
 
 /* ===== Responsive ===== */
 
-@media (max-width: 1080px) {
-  .admin-session-layout {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-}
-
-@media (max-width: 900px) {
-  .cabinet-dashboard-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: none;
-    height: auto;
-  }
-
-  .cabinet-dashboard-grid--quad {
-    height: auto;
-    min-height: auto;
-  }
-
-  .cabinet-window > .main-tab-panel.active {
-    display: block !important;
-  }
-
-  .admin-app-shell {
-    height: auto;
-    min-height: calc(100svh - var(--safe-top) - var(--safe-bottom));
-  }
-
-  .admin-window,
-  .admin-panel-shell,
-  .admin-panels-frame--shell,
-  .admin-main-panel,
-  .admin-session-layout,
-  .admin-worlds-module,
-  .admin-editor-card,
-  .admin-published-card {
-    min-height: auto;
-    height: auto;
-  }
-}
-
-@media (max-width: 760px) {
-  .topbar,
-  .cabinet-topbar,
-  .admin-topbar,
-  .section-head,
-  .dashboard-card-head,
-  .admin-form-block-head,
-  .admin-published-card-head {
-    margin-bottom: var(--space-4);
-  }
-
-  .topbar,
-  .cabinet-topbar,
-  .admin-topbar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .topbar-actions,
-  .cabinet-topbar-actions,
-  .admin-topbar-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .main-tabs,
-  .cabinet-tabs {
-    width: 100%;
-  }
-}
-
-/* ===== Responsive ===== */
-
-@media (max-width: 1080px) {
-  .admin-session-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 900px) {
   .cabinet-dashboard-grid {
     grid-template-columns: 1fr;
@@ -394,7 +333,7 @@ body.admin-page .container,
   }
 
   .cabinet-window > .main-tab-panel.active,
-  .admin-window > .main-tab-panel.active {
+  .admin-panels-frame--shell > .main-tab-panel.active {
     display: block !important;
   }
 
@@ -405,69 +344,17 @@ body.admin-page .container,
 
   .admin-window,
   .admin-panel-shell,
-  .admin-panels-frame,
+  .admin-panels-frame--shell,
   .admin-main-panel,
-  .admin-session-layout,
-  .admin-worlds-module,
+  .admin-workspace,
+  .admin-workspace--single,
+  .admin-worlds-screen,
+  .admin-module-card,
+  .admin-screen-card,
   .admin-editor-card,
   .admin-published-card {
     min-height: auto;
-  }
-}
-
-@media (max-width: 760px) {
-  .topbar,
-  .cabinet-topbar,
-  .admin-topbar,
-  .section-head,
-  .dashboard-card-head,
-  .admin-form-block-head,
-  .admin-published-card-head {
-    margin-bottom: var(--space-4);
-  }
-
-  .topbar,
-  .cabinet-topbar,
-  .admin-topbar {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .topbar-actions,
-  .cabinet-topbar-actions,
-  .admin-topbar-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .main-tabs,
-  .cabinet-tabs {
-    width: 100%;
-  }
-}
-
-/* ===== Responsive ===== */
-
-@media (max-width: 1080px) {
-  .admin-session-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 900px) {
-  .cabinet-dashboard-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: none;
     height: auto;
-  }
-
-  .cabinet-dashboard-grid--quad {
-    height: auto;
-    min-height: auto;
-  }
-
-  .cabinet-window > .main-tab-panel.active {
-    display: block !important;
   }
 }
 
