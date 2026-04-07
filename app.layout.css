@@ -334,12 +334,15 @@ body.admin-page .container,
 
   .cabinet-window > .main-tab-panel.active,
   .admin-panels-frame--shell > .main-tab-panel.active {
-    display: block !important;
+    display: flex !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    flex-direction: column;
   }
 
   .admin-app-shell {
-    height: auto;
     min-height: calc(100svh - var(--safe-top) - var(--safe-bottom));
+    height: calc(100svh - var(--safe-top) - var(--safe-bottom));
   }
 
   .admin-window,
@@ -353,8 +356,8 @@ body.admin-page .container,
   .admin-screen-card,
   .admin-editor-card,
   .admin-published-card {
-    min-height: auto;
-    height: auto;
+    min-height: 0;
+    height: 100%;
   }
 }
 
